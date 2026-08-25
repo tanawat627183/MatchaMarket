@@ -58,7 +58,7 @@
             
             <!-- ช่องค้นหาสินค้า -->
             <div class="flex-1 max-w-2xl hidden md:flex items-center bg-slate-50 border-2 border-slate-200/80 rounded-2xl overflow-hidden focus-within:border-matchaDark focus-within:bg-white transition shadow-inner">
-                <input type="text" x-model="searchKeyword" placeholder="ค้นหาสัตว์น้ำ, สัตว์บก, อุปกรณ์, ของตกแต่ง..." class="w-full px-4 py-3 text-sm bg-transparent outline-none">
+                <input type="text" x-model="searchKeyword" placeholder="ค้นหาสินค้า..." class="w-full px-4 py-3 text-sm bg-transparent outline-none">
                 <button class="bg-matchaDark text-white px-6 py-3 flex items-center justify-center hover:bg-matchaBlue transition font-bold text-sm">
                     ค้นหา
                 </button>
@@ -111,21 +111,14 @@
 
         <!-- 1. หน้าแรก (Home) -->
         <div x-show="currentTab === 'home'" x-transition class="space-y-8">
-            
-            <!-- Hero Banner -->
             <div class="bg-gradient-to-br from-matchaDark via-matchaBlue to-slate-900 rounded-3xl text-white p-8 sm:p-12 shadow-pro relative overflow-hidden flex flex-col justify-center items-center text-center border border-slate-700/50">
                 <div class="absolute -right-10 -bottom-10 w-60 h-60 bg-matchaPro/10 rounded-full blur-3xl pointer-events-none"></div>
                 <span class="bg-matchaPro/20 text-matchaPro text-xs font-black px-4 py-1.5 rounded-full mb-4 tracking-wider uppercase border border-matchaPro/30 shadow-sm">MatchaMarket Verified Platform</span>
                 <h1 class="text-3xl sm:text-5xl font-black mb-4 tracking-tight">มัจฉามาเก็ต - ตลาดสัตว์และอุปกรณ์ออนไลน์</h1>
                 <p class="text-sm sm:text-base text-slate-300 max-w-xl mx-auto mb-8 font-medium">ศูนย์รวมผู้เพาะพันธุ์สัตว์น้ำ สัตว์บก สัตว์ปีก และอุปกรณ์ตกแต่งตู้ปลา ตรวจสอบร้านค้าจริงโดยทีมงาน</p>
-                
-                <div class="w-full max-w-md md:hidden flex items-center bg-white rounded-2xl overflow-hidden p-1 shadow-lg">
-                    <input type="text" x-model="searchKeyword" placeholder="ค้นหาสินค้า..." class="w-full px-3 py-2 text-sm text-slate-800 outline-none">
-                    <button class="bg-matchaDark text-white px-4 py-2 rounded-xl font-bold text-xs">ค้นหา</button>
-                </div>
             </div>
 
-            <!-- หมวดหมู่สินค้า -->
+            <!-- หมวดหมู่ -->
             <div class="bg-white/80 backdrop-blur-md p-6 sm:p-8 rounded-3xl shadow-pro border border-slate-200/80">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-base font-extrabold text-slate-900 tracking-tight flex items-center space-x-2">
@@ -133,45 +126,25 @@
                     </h2>
                     <span class="text-xs text-slate-400 font-bold" x-text="filteredProducts.length + ' ผลลัพธ์'"></span>
                 </div>
-
                 <div class="grid grid-cols-2 sm:grid-cols-6 gap-4 text-center">
-                    <div @click="selectedCategory = 'all'" class="cursor-pointer p-4 rounded-2xl border-2 transition-all flex flex-col items-center space-y-2 group shadow-sm" :class="selectedCategory === 'all' ? 'border-matchaDark bg-matchaDark text-white shadow-md' : 'border-slate-200/60 bg-white text-slate-700 hover:border-slate-400'">
-                        <span class="text-3xl group-hover:scale-110 transition">🌟</span>
-                        <span class="text-xs font-bold">ทั้งหมด</span>
+                    <div @click="selectedCategory = 'all'" class="cursor-pointer p-4 rounded-2xl border-2 transition-all flex flex-col items-center space-y-2 group shadow-sm" :class="selectedCategory === 'all' ? 'border-matchaDark bg-matchaDark text-white shadow-md' : 'border-slate-200/60 bg-white text-slate-700'">
+                        <span class="text-3xl">🌟</span><span class="text-xs font-bold">ทั้งหมด</span>
                     </div>
-                    <div @click="selectedCategory = 'สัตว์น้ำ'" class="cursor-pointer p-4 rounded-2xl border-2 transition-all flex flex-col items-center space-y-2 group shadow-sm" :class="selectedCategory === 'สัตว์น้ำ' ? 'border-matchaDark bg-matchaDark text-white shadow-md' : 'border-slate-200/60 bg-white text-slate-700 hover:border-slate-400'">
-                        <span class="text-3xl group-hover:scale-110 transition">🐟</span>
-                        <span class="text-xs font-bold">สัตว์น้ำ</span>
+                    <div @click="selectedCategory = 'สัตว์น้ำ'" class="cursor-pointer p-4 rounded-2xl border-2 transition-all flex flex-col items-center space-y-2 group shadow-sm" :class="selectedCategory === 'สัตว์น้ำ' ? 'border-matchaDark bg-matchaDark text-white shadow-md' : 'border-slate-200/60 bg-white text-slate-700'">
+                        <span class="text-3xl">🐟</span><span class="text-xs font-bold">สัตว์น้ำ</span>
                     </div>
-                    <div @click="selectedCategory = 'สัตว์บก'" class="cursor-pointer p-4 rounded-2xl border-2 transition-all flex flex-col items-center space-y-2 group shadow-sm" :class="selectedCategory === 'สัตว์บก' ? 'border-matchaDark bg-matchaDark text-white shadow-md' : 'border-slate-200/60 bg-white text-slate-700 hover:border-slate-400'">
-                        <span class="text-3xl group-hover:scale-110 transition">🐅</span>
-                        <span class="text-xs font-bold">สัตว์บก</span>
+                    <div @click="selectedCategory = 'สัตว์บก'" class="cursor-pointer p-4 rounded-2xl border-2 transition-all flex flex-col items-center space-y-2 group shadow-sm" :class="selectedCategory === 'สัตว์บก' ? 'border-matchaDark bg-matchaDark text-white shadow-md' : 'border-slate-200/60 bg-white text-slate-700'">
+                        <span class="text-3xl">🐅</span><span class="text-xs font-bold">สัตว์บก</span>
                     </div>
-                    <div @click="selectedCategory = 'สัตว์ปีก'" class="cursor-pointer p-4 rounded-2xl border-2 transition-all flex flex-col items-center space-y-2 group shadow-sm" :class="selectedCategory === 'สัตว์ปีก' ? 'border-matchaDark bg-matchaDark text-white shadow-md' : 'border-slate-200/60 bg-white text-slate-700 hover:border-slate-400'">
-                        <span class="text-3xl group-hover:scale-110 transition">🐓</span>
-                        <span class="text-xs font-bold">สัตว์ปีก</span>
+                    <div @click="selectedCategory = 'สัตว์ปีก'" class="cursor-pointer p-4 rounded-2xl border-2 transition-all flex flex-col items-center space-y-2 group shadow-sm" :class="selectedCategory === 'สัตว์ปีก' ? 'border-matchaDark bg-matchaDark text-white shadow-md' : 'border-slate-200/60 bg-white text-slate-700'">
+                        <span class="text-3xl">🐓</span><span class="text-xs font-bold">สัตว์ปีก</span>
                     </div>
-                    <div @click="selectedCategory = 'อุปกรณ์'" class="cursor-pointer p-4 rounded-2xl border-2 transition-all flex flex-col items-center space-y-2 group shadow-sm" :class="selectedCategory === 'อุปกรณ์' ? 'border-matchaDark bg-matchaDark text-white shadow-md' : 'border-slate-200/60 bg-white text-slate-700 hover:border-slate-400'">
-                        <span class="text-3xl group-hover:scale-110 transition">⚙️</span>
-                        <span class="text-xs font-bold">อุปกรณ์</span>
+                    <div @click="selectedCategory = 'อุปกรณ์'" class="cursor-pointer p-4 rounded-2xl border-2 transition-all flex flex-col items-center space-y-2 group shadow-sm" :class="selectedCategory === 'อุปกรณ์' ? 'border-matchaDark bg-matchaDark text-white shadow-md' : 'border-slate-200/60 bg-white text-slate-700'">
+                        <span class="text-3xl">⚙️</span><span class="text-xs font-bold">อุปกรณ์</span>
                     </div>
-                    <div @click="selectedCategory = 'ของตกแต่ง'" class="cursor-pointer p-4 rounded-2xl border-2 transition-all flex flex-col items-center space-y-2 group shadow-sm" :class="selectedCategory === 'ของตกแต่ง' ? 'border-matchaDark bg-matchaDark text-white shadow-md' : 'border-slate-200/60 bg-white text-slate-700 hover:border-slate-400'">
-                        <span class="text-3xl group-hover:scale-110 transition">🪵</span>
-                        <span class="text-xs font-bold">ของตกแต่ง</span>
+                    <div @click="selectedCategory = 'ของตกแต่ง'" class="cursor-pointer p-4 rounded-2xl border-2 transition-all flex flex-col items-center space-y-2 group shadow-sm" :class="selectedCategory === 'ของตกแต่ง' ? 'border-matchaDark bg-matchaDark text-white shadow-md' : 'border-slate-200/60 bg-white text-slate-700'">
+                        <span class="text-3xl">🪵</span><span class="text-xs font-bold">ของตกแต่ง</span>
                     </div>
-                </div>
-            </div>
-
-            <!-- แถบจัดเรียง -->
-            <div class="flex flex-col sm:flex-row justify-between items-center bg-white/80 backdrop-blur-md px-6 py-4 rounded-2xl shadow-pro border border-slate-200/80 gap-4">
-                <div class="font-extrabold text-slate-800 text-sm" x-text="'แสดงสินค้าหมวด: ' + selectedCategory"></div>
-                <div class="flex items-center space-x-2 w-full sm:w-auto">
-                    <span class="text-xs text-slate-400 font-bold whitespace-nowrap">เรียงตาม:</span>
-                    <select x-model="sortBy" class="bg-slate-50 border-2 border-slate-200 rounded-xl px-4 py-2 text-xs font-bold text-slate-700 outline-none focus:border-matchaDark shadow-inner">
-                        <option value="newest">มาใหม่ล่าสุด</option>
-                        <option value="price-low">ราคา: ต่ำ ➔ สูง</option>
-                        <option value="price-high">ราคา: สูง ➔ ต่ำ</option>
-                    </select>
                 </div>
             </div>
 
@@ -184,19 +157,15 @@
                                 <img :src="item.images[0]" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" onerror="this.src='https://placehold.co/400x400?text=No+Image'">
                                 <span class="absolute top-3 left-3 bg-slate-900/80 backdrop-blur text-white text-[10px] font-extrabold px-2.5 py-1 rounded-full shadow" x-text="item.category"></span>
                             </div>
-                            
                             <div class="p-4">
                                 <h3 class="text-xs font-bold text-slate-900 line-clamp-2 h-8 leading-tight mb-2 group-hover:text-blue-600 transition" x-text="item.title"></h3>
-                                
                                 <div class="flex items-center space-x-1 mb-3">
                                     <span class="text-[11px] font-extrabold text-slate-600 truncate" x-text="item.storeName"></span>
-                                    <span class="text-matchaPro text-xs" title="ร้านค้า Verified ปลอดภัย">✅</span>
+                                    <span class="text-matchaPro text-xs">✅</span>
                                 </div>
-
                                 <div class="text-blue-600 font-black text-base" x-text="'฿' + item.price.toLocaleString()"></div>
                             </div>
                         </div>
-
                         <div class="p-4 pt-0">
                             <button class="w-full bg-slate-100 group-hover:bg-matchaDark group-hover:text-white text-slate-700 py-2.5 rounded-2xl text-xs font-bold transition flex items-center justify-center space-x-1 shadow-sm">
                                 <span>ดูรายละเอียด / สั่งซื้อ</span>
@@ -211,11 +180,10 @@
         <div x-show="showProductModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-md flex items-center justify-center z-50 p-4" x-transition.opacity>
             <div class="bg-white rounded-3xl max-w-2xl w-full shadow-2xl overflow-hidden relative border border-slate-200" @click.away="showProductModal = false">
                 <button @click="showProductModal = false" class="absolute top-4 right-4 bg-slate-100 hover:bg-slate-200 text-slate-600 w-10 h-10 rounded-full font-bold flex items-center justify-center transition z-10 shadow-sm">✕</button>
-                
                 <template x-if="selectedProduct">
                     <div class="grid grid-cols-1 sm:grid-cols-2">
                         <div class="bg-slate-100 aspect-square relative">
-                            <img :src="selectedProduct.images[0]" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/500x500?text=No+Image'">
+                            <img :src="selectedProduct.images[0]" class="w-full h-full object-cover">
                         </div>
                         <div class="p-6 sm:p-8 flex flex-col justify-between">
                             <div>
@@ -223,17 +191,14 @@
                                 <h2 class="text-xl font-extrabold text-slate-900 mt-2 mb-2" x-text="selectedProduct.title"></h2>
                                 <div class="text-2xl font-black text-blue-600 mb-4" x-text="'฿' + selectedProduct.price.toLocaleString()"></div>
                                 <p class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3.5 rounded-2xl border border-slate-200 mb-4 shadow-inner" x-text="selectedProduct.desc"></p>
-                                
                                 <div class="bg-emerald-50 border border-emerald-200 p-3.5 rounded-2xl mb-4 shadow-sm">
                                     <div class="flex items-center space-x-1 font-bold text-xs text-emerald-900 mb-1">
-                                        <span>🛡️ ร้านค้า Verified ปลอดภัย</span>
-                                        <span class="text-matchaPro">✅</span>
+                                        <span>🛡️ ร้านค้า Verified ปลอดภัย</span><span class="text-matchaPro">✅</span>
                                     </div>
                                     <div class="text-[11px] text-emerald-700" x-text="'ชื่อร้าน: ' + selectedProduct.storeName"></div>
                                     <div class="text-[11px] font-extrabold text-emerald-900 mt-0.5" x-text="'ชื่อบัญชีผู้รับโอน: ' + selectedProduct.bankAccName"></div>
                                 </div>
                             </div>
-
                             <button @click="openChat(selectedProduct)" class="w-full bg-matchaDark hover:bg-matchaBlue text-white py-3.5 rounded-2xl font-bold shadow-lg transition flex items-center justify-center space-x-2 text-sm">
                                 <span>💬 ทักแชทร้านค้านี้เลย</span>
                             </button>
@@ -251,19 +216,19 @@
             <form @submit.prevent="submitVendorRegistration()" class="space-y-4 text-sm">
                 <div>
                     <label class="block font-bold text-slate-700 mb-1.5">ชื่อร้านค้า</label>
-                    <input type="text" x-model="vendorForm.storeName" required class="w-full border-2 rounded-2xl px-4 py-3 focus:border-matchaDark outline-none shadow-inner bg-slate-50/50">
+                    <input type="text" x-model="vendorForm.storeName" required class="w-full border-2 rounded-2xl px-4 py-3 focus:border-matchaDark outline-none bg-slate-50/50">
                 </div>
                 <div>
                     <label class="block font-bold text-slate-700 mb-1.5">ชื่อ-นามสกุลจริง (เจ้าของร้าน)</label>
-                    <input type="text" x-model="vendorForm.ownerName" required class="w-full border-2 rounded-2xl px-4 py-3 focus:border-matchaDark outline-none shadow-inner bg-slate-50/50">
+                    <input type="text" x-model="vendorForm.ownerName" required class="w-full border-2 rounded-2xl px-4 py-3 focus:border-matchaDark outline-none bg-slate-50/50">
                 </div>
                 <div>
                     <label class="block font-bold text-slate-700 mb-1.5">เลขที่บัญชีธนาคาร</label>
-                    <input type="text" x-model="vendorForm.bankAcc" required class="w-full border-2 rounded-2xl px-4 py-3 focus:border-matchaDark outline-none shadow-inner bg-slate-50/50" placeholder="เช่น 123-4-56789-0">
+                    <input type="text" x-model="vendorForm.bankAcc" required class="w-full border-2 rounded-2xl px-4 py-3 focus:border-matchaDark outline-none bg-slate-50/50" placeholder="เช่น 123-4-56789-0">
                 </div>
-                <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-200 shadow-sm">
+                <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-200">
                     <label class="block font-bold text-slate-700 mb-1">ชื่อบัญชีธนาคาร <span class="text-matchaPro">*ต้องตรงกับชื่อเจ้าของร้าน</span></label>
-                    <input type="text" x-model="vendorForm.bankAccName" required class="w-full border-2 border-white rounded-xl px-4 py-3 focus:border-matchaDark outline-none font-bold bg-white shadow-inner">
+                    <input type="text" x-model="vendorForm.bankAccName" required class="w-full border-2 border-white rounded-xl px-4 py-3 focus:border-matchaDark outline-none font-bold bg-white">
                 </div>
                 <button type="submit" class="w-full bg-matchaDark hover:bg-matchaBlue text-white py-3.5 rounded-2xl font-bold shadow-lg transition">ส่งข้อมูลขออนุมัติ Verified</button>
             </form>
@@ -272,14 +237,13 @@
         <!-- 3. หน้าลงโพสต์ขายสินค้า -->
         <div x-show="currentTab === 'post-product'" class="max-w-xl mx-auto bg-white/90 backdrop-blur-md p-8 sm:p-10 rounded-3xl shadow-pro border border-slate-200/80" x-transition>
             <div class="mb-6 border-b pb-4">
-                <h2 class="text-2xl font-extrabold text-matchaDark">➕ ลงขายสินค้าใหม่ (Matcha Listing)</h2>
+                <h2 class="text-2xl font-extrabold text-matchaDark">➕ ลงขายสินค้าใหม่</h2>
                 <p class="text-xs text-slate-500 mt-1">เพิ่มข้อมูลสินค้าและรูปภาพจริงจากอัลบั้ม</p>
             </div>
-            
             <form @submit.prevent="submitProduct()" class="space-y-4 text-sm">
                 <div>
                     <label class="block font-bold text-slate-700 mb-1.5">หมวดหมู่สินค้า</label>
-                    <select x-model="productForm.category" required class="w-full border-2 rounded-2xl px-4 py-3.5 focus:border-matchaDark outline-none bg-slate-50/50 font-bold shadow-inner">
+                    <select x-model="productForm.category" required class="w-full border-2 rounded-2xl px-4 py-3.5 focus:border-matchaDark outline-none bg-slate-50/50 font-bold">
                         <option value="">-- เลือกหมวดหมู่ --</option>
                         <option value="สัตว์น้ำ">🐟 สัตว์น้ำ</option>
                         <option value="สัตว์บก">🐅 สัตว์บก</option>
@@ -290,27 +254,26 @@
                 </div>
                 <div>
                     <label class="block font-bold text-slate-700 mb-1.5">ชื่อสินค้า</label>
-                    <input type="text" x-model="productForm.title" required class="w-full border-2 rounded-2xl px-4 py-3.5 focus:border-matchaDark outline-none shadow-inner bg-slate-50/50" placeholder="เช่น ปลาทองรันชู ฟอร์มประกวด">
+                    <input type="text" x-model="productForm.title" required class="w-full border-2 rounded-2xl px-4 py-3.5 focus:border-matchaDark outline-none bg-slate-50/50">
                 </div>
                 <div>
                     <label class="block font-bold text-slate-700 mb-1.5">ราคา (บาท)</label>
-                    <input type="number" x-model="productForm.price" required class="w-full border-2 rounded-2xl px-4 py-3.5 focus:border-matchaDark outline-none shadow-inner bg-slate-50/50" placeholder="เช่น 350">
+                    <input type="number" x-model="productForm.price" required class="w-full border-2 rounded-2xl px-4 py-3.5 focus:border-matchaDark outline-none bg-slate-50/50">
                 </div>
                 <div>
                     <label class="block font-bold text-slate-700 mb-1.5">รายละเอียดสินค้า</label>
-                    <textarea x-model="productForm.desc" rows="3" required class="w-full border-2 rounded-2xl px-4 py-3.5 focus:border-matchaDark outline-none shadow-inner bg-slate-50/50" placeholder="ระบุขนาด ตำหนิ การรับประกัน หรือการจัดส่ง..."></textarea>
+                    <textarea x-model="productForm.desc" rows="3" required class="w-full border-2 rounded-2xl px-4 py-3.5 focus:border-matchaDark outline-none bg-slate-50/50"></textarea>
                 </div>
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1.5">รูปภาพสินค้า (เลือกจากอัลบั้ม)</label>
-                    <input type="file" @change="handleImageUpload" accept="image/*" multiple class="w-full border-2 border-dashed rounded-2xl p-4 text-xs bg-slate-50 cursor-pointer shadow-inner">
-                    
+                    <label class="block font-bold text-slate-700 mb-1.5">รูปภาพสินค้า</label>
+                    <input type="file" @change="handleImageUpload" accept="image/*" multiple class="w-full border-2 border-dashed rounded-2xl p-4 text-xs bg-slate-50 cursor-pointer">
                     <div class="flex gap-2 mt-3 overflow-x-auto" x-show="productForm.images.length > 0">
                         <template x-for="img in productForm.images">
-                            <img :src="img" class="w-20 h-20 object-cover rounded-2xl border shadow-sm">
+                            <img :src="img" class="w-20 h-20 object-cover rounded-2xl border">
                         </template>
                     </div>
                 </div>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-bold shadow-lg shadow-blue-500/20 transition">ยืนยันลงขายสินค้า</button>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-bold shadow-lg transition">ยืนยันลงขายสินค้า</button>
             </form>
         </div>
 
@@ -323,7 +286,6 @@
                 </div>
                 <button @click="currentTab = 'home'" class="bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-xl text-xs font-bold transition">← กลับ</button>
             </div>
-            
             <div class="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-50 text-sm" id="chatContainer">
                 <template x-for="msg in chatMessages">
                     <div class="flex flex-col" :class="msg.sender === 'ผู้ซื้อ' ? 'items-end' : 'items-start'">
@@ -335,9 +297,8 @@
                     </div>
                 </template>
             </div>
-
             <div class="p-4 bg-white border-t flex space-x-3 items-center">
-                <input type="text" x-model="newMessage" @keyup.enter="sendChatMessage()" placeholder="พิมพ์ข้อความคุยกับร้านค้า..." class="flex-1 border-2 rounded-2xl px-4 py-3 text-sm focus:border-matchaDark outline-none shadow-inner bg-slate-50/50">
+                <input type="text" x-model="newMessage" @keyup.enter="sendChatMessage()" placeholder="พิมพ์ข้อความคุยกับร้านค้า..." class="flex-1 border-2 rounded-2xl px-4 py-3 text-sm focus:border-matchaDark outline-none bg-slate-50/50">
                 <button @click="sendChatMessage()" class="bg-matchaDark text-white px-6 py-3 rounded-2xl text-xs font-bold shadow hover:bg-matchaBlue transition">ส่ง</button>
             </div>
         </div>
@@ -345,7 +306,7 @@
         <!-- 5. หน้าแอดมิน (God Mode Dashboard) -->
         <div x-show="currentTab === 'admin-panel'" class="space-y-6 max-w-4xl mx-auto text-sm" x-transition>
             <div class="flex justify-between items-center">
-                <h2 class="text-2xl font-black text-slate-900">⚙️ แดชบอร์ดแอดมินมัจฉามาเก็ต (ควบคุมทุกอย่าง)</h2>
+                <h2 class="text-2xl font-black text-slate-900">⚙️ แดชบอร์ดแอดมินมัจฉามาเก็ต</h2>
                 <button @click="currentTab = 'home'" class="bg-slate-200 px-4 py-2 rounded-xl text-xs font-bold shadow-sm">กลับหน้าเว็บ</button>
             </div>
 
@@ -359,25 +320,25 @@
             </div>
 
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div class="bg-white p-5 rounded-3xl shadow-pro text-center border border-slate-200/80">
+                <div class="bg-white p-5 rounded-3xl shadow-pro text-center border">
                     <div class="text-3xl font-black text-matchaDark" x-text="products.length"></div>
                     <div class="text-xs text-slate-500 font-bold mt-1">สินค้าทั้งหมด</div>
                 </div>
-                <div class="bg-white p-5 rounded-3xl shadow-pro text-center border border-slate-200/80">
+                <div class="bg-white p-5 rounded-3xl shadow-pro text-center border">
                     <div class="text-3xl font-black text-green-600" x-text="approvedVendors.length"></div>
                     <div class="text-xs text-slate-500 font-bold mt-1">ร้าน Verified แล้ว</div>
                 </div>
-                <div class="bg-white p-5 rounded-3xl shadow-pro text-center border border-slate-200/80">
+                <div class="bg-white p-5 rounded-3xl shadow-pro text-center border">
                     <div class="text-3xl font-black text-amber-500" x-text="pendingVendors.length"></div>
                     <div class="text-xs text-slate-500 font-bold mt-1">รอดำเนินการ</div>
                 </div>
-                <div class="bg-white p-5 rounded-3xl shadow-pro text-center border border-slate-200/80">
+                <div class="bg-white p-5 rounded-3xl shadow-pro text-center border">
                     <div class="text-3xl font-black text-blue-600" x-text="Object.keys(categoryCounts).length"></div>
                     <div class="text-xs text-slate-500 font-bold mt-1">หมวดหมู่Active</div>
                 </div>
             </div>
 
-            <!-- จัดการคำขอเปิดร้านค้า (รออนุมัติ) -->
+            <!-- คำขอเปิดร้านค้า (รออนุมัติ) -->
             <div class="bg-white p-6 rounded-3xl shadow-pro border border-slate-200/80">
                 <h3 class="font-extrabold text-slate-800 mb-4 text-base">🔔 คำขอเปิดร้านค้าใหม่ (รอตรวจสอบ Verified)</h3>
                 <div class="space-y-3">
@@ -399,9 +360,9 @@
                 </div>
             </div>
 
-            <!-- จัดการสินค้าทั้งหมดในระบบ (ลบสินค้า) -->
+            <!-- จัดการสินค้าทั้งหมด -->
             <div class="bg-white p-6 rounded-3xl shadow-pro border border-slate-200/80">
-                <h3 class="font-extrabold text-slate-800 mb-4 text-base">🗑️ จัดการสินค้าทั้งหมดในระบบ (ลบสินค้าไม่เหมาะสม)</h3>
+                <h3 class="font-extrabold text-slate-800 mb-4 text-base">🗑️ จัดการสินค้าทั้งหมดในระบบ</h3>
                 <div class="space-y-3 max-h-72 overflow-y-auto pr-1">
                     <template x-for="(item, index) in products" :key="item.id">
                         <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 flex justify-between items-center text-xs">
@@ -418,23 +379,19 @@
                 </div>
             </div>
 
-            <!-- จัดการร้านค้าที่อนุมัติแล้ว (แบนร้านค้า) -->
+            <!-- จัดการร้านค้า Verified -->
             <div class="bg-white p-6 rounded-3xl shadow-pro border border-slate-200/80">
-                <h3 class="font-extrabold text-slate-800 mb-4 text-base">👥 ร้านค้า Verified ในระบบ (จัดการ/แบน)</h3>
+                <h3 class="font-extrabold text-slate-800 mb-4 text-base">👥 ร้านค้า Verified ในระบบ</h3>
                 <div class="space-y-3">
                     <template x-for="(v, index) in approvedVendors">
                         <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 flex justify-between items-center text-xs shadow-sm">
                             <div>
                                 <div class="font-bold text-slate-900 text-sm flex items-center space-x-1">
-                                    <span x-text="v.storeName"></span>
-                                    <span class="text-matchaPro">✅</span>
+                                    <span x-text="v.storeName"></span><span class="text-matchaPro">✅</span>
                                 </div>
                                 <div class="text-slate-500 mt-0.5" x-text="'เจ้าของ: ' + v.ownerName + ' | บัญชี: ' + v.bankAcc + ' (' + v.bankAccName + ')'"></div>
                             </div>
-                            <div class="space-x-2 flex items-center">
-                                <span class="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full font-bold shadow-sm">Verified</span>
-                                <button @click="banVendor(index)" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-xl font-bold shadow">ระงับร้านค้า</button>
-                            </div>
+                            <button @click="banVendor(index)" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-xl font-bold shadow">ระงับร้านค้า</button>
                         </div>
                     </template>
                 </div>
@@ -445,13 +402,11 @@
 
     <!-- Modal ล็อกอิน -->
     <div x-show="showLoginModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-md flex items-center justify-center z-50 p-4" x-transition>
-        <div class="bg-white p-8 rounded-3xl w-full max-w-sm shadow-2xl relative text-sm border border-slate-200">
-            <button @click="showLoginModal = false" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 font-bold">✕</button>
+        <div class="bg-white p-8 rounded-3xl w-full max-w-sm shadow-2xl relative text-sm border">
+            <button @click="showLoginModal = false" class="absolute top-5 right-5 text-slate-400 font-bold">✕</button>
             <h3 class="text-xl font-extrabold text-slate-900 mb-1">เข้าสู่ระบบ / สมัครร้านค้า</h3>
             <p class="text-xs text-slate-500 mb-6">กรอกอีเมลหรือเบอร์โทรศัพท์ของคุณ</p>
-            
-            <input type="text" x-model="loginInput" placeholder="E-mail หรือ เบอร์โทร" class="w-full border-2 rounded-2xl px-4 py-3 text-xs mb-4 focus:border-matchaDark outline-none font-bold text-center shadow-inner bg-slate-50/50">
-            
+            <input type="text" x-model="loginInput" placeholder="E-mail หรือ เบอร์โทร" class="w-full border-2 rounded-2xl px-4 py-3 text-xs mb-4 focus:border-matchaDark outline-none font-bold text-center bg-slate-50/50">
             <div class="space-y-3">
                 <button @click="goToVendorRegister()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-2xl text-xs font-bold transition shadow-md">สมัครเปิดร้านค้า Verified</button>
                 <button @click="loginAsVendor()" class="w-full bg-matchaDark hover:bg-matchaBlue text-white py-3 rounded-2xl text-xs font-bold transition shadow-md">เข้าสู่ระบบ (ผู้ขาย)</button>
@@ -464,7 +419,7 @@
 
     <!-- Popup แจ้งเตือน -->
     <div x-show="showCustomAlert" class="fixed inset-0 bg-slate-900/70 backdrop-blur-md flex items-center justify-center z-50 p-4" x-transition>
-        <div class="bg-white p-6 rounded-3xl w-full max-w-xs shadow-2xl text-center relative text-sm border border-slate-200">
+        <div class="bg-white p-6 rounded-3xl w-full max-w-xs shadow-2xl text-center relative text-sm border">
             <div class="text-3xl mb-2">🔔</div>
             <h3 class="text-base font-extrabold text-slate-900 mb-2">แจ้งเตือนระบบ</h3>
             <p class="text-xs text-slate-600 mb-6" x-text="alertMessage"></p>
@@ -472,7 +427,7 @@
         </div>
     </div>
 
-    <!-- Script ระบบควบคุม MatchaMarket -->
+    <!-- Script ควบคุมระบบ (Real-time Sync & Persistent Storage) -->
     <script>
         function marketplaceApp() {
             return {
@@ -589,16 +544,9 @@
                     let found = this.approvedVendors.find(v => v.storeName.toLowerCase() === this.currentUser.toLowerCase());
                     if (found) {
                         this.vendorStatus = 'approved';
-                        this.showAlert('เข้าสู่ระบบสำเร็จ! (ร้านค้าผ่านการ Verified แล้ว)');
                     } else {
                         let pendingFound = this.pendingVendors.find(v => v.storeName.toLowerCase() === this.currentUser.toLowerCase());
-                        if (pendingFound) {
-                            this.vendorStatus = 'pending';
-                            this.showAlert('เข้าสู่ระบบสำเร็จ! ร้านค้าของคุณอยู่ระหว่างรอแอดมินตรวจสอบ');
-                        } else {
-                            this.vendorStatus = 'none';
-                            this.showAlert('เข้าสู่ระบบสำเร็จ! กรุณาสมัครเปิดร้านค้าเพื่อรับสถานะ Verified');
-                        }
+                        this.vendorStatus = pendingFound ? 'pending' : 'none';
                     }
 
                     localStorage.setItem('matcha_user', this.currentUser);
@@ -607,6 +555,7 @@
 
                     this.showLoginModal = false;
                     this.loginInput = '';
+                    this.showAlert('เข้าสู่ระบบสำเร็จ!');
                 },
 
                 loginAsAdmin() {
@@ -648,14 +597,17 @@
                         return;
                     }
                     
-                    // บันทึกข้อมูลร้านลงใน pendingVendors และเซฟลง localStorage ทันที
+                    // บันทึกชื่อร้านลงในช่องผู้ใช้ปัจจุบัน และใส่คิวรออนุมัติทันที
+                    this.currentUser = this.vendorForm.storeName;
                     this.pendingVendors.push({...this.vendorForm});
                     this.vendorStatus = 'pending';
                     
-                    localStorage.setItem('matcha_status', this.vendorStatus);
+                    localStorage.setItem('matcha_user', this.currentUser);
+                    localStorage.setItem('matcha_role', 'vendor');
+                    localStorage.setItem('matcha_status', 'pending');
                     this.saveData();
 
-                    this.showAlert('ส่งข้อมูลขอเปิดร้านเรียบร้อย! ข้อมูลถูกส่งไปที่หลังบ้านแอดมินแล้ว รอตรวจสอบ Verified');
+                    this.showAlert('ส่งข้อมูลขอเปิดร้านสำเร็จ! ข้อมูลถูกส่งไปที่หลังบ้านแอดมินแล้ว รอตรวจสอบ Verified');
                     this.vendorForm = { storeName: '', ownerName: '', bankAcc: '', bankAccName: '' };
                     this.currentTab = 'home';
                 },
