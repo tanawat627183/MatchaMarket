@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>MatchaMarket (มัจฉามาเก็ต) - ตลาดซื้อ-ขายสัตว์น้ำและสิ่งมีชีวิตมืออาชีพ</title>
     
-    <!-- 🔤 Google Font: Prompt (ภาษาไทยคมชัด สไตล์โมเดิร์น) -->
+    <!-- 🔤 Google Font: Prompt -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
@@ -47,12 +47,10 @@
                         aquaCyan: '#00B4D8',    
                         aquaGlow: '#90E0EF',    
                         aquaPro: '#00C2CB',     
-                        aquaLight: '#F0F8FF',   
-                        oceanBg: '#F5F9FC',     
                     },
                     boxShadow: {
-                        'aqua': '0 10px 30px -5px rgba(0, 180, 216, 0.12)',
-                        'aqua-hover': '0 20px 40px -10px rgba(12, 43, 78, 0.18)',
+                        'aqua': '0 10px 30px -5px rgba(0, 180, 216, 0.15)',
+                        'card-pop': '0 10px 25px -5px rgba(12, 43, 78, 0.08), 0 8px 10px -6px rgba(12, 43, 78, 0.08)',
                     }
                 }
             }
@@ -80,20 +78,21 @@
             white-space: nowrap;
         }
         .glass-header {
-            background: rgba(255, 255, 255, 0.88);
+            background: rgba(255, 255, 255, 0.92);
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
         }
         .glass-card {
-            background: rgba(255, 255, 255, 0.94);
+            background: rgba(255, 255, 255, 0.96);
             backdrop-filter: blur(10px);
+            box-shadow: 0 10px 25px -5px rgba(12, 43, 78, 0.08);
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-slate-100 via-oceanBg to-blue-50/40 text-slate-800 font-sans antialiased min-h-screen" x-data="marketplaceApp()">
+<body class="bg-gradient-to-br from-slate-100 via-sky-50 to-blue-100/70 text-slate-800 font-sans antialiased min-h-screen" x-data="marketplaceApp()">
 
     <!-- 🌐 Header สไตล์ Aquatic Glassmorphism -->
-    <header class="glass-header border-b border-slate-200/80 sticky top-0 z-50 shadow-sm transition-all">
+    <header class="glass-header border-b border-slate-200 sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-3 sm:px-4 h-16 sm:h-20 flex items-center justify-between gap-2">
             <!-- โลโก้ มัจฉามาเก็ต -->
             <div class="flex items-center space-x-2.5 cursor-pointer flex-shrink-0 group" @click="currentTab = 'home'; selectedCategory = 'all'">
@@ -108,16 +107,16 @@
                 </div>
             </div>
             
-            <!-- ช่องค้นหา (สไตล์โมเดิร์นคลีน) -->
-            <div class="flex-1 max-w-md hidden md:flex items-center bg-slate-50/90 border border-slate-200 rounded-2xl overflow-hidden focus-within:border-aquaCyan focus-within:bg-white focus-within:ring-2 focus-within:ring-aquaCyan/20 transition-all shadow-inner">
+            <!-- ช่องค้นหา -->
+            <div class="flex-1 max-w-md hidden md:flex items-center bg-white border-2 border-slate-200 rounded-2xl overflow-hidden focus-within:border-aquaCyan focus-within:ring-2 focus-within:ring-aquaCyan/20 transition-all shadow-sm">
                 <span class="pl-3.5 text-slate-400 text-sm">🔍</span>
-                <input type="text" x-model="searchKeyword" placeholder="ค้นหาปลา สัตว์น้ำ หรืออุปกรณ์..." class="w-full px-3 py-2.5 text-xs sm:text-sm bg-transparent outline-none font-medium">
+                <input type="text" x-model="searchKeyword" placeholder="ค้นหาปลา สัตว์น้ำ หรืออุปกรณ์..." class="w-full px-3 py-2.5 text-xs sm:text-sm bg-transparent outline-none font-medium text-slate-800">
                 <button class="bg-gradient-to-r from-oceanDark to-oceanNavy text-white px-5 py-2.5 hover:opacity-95 transition font-bold text-xs">ค้นหา</button>
             </div>
 
             <!-- กลุ่มปุ่มขวาบน -->
             <div class="flex items-center space-x-1.5 sm:space-x-2 flex-shrink-0">
-                <button @click="contactAdminChat()" class="text-xs bg-slate-100/90 hover:bg-slate-200 text-slate-700 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl font-bold transition flex items-center space-x-1 border border-slate-200/80">
+                <button @click="contactAdminChat()" class="text-xs bg-white hover:bg-slate-50 text-slate-700 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl font-bold transition flex items-center space-x-1 border border-slate-200 shadow-sm">
                     <span>💬</span><span class="hidden sm:inline">ติดต่อแอดมิน</span>
                 </button>
 
@@ -156,7 +155,7 @@
         </div>
     </header>
 
-    <!-- 📢 แบนเนอร์ประกาศ โทนสีน้ำทะเลเข้ม -->
+    <!-- 📢 แบนเนอร์ประกาศ -->
     <div class="bg-gradient-to-r from-oceanAbyss via-oceanDark to-oceanAbyss text-aquaGlow text-xs py-2 sm:py-2.5 font-bold shadow-inner overflow-hidden border-b border-oceanNavy/40">
         <div class="marquee-container flex items-center">
             <div class="animate-marquee flex items-center space-x-16">
@@ -178,37 +177,37 @@
 
         <!-- 1. หน้าแรก (Home) -->
         <div x-show="currentTab === 'home'" x-transition class="space-y-5 sm:space-y-8">
-            <!-- Hero Banner: Ocean Twilight Mesh -->
-            <div class="bg-gradient-to-br from-oceanAbyss via-oceanDark to-oceanNavy rounded-3xl text-white p-6 sm:p-12 shadow-aqua relative overflow-hidden flex flex-col justify-center items-center text-center border border-aquaCyan/20">
+            <!-- Hero Banner -->
+            <div class="bg-gradient-to-br from-oceanAbyss via-oceanDark to-oceanNavy rounded-3xl text-white p-6 sm:p-12 shadow-aqua relative overflow-hidden flex flex-col justify-center items-center text-center border border-aquaCyan/30">
                 <div class="absolute -top-24 -left-24 w-64 h-64 bg-aquaCyan/20 rounded-full blur-3xl pointer-events-none"></div>
                 <div class="absolute -bottom-24 -right-24 w-64 h-64 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
 
-                <span class="bg-aquaCyan/15 text-aquaGlow text-[10px] sm:text-xs font-bold px-3.5 py-1 rounded-full mb-3 sm:mb-4 tracking-wider uppercase border border-aquaCyan/30 backdrop-blur-sm">
+                <span class="bg-aquaCyan/20 text-aquaGlow text-[10px] sm:text-xs font-bold px-3.5 py-1 rounded-full mb-3 sm:mb-4 tracking-wider uppercase border border-aquaCyan/40 backdrop-blur-sm shadow-sm">
                     🌊 Aquatic & Pet Professional Market
                 </span>
                 <h1 class="text-2xl sm:text-5xl font-extrabold mb-2.5 sm:mb-4 tracking-tight leading-tight">
                     มัจฉามาเก็ต - ตลาดสัตว์น้ำและอุปกรณ์ออนไลน์
                 </h1>
-                <p class="text-xs sm:text-base text-slate-300 max-w-xl mx-auto mb-4 sm:mb-6 font-normal">
+                <p class="text-xs sm:text-base text-slate-200 max-w-xl mx-auto mb-4 sm:mb-6 font-normal">
                     ศูนย์รวมปลากัด สัตว์เลี้ยง และอุปกรณ์ชั้นนำ ซื้อขายปลอดภัยแบบเรียลไทม์ผ่านคลาวด์
                 </p>
-                <div class="w-full max-w-md md:hidden flex items-center bg-white/10 backdrop-blur-md rounded-2xl overflow-hidden border border-white/20 shadow-inner">
+                <div class="w-full max-w-md md:hidden flex items-center bg-white/10 backdrop-blur-md rounded-2xl overflow-hidden border border-white/25 shadow-inner">
                     <span class="pl-3 text-slate-300 text-xs">🔍</span>
-                    <input type="text" x-model="searchKeyword" placeholder="ค้นหาสินค้า..." class="w-full px-3 py-2 text-xs text-white placeholder-slate-400 bg-transparent outline-none font-medium">
+                    <input type="text" x-model="searchKeyword" placeholder="ค้นหาสินค้า..." class="w-full px-3 py-2 text-xs text-white placeholder-slate-300 bg-transparent outline-none font-medium">
                 </div>
             </div>
 
-            <!-- หมวดหมู่แบบ Aquatic Modern Cards -->
-            <div class="glass-card p-4 sm:p-6 rounded-3xl shadow-sm border border-slate-200/80">
+            <!-- หมวดหมู่ -->
+            <div class="glass-card p-4 sm:p-6 rounded-3xl shadow-md border border-slate-200">
                 <div class="flex justify-between items-center mb-3 sm:mb-4">
                     <h2 class="text-xs sm:text-sm font-extrabold text-oceanAbyss tracking-tight flex items-center space-x-1.5">
                         <span>📂</span><span>หมวดหมู่สินค้า</span>
                     </h2>
-                    <span class="text-[11px] text-slate-400 font-bold" x-text="filteredProducts.length + ' รายการ'"></span>
+                    <span class="text-[11px] text-slate-500 font-bold" x-text="filteredProducts.length + ' รายการ'"></span>
                 </div>
                 <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-3 text-center">
                     <template x-for="cat in ['ทั้งหมด', 'สัตว์น้ำ', 'สัตว์บก', 'สัตว์ปีก', 'อุปกรณ์', 'ของตกแต่ง']">
-                        <div @click="selectedCategory = cat === 'ทั้งหมด' ? 'all' : cat" class="cursor-pointer p-2.5 sm:p-3.5 rounded-2xl border-2 transition-all duration-200 flex flex-col items-center space-y-1 group shadow-sm" :class="(selectedCategory === cat || (cat === 'ทั้งหมด' && selectedCategory === 'all')) ? 'border-aquaCyan bg-gradient-to-b from-oceanDark to-oceanAbyss text-white shadow-md' : 'border-slate-200/80 bg-white text-slate-700 hover:border-aquaCyan/50 hover:bg-slate-50'">
+                        <div @click="selectedCategory = cat === 'ทั้งหมด' ? 'all' : cat" class="cursor-pointer p-3 sm:p-4 rounded-2xl border-2 transition-all duration-200 flex flex-col items-center space-y-1.5 group shadow-sm" :class="(selectedCategory === cat || (cat === 'ทั้งหมด' && selectedCategory === 'all')) ? 'border-aquaCyan bg-gradient-to-b from-oceanDark to-oceanAbyss text-white shadow-md' : 'border-slate-200 bg-white text-slate-700 hover:border-aquaCyan/60 hover:bg-sky-50/50'">
                             <span class="text-xl sm:text-2xl transform group-hover:scale-110 transition-transform" x-text="cat === 'ทั้งหมด' ? '🌟' : (cat === 'สัตว์น้ำ' ? '🐟' : (cat === 'สัตว์บก' ? '🐅' : (cat === 'สัตว์ปีก' ? '🐓' : (cat === 'อุปกรณ์' ? '⚙️' : '🪵'))))"></span>
                             <span class="text-[10px] sm:text-xs font-bold" x-text="cat"></span>
                         </div>
@@ -216,38 +215,38 @@
                 </div>
             </div>
 
-            <!-- รายการสินค้า Modern Card Grid -->
+            <!-- รายการสินค้า -->
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
                 <template x-for="item in sortedProducts" :key="item.firebaseId || item.id">
-                    <div @click="openProductDetail(item)" class="bg-white rounded-3xl shadow-sm hover:shadow-aqua-hover transition-all duration-300 overflow-hidden flex flex-col justify-between border border-slate-200/80 cursor-pointer group relative">
+                    <div @click="openProductDetail(item)" class="bg-white rounded-3xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between border border-slate-200 cursor-pointer group relative">
                         <div>
                             <div class="aspect-square bg-slate-100 relative overflow-hidden">
                                 <img :src="item.images && item.images[0] ? item.images[0] : 'https://placehold.co/400x400?text=No+Image'" 
                                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                                      :class="item.status === 'sold' ? 'grayscale opacity-60' : ''"
                                      onerror="this.src='https://placehold.co/400x400?text=No+Image'">
-                                <span class="absolute top-2 left-2 bg-oceanAbyss/80 backdrop-blur-md text-white text-[9px] font-bold px-2.5 py-0.5 rounded-full shadow" x-text="item.category"></span>
+                                <span class="absolute top-2 left-2 bg-oceanAbyss/90 backdrop-blur-md text-white text-[9px] font-bold px-2.5 py-0.5 rounded-full shadow" x-text="item.category"></span>
                                 
                                 <div class="absolute top-2 right-2">
                                     <template x-if="item.status === 'sold'">
-                                        <span class="bg-red-600/90 backdrop-blur-md text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow">ขายแล้ว</span>
+                                        <span class="bg-red-600/95 backdrop-blur-md text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow">ขายแล้ว</span>
                                     </template>
                                     <template x-if="item.status === 'reserved'">
-                                        <span class="bg-amber-500/90 backdrop-blur-md text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow">ติดจอง</span>
+                                        <span class="bg-amber-500/95 backdrop-blur-md text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow">ติดจอง</span>
                                     </template>
                                 </div>
                             </div>
-                            <div class="p-3">
+                            <div class="p-3.5">
                                 <h3 class="text-xs font-bold text-slate-900 line-clamp-2 h-8 leading-tight mb-1 group-hover:text-aquaCyan transition-colors" x-text="item.title"></h3>
                                 <div class="flex items-center space-x-1 mb-2">
-                                    <span class="text-[10px] sm:text-[11px] font-bold text-slate-500 truncate" x-text="item.storeName"></span>
+                                    <span class="text-[10px] sm:text-[11px] font-bold text-slate-600 truncate" x-text="item.storeName"></span>
                                     <span class="text-aquaPro text-[10px]">✅</span>
                                 </div>
                                 <div class="text-oceanNavy font-black text-xs sm:text-sm" x-text="'฿' + Number(item.price).toLocaleString()"></div>
                             </div>
                         </div>
-                        <div class="p-3 pt-0">
-                            <button class="w-full bg-slate-50 group-hover:bg-gradient-to-r group-hover:from-oceanDark group-hover:to-oceanNavy group-hover:text-white text-slate-700 py-1.5 sm:py-2 rounded-xl text-[10px] sm:text-xs font-bold transition border border-slate-200/60 group-hover:border-transparent">
+                        <div class="p-3.5 pt-0">
+                            <button class="w-full bg-slate-100 group-hover:bg-gradient-to-r group-hover:from-oceanDark group-hover:to-oceanNavy group-hover:text-white text-slate-700 py-2 rounded-xl text-[10px] sm:text-xs font-bold transition border border-slate-200 group-hover:border-transparent">
                                 ดูรายละเอียด
                             </button>
                         </div>
@@ -283,9 +282,9 @@
                                 <span class="bg-blue-50 text-oceanNavy text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-blue-100" x-text="selectedProduct.category"></span>
                                 <h2 class="text-base sm:text-lg font-bold text-slate-900 mt-1 mb-1" x-text="selectedProduct.title"></h2>
                                 <div class="text-lg sm:text-xl font-extrabold text-aquaCyan mb-2" x-text="'฿' + Number(selectedProduct.price).toLocaleString()"></div>
-                                <p class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-2xl border border-slate-200/80 mb-3 font-normal" x-text="selectedProduct.desc"></p>
+                                <p class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-2xl border border-slate-200 mb-3 font-normal" x-text="selectedProduct.desc"></p>
                                 
-                                <div class="bg-emerald-50/80 border border-emerald-200/80 p-2.5 rounded-2xl text-xs mb-2">
+                                <div class="bg-emerald-50 border border-emerald-200 p-2.5 rounded-2xl text-xs mb-2 shadow-sm">
                                     <div class="flex items-center space-x-1 font-bold text-emerald-900">
                                         <span>🛡️ ร้าน Verified ปลอดภัย</span><span class="text-aquaPro">✅</span>
                                     </div>
@@ -307,9 +306,9 @@
             </div>
         </div>
 
-        <!-- 2. หน้า "ร้านของฉัน" (จัดการสต็อก + กล่องข้อความลูกค้า) -->
+        <!-- 2. หน้า "ร้านของฉัน" -->
         <div x-show="currentTab === 'my-shop'" class="max-w-4xl mx-auto space-y-4" x-transition>
-            <div class="glass-card p-4 sm:p-6 rounded-3xl shadow-sm border border-slate-200 flex justify-between items-center">
+            <div class="glass-card p-4 sm:p-6 rounded-3xl shadow-md border border-slate-200 flex justify-between items-center">
                 <div>
                     <h2 class="text-lg sm:text-xl font-extrabold text-oceanAbyss" x-text="'🏪 ร้านค้า: ' + currentUser"></h2>
                     <p class="text-xs text-slate-500">จัดการสต็อกสินค้าและตอบข้อความลูกค้าของคุณ</p>
@@ -319,10 +318,10 @@
 
             <!-- สลับแท็บ -->
             <div class="flex space-x-2 border-b border-slate-200 pb-2">
-                <button @click="myShopTab = 'inventory'" class="px-4 py-2 rounded-xl text-xs font-bold transition" :class="myShopTab === 'inventory' ? 'bg-gradient-to-r from-oceanDark to-oceanNavy text-white shadow-sm' : 'bg-white text-slate-600 border'">
+                <button @click="myShopTab = 'inventory'" class="px-4 py-2 rounded-xl text-xs font-bold transition" :class="myShopTab === 'inventory' ? 'bg-gradient-to-r from-oceanDark to-oceanNavy text-white shadow-sm' : 'bg-white text-slate-600 border shadow-sm'">
                     📦 จัดการสต็อก (<span x-text="myProducts.length"></span>)
                 </button>
-                <button @click="myShopTab = 'chats'" class="relative px-4 py-2 rounded-xl text-xs font-bold transition" :class="myShopTab === 'chats' ? 'bg-gradient-to-r from-oceanDark to-oceanNavy text-white shadow-sm' : 'bg-white text-slate-600 border'">
+                <button @click="myShopTab = 'chats'" class="relative px-4 py-2 rounded-xl text-xs font-bold transition" :class="myShopTab === 'chats' ? 'bg-gradient-to-r from-oceanDark to-oceanNavy text-white shadow-sm' : 'bg-white text-slate-600 border shadow-sm'">
                     💬 ข้อความลูกค้า (<span x-text="myChatRooms.length"></span>)
                     <template x-if="unreadCountForMe > 0">
                         <span class="ml-1 px-1.5 py-0.5 bg-red-500 text-white rounded-full text-[10px]">ใหม่</span>
@@ -366,7 +365,7 @@
                         </div>
                     </template>
                     <template x-if="myProducts.length === 0">
-                        <div class="bg-white p-8 rounded-3xl text-center text-slate-400 text-xs border">คุณยังไม่ได้ลงขายสินค้า</div>
+                        <div class="bg-white p-8 rounded-3xl text-center text-slate-400 text-xs border shadow-sm">คุณยังไม่ได้ลงขายสินค้า</div>
                     </template>
                 </div>
             </div>
@@ -391,27 +390,31 @@
                     </div>
                 </template>
                 <template x-if="myChatRooms.length === 0">
-                    <div class="bg-white p-8 rounded-3xl text-center text-slate-400 text-xs border">ยังไม่มีลูกค้าทักข้อความเข้ามา</div>
+                    <div class="bg-white p-8 rounded-3xl text-center text-slate-400 text-xs border shadow-sm">ยังไม่มีลูกค้าทักข้อความเข้ามา</div>
                 </template>
             </div>
         </div>
 
-        <!-- 3. หน้าลงทะเบียนร้าน (เลือกธนาคาร + คลีนฟอร์ม) -->
-        <div x-show="currentTab === 'register-vendor'" class="max-w-md mx-auto glass-card p-5 sm:p-8 rounded-3xl shadow-sm border border-slate-200/80" x-transition>
+        <!-- 3. หน้าลงทะเบียนร้าน (เพิ่มรหัส PIN) -->
+        <div x-show="currentTab === 'register-vendor'" class="max-w-md mx-auto glass-card p-5 sm:p-8 rounded-3xl shadow-md border border-slate-200" x-transition>
             <h2 class="text-lg sm:text-xl font-extrabold text-oceanAbyss mb-1">สมัครเปิดร้านค้ามัจฉามาเก็ต</h2>
-            <p class="text-xs text-slate-500 mb-4">กรอกข้อมูลสำคัญเพื่อขอรับการอนุมัติ Verified</p>
+            <p class="text-xs text-slate-500 mb-4">กรอกข้อมูลสำคัญและตั้งรหัส PIN สำหรับล็อกอินร้านค้า</p>
             <form @submit.prevent="submitVendorRegistration()" class="space-y-3 text-xs sm:text-sm">
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">ชื่อร้านค้า <span class="text-red-500">*</span></label>
-                    <input type="text" x-model="vendorForm.storeName" required class="w-full border-2 rounded-xl px-3 py-2 sm:py-2.5 focus:border-aquaCyan outline-none bg-slate-50/50" placeholder="เช่น ร้านปลากัดศิลาเพชร">
+                    <input type="text" x-model="vendorForm.storeName" required class="w-full border-2 rounded-xl px-3 py-2.5 focus:border-aquaCyan outline-none bg-slate-50/50" placeholder="เช่น ร้านปลากัดศิลาเพชร">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">รหัส PIN (สำหรับล็อกอิน 4-6 หลัก) <span class="text-red-500">*</span></label>
+                    <input type="password" x-model="vendorForm.pin" required maxlength="6" class="w-full border-2 rounded-xl px-3 py-2.5 focus:border-aquaCyan outline-none bg-slate-50/50 font-mono tracking-widest font-bold" placeholder="••••">
                 </div>
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">ชื่อ-นามสกุลจริง (ผู้เปิดร้าน) <span class="text-red-500">*</span></label>
-                    <input type="text" x-model="vendorForm.ownerName" required class="w-full border-2 rounded-xl px-3 py-2 sm:py-2.5 focus:border-aquaCyan outline-none bg-slate-50/50">
+                    <input type="text" x-model="vendorForm.ownerName" required class="w-full border-2 rounded-xl px-3 py-2.5 focus:border-aquaCyan outline-none bg-slate-50/50">
                 </div>
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">เบอร์โทรศัพท์ <span class="text-red-500">*</span></label>
-                    <input type="tel" x-model="vendorForm.phone" required class="w-full border-2 rounded-xl px-3 py-2 sm:py-2.5 focus:border-aquaCyan outline-none bg-slate-50/50" placeholder="08XXXXXXXX">
+                    <input type="tel" x-model="vendorForm.phone" required class="w-full border-2 rounded-xl px-3 py-2.5 focus:border-aquaCyan outline-none bg-slate-50/50" placeholder="08XXXXXXXX">
                 </div>
                 
                 <!-- เลือกธนาคาร -->
@@ -443,15 +446,15 @@
 
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">ช่องทางติดต่ออื่นๆ เช่น LINE ID / Facebook <span class="text-slate-400 font-normal">(ไม่บังคับ)</span></label>
-                    <input type="text" x-model="vendorForm.contactInfo" class="w-full border-2 rounded-xl px-3 py-2 sm:py-2.5 focus:border-aquaCyan outline-none bg-slate-50/50" placeholder="เช่น @lineid หรือ ลิงก์เฟส">
+                    <input type="text" x-model="vendorForm.contactInfo" class="w-full border-2 rounded-xl px-3 py-2.5 focus:border-aquaCyan outline-none bg-slate-50/50" placeholder="เช่น @lineid หรือ ลิงก์เฟส">
                 </div>
 
                 <button type="submit" class="w-full bg-gradient-to-r from-oceanDark to-oceanNavy hover:from-oceanNavy hover:to-oceanDark text-white py-3 rounded-xl font-bold shadow-md transition">ส่งข้อมูลขอเปิดร้านค้า</button>
             </form>
         </div>
 
-        <!-- 4. หน้าลงโพสต์ขายสินค้า (One-Tap Fast Post) -->
-        <div x-show="currentTab === 'post-product'" class="max-w-lg mx-auto glass-card p-5 sm:p-8 rounded-3xl shadow-sm border border-slate-200/80" x-transition>
+        <!-- 4. หน้าลงโพสต์ขายสินค้า -->
+        <div x-show="currentTab === 'post-product'" class="max-w-lg mx-auto glass-card p-5 sm:p-8 rounded-3xl shadow-md border border-slate-200" x-transition>
             <div class="mb-4 border-b pb-3 flex justify-between items-center">
                 <div>
                     <h2 class="text-lg sm:text-xl font-extrabold text-oceanAbyss">➕ ลงขายสินค้าใหม่</h2>
@@ -504,8 +507,8 @@
             </form>
         </div>
 
-        <!-- 5. หน้าแชทสดบนคลาวด์ + Live Mini-Cart + ปิดการขาย -->
-        <div x-show="currentTab === 'chat'" class="max-w-2xl mx-auto bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-[560px] sm:h-[620px]" x-transition>
+        <!-- 5. หน้าแชทสดบนคลาวด์ -->
+        <div x-show="currentTab === 'chat'" class="max-w-2xl mx-auto bg-white rounded-3xl shadow-md border border-slate-200 overflow-hidden flex flex-col h-[560px] sm:h-[620px]" x-transition>
             <!-- ส่วนหัวแชท -->
             <div class="bg-gradient-to-r from-oceanAbyss via-oceanDark to-oceanNavy text-white px-4 py-3 flex justify-between items-center shadow-md">
                 <div class="truncate mr-2">
@@ -653,7 +656,7 @@
                 </div>
             </div>
 
-            <!-- 📊 ตารางสรุปรายชื่อร้านค้า + แบน/ปลดแบน + ลบร้านค้า -->
+            <!-- 📊 ตารางสรุปรายชื่อร้านค้า -->
             <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200/80 space-y-3">
                 <div class="flex justify-between items-center">
                     <h3 class="font-extrabold text-slate-900 text-sm sm:text-base">📊 รายชื่อร้านค้าทั้งหมด & จัดการบัญชี</h3>
@@ -677,7 +680,7 @@
                                 <tr class="hover:bg-slate-50 transition">
                                     <td class="p-2.5">
                                         <div class="font-bold text-slate-900" x-text="v.storeName"></div>
-                                        <div class="text-[10px] text-slate-400 font-mono" x-text="'Login: ' + v.storeName"></div>
+                                        <div class="text-[10px] text-slate-400 font-mono" x-text="'PIN: ' + (v.pin ? '••••' : 'ไม่ได้ตั้ง')"></div>
                                     </td>
                                     <td class="p-2.5">
                                         <div class="font-bold text-slate-800" x-text="v.ownerName"></div>
@@ -736,7 +739,7 @@
                 </div>
             </div>
 
-            <!-- 🗑️ จัดการลบสินค้าทั้งหมดบนคลาวด์ -->
+            <!-- 🗑️ จัดการลบสินค้า -->
             <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200">
                 <h3 class="font-extrabold text-slate-800 mb-3 text-sm">🗑️ จัดการสินค้าทั้งหมดบนระบบ (แอดมินสามารถลบได้)</h3>
                 <div class="space-y-2 max-h-64 overflow-y-auto pr-1">
@@ -758,7 +761,7 @@
 
     </main>
 
-    <!-- Modal จัดการผู้ใช้ทั้งหมด (สำหรับแอดมิน) -->
+    <!-- Modal จัดการผู้ใช้ -->
     <div x-show="showUsersModal" class="fixed inset-0 bg-oceanAbyss/70 backdrop-blur-md flex items-center justify-center z-50 p-4" x-transition>
         <div class="bg-white p-6 rounded-3xl w-full max-w-xl shadow-2xl relative text-sm border" @click.away="showUsersModal = false">
             <button @click="showUsersModal = false" class="absolute top-4 right-4 text-slate-400 font-bold">✕</button>
@@ -833,7 +836,7 @@
         </div>
     </div>
 
-    <!-- Script ควบคุมระบบ (คงฟังก์ชันและความแม่นยำ 100%) -->
+    <!-- Script ควบคุมระบบ -->
     <script>
         function marketplaceApp() {
             return {
@@ -873,7 +876,7 @@
                 myChatRooms: [],
                 unreadCountForMe: 0,
 
-                vendorForm: { storeName: '', ownerName: '', phone: '', bankType: '', bankAcc: '', bankAccName: '', contactInfo: '' },
+                vendorForm: { storeName: '', pin: '', ownerName: '', phone: '', bankType: '', bankAcc: '', bankAccName: '', contactInfo: '' },
                 productForm: { category: 'สัตว์น้ำ', title: '', price: '', desc: '', images: [] },
 
                 activeChatStore: '',
@@ -1189,13 +1192,20 @@
                     }
                 },
 
+                // 🔐 ล็อกอินร้านค้า พร้อมระบบเช็ก PIN
                 loginAsVendor() {
-                    if(!this.loginInput) { this.showAlert('กรุณากรอกข้อมูลในช่อง'); return; }
-                    this.currentUser = this.loginInput;
-                    this.userRole = 'vendor';
+                    if(!this.loginInput) { this.showAlert('กรุณากรอกชื่อร้านค้าหรือเบอร์โทร'); return; }
+                    let searchKey = this.loginInput.toLowerCase().trim();
                     
-                    let found = this.approvedVendors.find(v => v.storeName.toLowerCase() === this.currentUser.toLowerCase() || (v.phone && v.phone === this.currentUser));
+                    let found = this.approvedVendors.find(v => v.storeName.toLowerCase() === searchKey || (v.phone && v.phone === searchKey));
                     if (found) {
+                        let enteredPin = prompt(`🔑 กรอกรหัส PIN สำหรับร้าน "${found.storeName}":`);
+                        if (enteredPin === null) return;
+                        if (found.pin && enteredPin !== found.pin) {
+                            this.showAlert('❌ รหัส PIN ไม่ถูกต้อง');
+                            return;
+                        }
+
                         this.currentUser = found.storeName;
                         if (found.isBanned) {
                             this.vendorStatus = 'banned';
@@ -1206,11 +1216,24 @@
                             this.showAlert('เข้าสู่ระบบสำเร็จ!');
                         }
                     } else {
-                        let pendingFound = this.pendingVendors.find(v => v.storeName.toLowerCase() === this.currentUser.toLowerCase() || (v.phone && v.phone === this.currentUser));
-                        this.vendorStatus = pendingFound ? 'pending' : 'none';
-                        this.showAlert('เข้าสู่ระบบสำเร็จ! (สถานะ: รอดำเนินการอนุมัติ)');
+                        let pendingFound = this.pendingVendors.find(v => v.storeName.toLowerCase() === searchKey || (v.phone && v.phone === searchKey));
+                        if (pendingFound) {
+                            let enteredPin = prompt(`🔑 กรอกรหัส PIN สำหรับร้าน "${pendingFound.storeName}":`);
+                            if (enteredPin === null) return;
+                            if (pendingFound.pin && enteredPin !== pendingFound.pin) {
+                                this.showAlert('❌ รหัส PIN ไม่ถูกต้อง');
+                                return;
+                            }
+                            this.currentUser = pendingFound.storeName;
+                            this.vendorStatus = 'pending';
+                            this.showAlert('เข้าสู่ระบบสำเร็จ! (สถานะ: รอดำเนินการอนุมัติ)');
+                        } else {
+                            this.showAlert('❌ ไม่พบร้านค้านี้ในระบบ กรุณาสมัครเปิดร้านค้าก่อน');
+                            return;
+                        }
                     }
 
+                    this.userRole = 'vendor';
                     localStorage.setItem('matcha_user', this.currentUser);
                     localStorage.setItem('matcha_role', this.userRole);
                     localStorage.setItem('matcha_status', this.vendorStatus);
@@ -1253,6 +1276,10 @@
                 },
 
                 async submitVendorRegistration() {
+                    if(!this.vendorForm.pin || this.vendorForm.pin.length < 4) {
+                        this.showAlert('⚠️ กรุณาตั้งรหัส PIN อย่างน้อย 4 หลัก');
+                        return;
+                    }
                     if(this.vendorForm.bankAccName !== this.vendorForm.ownerName) {
                         this.showAlert('⚠️ ชื่อบัญชีธนาคารต้องตรงกับชื่อผู้เปิดร้าน!');
                         return;
@@ -1269,7 +1296,7 @@
                     localStorage.setItem('matcha_status', 'pending');
 
                     this.showAlert('ส่งข้อมูลขอเปิดร้านขึ้นคลาวด์สำเร็จ!');
-                    this.vendorForm = { storeName: '', ownerName: '', phone: '', bankType: '', bankAcc: '', bankAccName: '', contactInfo: '' };
+                    this.vendorForm = { storeName: '', pin: '', ownerName: '', phone: '', bankType: '', bankAcc: '', bankAccName: '', contactInfo: '' };
                     this.currentTab = 'home';
                 },
 
@@ -1279,6 +1306,7 @@
 
                     await addDoc(collection(db, "approvedVendors"), { 
                         storeName: v.storeName, 
+                        pin: v.pin || '1234',
                         ownerName: v.ownerName, 
                         phone: v.phone || '', 
                         bankType: v.bankType || 'พร้อมเพย์/ธนาคาร',
@@ -1426,7 +1454,7 @@
                                 itemsList.push(newItemObj);
                             }
                         } else {
-                            itemsList = [newItemObj];
+                            if (item.price > 0) itemsList = [newItemObj];
                             let newChatRef = await addDoc(collection(db, "chats"), {
                                 storeName: item.storeName,
                                 buyerName: buyerName,
