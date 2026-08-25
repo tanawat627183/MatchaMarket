@@ -91,8 +91,8 @@
 
             <!-- กลุ่มปุ่มขวาบน -->
             <div class="flex items-center space-x-1.5 sm:space-x-2 flex-shrink-0">
-                <!-- ปุ่มติดต่อแอดมิน -->
-                <button @click="showContactAdminModal = true" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl font-bold transition flex items-center space-x-1 border">
+                <!-- 💬 ปุ่มติดต่อแอดมินสดภายในเว็บ -->
+                <button @click="contactAdminChat()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl font-bold transition flex items-center space-x-1 border">
                     <span>💬</span><span class="hidden sm:inline">ติดต่อแอดมิน</span>
                 </button>
 
@@ -357,8 +357,8 @@
             <p class="text-xs text-slate-500 mb-4">ข้อมูลจะถูกส่งขึ้นคลาวด์ไปยังหลังบ้านแอดมินเพื่อตรวจสอบ</p>
             <form @submit.prevent="submitVendorRegistration()" class="space-y-3 text-xs sm:text-sm">
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">ชื่อร้านค้า</label>
-                    <input type="text" x-model="vendorForm.storeName" required class="w-full border-2 rounded-xl px-3 py-2 sm:py-2.5 focus:border-matchaDark outline-none bg-slate-50/50">
+                    <label class="block font-bold text-slate-700 mb-1">ชื่อร้านค้า (หรืออีเมลที่ใช้ล็อกอิน)</label>
+                    <input type="text" x-model="vendorForm.storeName" required class="w-full border-2 rounded-xl px-3 py-2 sm:py-2.5 focus:border-matchaDark outline-none bg-slate-50/50" placeholder="เช่น ร้านปลากัดเมืองกำแพง หรือ your-email@gmail.com">
                 </div>
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">ชื่อ-นามสกุลจริง (เจ้าของร้าน)</label>
@@ -366,11 +366,11 @@
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1">เบอร์โทรศัพท์ร้าน <span class="text-slate-400 font-normal">*(แอดมินเห็นเท่านั้น)</span></label>
+                        <label class="block font-bold text-slate-700 mb-1">เบอร์โทรศัพท์ (ใช้ล็อกอินได้) <span class="text-slate-400 font-normal">*(แอดมินเห็น)</span></label>
                         <input type="tel" x-model="vendorForm.phone" required class="w-full border-2 rounded-xl px-3 py-2 sm:py-2.5 focus:border-matchaDark outline-none bg-slate-50/50" placeholder="08XXXXXXXX">
                     </div>
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1">LINE ID / Facebook <span class="text-slate-400 font-normal">*(แอดมินเห็นเท่านั้น)</span></label>
+                        <label class="block font-bold text-slate-700 mb-1">LINE ID / Facebook <span class="text-slate-400 font-normal">*(แอดมินเห็น)</span></label>
                         <input type="text" x-model="vendorForm.contactInfo" required class="w-full border-2 rounded-xl px-3 py-2 sm:py-2.5 focus:border-matchaDark outline-none bg-slate-50/50" placeholder="เช่น @lineid">
                     </div>
                 </div>
@@ -432,23 +432,23 @@
             </form>
         </div>
 
-        <!-- 5. หน้าแชทสดบนคลาวด์ + แถบ Live Mini-Cart สรุปรายการสินค้าด้านบน -->
+        <!-- 5. หน้าแชทสดบนคลาวด์ + Live Mini-Cart -->
         <div x-show="currentTab === 'chat'" class="max-w-2xl mx-auto bg-white rounded-2xl sm:rounded-3xl shadow-pro border border-slate-200 overflow-hidden flex flex-col h-[560px] sm:h-[620px]" x-transition>
             <!-- ส่วนหัวแชท -->
             <div class="bg-matchaDark text-white px-4 py-3 flex justify-between items-center shadow-md">
                 <div class="truncate mr-2">
                     <div class="font-bold text-xs sm:text-sm flex items-center space-x-1">
-                        <span x-text="currentUser === activeChatStore ? 'ลูกค้า: ' + activeChatBuyer : 'ร้านค้า: ' + activeChatStore"></span>
+                        <span x-text="activeChatStore === 'MatchaAdmin' ? '🛡️ แอดมิน MatchaMarket' : (currentUser === activeChatStore ? 'ลูกค้า: ' + activeChatBuyer : 'ร้านค้า: ' + activeChatStore)"></span>
                         <template x-if="currentUser === activeChatStore && activeChatBuyerPhone">
                             <span class="text-emerald-300 text-[11px] font-normal" x-text="'📞 ' + activeChatBuyerPhone"></span>
                         </template>
                     </div>
-                    <div class="text-[10px] text-slate-300">ห้องแชทกลาง MatchaMarket</div>
+                    <div class="text-[10px] text-slate-300">ห้องแชทเรียลไทม์ MatchaMarket</div>
                 </div>
-                <button @click="currentTab = (userRole === 'vendor' ? 'my-shop' : 'home')" class="bg-white/20 hover:bg-white/30 px-3 py-1 rounded-lg text-xs font-bold transition flex-shrink-0">← กลับ</button>
+                <button @click="currentTab = (userRole === 'admin' ? 'admin-panel' : (userRole === 'vendor' ? 'my-shop' : 'home'))" class="bg-white/20 hover:bg-white/30 px-3 py-1 rounded-lg text-xs font-bold transition flex-shrink-0">← กลับ</button>
             </div>
 
-            <!-- 🛒 แถบ Live Mini-Cart (สรุปรายการที่สนใจ + ปุ่มกดยกเลิกสินค้าชิ้นที่ไม่เอา) -->
+            <!-- 🛒 Live Mini-Cart -->
             <template x-if="activeChatItems && activeChatItems.length > 0">
                 <div class="bg-slate-100 border-b border-slate-200 p-2.5 px-3 sm:px-4 flex flex-col space-y-1.5 shadow-inner">
                     <div class="flex justify-between items-center text-[11px]">
@@ -475,13 +475,12 @@
                 </div>
             </template>
             
-            <!-- กล่องแสดงข้อความแชท -->
+            <!-- กล่องแสดงข้อความ -->
             <div class="flex-1 p-3 sm:p-4 overflow-y-auto space-y-3 bg-slate-50 text-xs sm:text-sm" id="chatContainer">
                 <template x-for="msg in chatMessages" :key="msg.timestamp + msg.sender">
                     <div class="flex flex-col" :class="msg.sender === (currentUser || buyerPhoneStored || 'ผู้ซื้อ') ? 'items-end' : 'items-start'">
                         <div class="text-[9px] text-slate-400 mb-0.5 px-1 font-bold" x-text="msg.sender"></div>
                         
-                        <!-- การ์ดสินค้าแนบในแชท -->
                         <template x-if="msg.isProductCard">
                             <div class="bg-white border-2 border-matchaBlue/30 p-2.5 rounded-2xl max-w-[85%] shadow-md flex space-x-2.5 items-center mb-1">
                                 <img :src="msg.productImage || 'https://placehold.co/400x400?text=MatchaMarket'" class="w-12 h-12 object-cover rounded-xl border flex-shrink-0">
@@ -493,7 +492,6 @@
                             </div>
                         </template>
 
-                        <!-- กล่องข้อความทั่วไป -->
                         <template x-if="!msg.isProductCard">
                             <div class="px-3 py-2 rounded-2xl max-w-[85%] shadow-sm leading-relaxed" 
                                  :class="msg.sender === (currentUser || buyerPhoneStored || 'ผู้ซื้อ') ? 'bg-matchaDark text-white' : (msg.sender === 'ระบบ' ? 'bg-emerald-100 text-emerald-900 border border-emerald-300 w-full text-center' : 'bg-white text-slate-800 border')" 
@@ -511,12 +509,12 @@
             </div>
         </div>
 
-        <!-- 6. หน้าแดชบอร์ดแอดมิน (Admin Analytics, สรุปยอดขาย, แบน/ปลดแบน, ลบสินค้า) -->
+        <!-- 6. หน้าแดชบอร์ดแอดมิน (โชว์ข้อมูลล็อกอิน, สรุปยอดขาย, แบน/ปลดแบน, ลบร้านค้า, ลบสินค้า, กล่องข้อความซัพพอร์ต) -->
         <div x-show="currentTab === 'admin-panel'" class="space-y-5 max-w-5xl mx-auto text-xs sm:text-sm" x-transition>
             <div class="flex justify-between items-center border-b pb-3">
                 <div>
                     <h2 class="text-lg sm:text-2xl font-black text-slate-900">⚙️ แดชบอร์ดแอดมิน (Matcha Admin Pro)</h2>
-                    <p class="text-xs text-slate-500">ควบคุมระบบ, วิเคราะห์ยอดขาย, และจัดการร้านค้า</p>
+                    <p class="text-xs text-slate-500">จัดการร้านค้า, ดูข้อมูลการล็อกอิน, และตอบข้อความติดต่อแอดมิน</p>
                 </div>
                 <button @click="currentTab = 'home'" class="bg-slate-200 px-3.5 py-1.5 rounded-xl text-xs font-bold shadow-sm">กลับหน้าเว็บ</button>
             </div>
@@ -541,10 +539,35 @@
                 </div>
             </div>
 
-            <!-- 📊 ตารางสรุปยอดขายและข้อมูลร้านค้า (เฉพาะแอดมินเห็นเบอร์ + แบน/ปลดแบน) -->
+            <!-- 💬 กล่องข้อความผู้ใช้ติดต่อแอดมิน (Support Inbox) -->
+            <div class="bg-white p-5 rounded-3xl shadow-pro border border-slate-200 space-y-3">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-extrabold text-slate-900 text-sm">💬 กล่องข้อความผู้ใช้ติดต่อแอดมิน (Support Inbox)</h3>
+                    <span class="text-xs text-slate-400" x-text="adminSupportChats.length + ' ข้อความ'"></span>
+                </div>
+                <div class="space-y-2 max-h-48 overflow-y-auto">
+                    <template x-for="sChat in adminSupportChats" :key="sChat.id">
+                        <div @click="openExistingChat(sChat)" class="p-3 bg-slate-50 hover:bg-slate-100 rounded-xl border flex justify-between items-center cursor-pointer transition">
+                            <div>
+                                <div class="font-bold text-slate-900 text-xs flex items-center space-x-1">
+                                    <span x-text="'👤 ' + (sChat.buyerName || 'ผู้ใช้')"></span>
+                                    <span class="text-blue-600 text-[11px]" x-text="'(' + (sChat.buyerPhone || 'ไม่มีเบอร์') + ')'"></span>
+                                </div>
+                                <div class="text-[11px] text-slate-500 truncate" x-text="sChat.lastMessage || 'คลิกเพื่อเปิดห้องสนทนา'"></div>
+                            </div>
+                            <span class="bg-matchaDark text-white px-3 py-1 rounded-lg text-xs font-bold">ตอบแชท</span>
+                        </div>
+                    </template>
+                    <template x-if="adminSupportChats.length === 0">
+                        <p class="text-xs text-slate-400 text-center py-3">ไม่มีผู้ใช้ติดต่อเข้ามาในขณะนี้</p>
+                    </template>
+                </div>
+            </div>
+
+            <!-- 📊 ตารางสรุปยอดขาย + ข้อมูลล็อกอิน + แบน/ปลดแบน + ลบร้านค้า -->
             <div class="bg-white p-5 rounded-3xl shadow-pro border border-slate-200/80 space-y-3">
                 <div class="flex justify-between items-center">
-                    <h3 class="font-extrabold text-slate-900 text-sm sm:text-base">📊 ยอดขายและสถิติรายร้านค้า (Vendor Analytics)</h3>
+                    <h3 class="font-extrabold text-slate-900 text-sm sm:text-base">📊 รายชื่อร้านค้าทั้งหมด & ข้อมูลการล็อกอิน (Admin Control)</h3>
                     <span class="text-xs text-slate-400" x-text="approvedVendors.length + ' ร้านค้า'"></span>
                 </div>
                 <div class="overflow-x-auto">
@@ -552,43 +575,48 @@
                         <thead class="bg-slate-50 text-slate-500 border-b">
                             <tr>
                                 <th class="p-2.5">ชื่อร้าน / เจ้าของ</th>
-                                <th class="p-2.5">เบอร์โทร & ติดต่อ (Admin Only)</th>
-                                <th class="p-2.5 text-center">ลงขาย</th>
-                                <th class="p-2.5 text-center">ขายแล้ว</th>
+                                <th class="p-2.5">ข้อมูลที่ใช้ล็อกอิน (Login ID)</th>
+                                <th class="p-2.5">เบอร์โทร & ติดต่อ</th>
+                                <th class="p-2.5 text-center">ลงขาย / ขายแล้ว</th>
                                 <th class="p-2.5 text-right">ยอดขายรวม</th>
                                 <th class="p-2.5 text-center">สถานะ</th>
-                                <th class="p-2.5 text-center">จัดการ</th>
+                                <th class="p-2.5 text-center">จัดการร้านค้า</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y">
                             <template x-for="v in approvedVendors" :key="v.firebaseId || v.storeName">
                                 <tr class="hover:bg-slate-50 transition">
                                     <td class="p-2.5">
-                                        <div class="font-bold text-slate-900 flex items-center space-x-1">
-                                            <span x-text="v.storeName"></span>
-                                            <template x-if="v.isBanned">
-                                                <span class="bg-red-100 text-red-600 text-[10px] px-1.5 py-0.5 rounded font-bold">ถูกแบน</span>
-                                            </template>
-                                        </div>
+                                        <div class="font-bold text-slate-900" x-text="v.storeName"></div>
                                         <div class="text-[11px] text-slate-400" x-text="v.ownerName"></div>
+                                    </td>
+                                    <!-- โชว์ข้อมูลการล็อกอิน -->
+                                    <td class="p-2.5">
+                                        <span class="bg-slate-100 text-matchaDark font-mono font-bold px-2 py-0.5 rounded text-[11px] border border-slate-200" x-text="v.storeName"></span>
+                                        <template x-if="v.phone">
+                                            <div class="text-[10px] text-slate-500 mt-0.5" x-text="'หรือเบอร์: ' + v.phone"></div>
+                                        </template>
                                     </td>
                                     <td class="p-2.5">
                                         <div class="font-bold text-slate-800" x-text="v.phone || '-'"></div>
                                         <div class="text-[11px] text-blue-600" x-text="v.contactInfo || '-'"></div>
                                     </td>
-                                    <td class="p-2.5 text-center font-bold" x-text="getStoreProductsCount(v.storeName)"></td>
-                                    <td class="p-2.5 text-center font-bold text-emerald-600" x-text="getStoreSoldCount(v.storeName)"></td>
+                                    <td class="p-2.5 text-center font-bold" x-text="getStoreProductsCount(v.storeName) + ' / ' + getStoreSoldCount(v.storeName)"></td>
                                     <td class="p-2.5 text-right font-black text-blue-600" x-text="'฿' + getStoreSalesAmount(v.storeName).toLocaleString()"></td>
                                     <td class="p-2.5 text-center">
                                         <span class="px-2 py-0.5 rounded-full text-[10px] font-bold" :class="v.isBanned ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-700'" x-text="v.isBanned ? 'ถูกระงับ' : 'ปกติ'"></span>
                                     </td>
+                                    <!-- ปุ่ม แบน / ปลดแบน / ลบร้านค้า -->
                                     <td class="p-2.5 text-center">
-                                        <template x-if="!v.isBanned">
-                                            <button @click="toggleBanVendor(v, true)" class="bg-red-50 hover:bg-red-100 text-red-600 px-2.5 py-1 rounded-lg font-bold text-[11px] transition shadow-sm">🚫 แบน</button>
-                                        </template>
-                                        <template x-if="v.isBanned">
-                                            <button @click="toggleBanVendor(v, false)" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-lg font-bold text-[11px] transition shadow-sm">✅ ปลดแบน</button>
-                                        </template>
+                                        <div class="flex items-center justify-center space-x-1">
+                                            <template x-if="!v.isBanned">
+                                                <button @click="toggleBanVendor(v, true)" class="bg-amber-50 hover:bg-amber-100 text-amber-700 px-2 py-1 rounded-lg font-bold text-[10px] transition border border-amber-200">🚫 แบน</button>
+                                            </template>
+                                            <template x-if="v.isBanned">
+                                                <button @click="toggleBanVendor(v, false)" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2 py-1 rounded-lg font-bold text-[10px] transition">✅ ปลดแบน</button>
+                                            </template>
+                                            <button @click="adminDeleteVendor(v)" class="bg-red-50 hover:bg-red-100 text-red-600 px-2 py-1 rounded-lg font-bold text-[10px] transition border border-red-200" title="ลบร้านค้านี้ถาวร">🗑️ ลบร้าน</button>
+                                        </div>
                                     </td>
                                 </tr>
                             </template>
@@ -597,7 +625,7 @@
                 </div>
             </div>
 
-            <!-- 🔔 คำขอเปิดร้านค้าใหม่ (รอตรวจสอบ) -->
+            <!-- 🔔 คำขอเปิดร้านค้าใหม่ (แสดงข้อมูลการล็อกอิน) -->
             <div class="bg-white p-5 rounded-3xl shadow-pro border border-slate-200">
                 <h3 class="font-extrabold text-slate-800 mb-3 text-sm">🔔 คำขอเปิดร้านค้าใหม่ (รอตรวจสอบ)</h3>
                 <div class="space-y-2.5">
@@ -605,8 +633,13 @@
                         <div class="p-3.5 border-2 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 bg-amber-50/70 text-xs">
                             <div>
                                 <div class="font-bold text-slate-900 text-sm" x-text="v.storeName"></div>
-                                <div class="text-slate-600 mt-0.5" x-text="'เจ้าของ: ' + v.ownerName + ' | โทร: ' + (v.phone || '-') + ' | ติดต่อ: ' + (v.contactInfo || '-')"></div>
-                                <div class="text-slate-500 text-[11px]" x-text="'บัญชี: ' + v.bankAcc + ' (' + v.bankAccName + ')'"></div>
+                                <div class="text-slate-600 mt-0.5">
+                                    <span class="font-bold">ข้อมูลล็อกอิน:</span> <span class="font-mono bg-white px-1.5 py-0.5 rounded border" x-text="v.storeName"></span> | 
+                                    <span>เจ้าของ: </span><span x-text="v.ownerName"></span> | 
+                                    <span>โทร: </span><span class="font-bold text-blue-600" x-text="v.phone || '-'"></span> | 
+                                    <span>ติดต่อ: </span><span x-text="v.contactInfo || '-'"></span>
+                                </div>
+                                <div class="text-slate-500 text-[11px] mt-0.5" x-text="'บัญชีโอน: ' + v.bankAcc + ' (' + v.bankAccName + ')'"></div>
                             </div>
                             <div class="space-x-1.5 flex self-end sm:self-auto">
                                 <button @click="approveVendor(v)" class="bg-green-500 text-white px-3.5 py-1.5 rounded-xl font-bold shadow text-xs">อนุมัติ Verified</button>
@@ -620,10 +653,10 @@
                 </div>
             </div>
 
-            <!-- 🗑️ แอดมินจัดการลบสินค้าทั้งหมดบนคลาวด์ -->
+            <!-- 🗑️ จัดการลบสินค้าทั้งหมดบนคลาวด์ -->
             <div class="bg-white p-5 rounded-3xl shadow-pro border border-slate-200">
                 <h3 class="font-extrabold text-slate-800 mb-3 text-sm">🗑️ จัดการสินค้าทั้งหมดบนระบบ (แอดมินสามารถลบได้)</h3>
-                <div class="space-y-2 max-h-72 overflow-y-auto pr-1">
+                <div class="space-y-2 max-h-64 overflow-y-auto pr-1">
                     <template x-for="item in products" :key="item.firebaseId">
                         <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 flex justify-between items-center text-xs">
                             <div class="flex items-center space-x-2.5 truncate mr-2">
@@ -651,39 +684,14 @@
 
     </main>
 
-    <!-- Modal ติดต่อแอดมิน -->
-    <div x-show="showContactAdminModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-md flex items-center justify-center z-50 p-4" x-transition>
-        <div class="bg-white p-6 rounded-3xl w-full max-w-sm shadow-2xl relative text-sm border text-center" @click.away="showContactAdminModal = false">
-            <button @click="showContactAdminModal = false" class="absolute top-4 right-4 text-slate-400 font-bold">✕</button>
-            <div class="w-14 h-14 bg-blue-50 text-matchaAccent text-2xl rounded-2xl flex items-center justify-center mx-auto mb-3">🛡️</div>
-            <h3 class="text-lg font-extrabold text-slate-900 mb-1">ศูนย์ช่วยเหลือ MatchaMarket</h3>
-            <p class="text-xs text-slate-500 mb-4">ติดต่อแอดมินเพื่อสอบถาม แจ้งปัญหา หรือปลดล็อคบัญชี</p>
-            <div class="space-y-2.5 text-xs text-left bg-slate-50 p-4 rounded-2xl border border-slate-200 mb-4">
-                <div class="flex items-center justify-between">
-                    <span class="font-bold text-slate-600">LINE Official:</span>
-                    <span class="font-bold text-matchaDark">@matchamarket</span>
-                </div>
-                <div class="flex items-center justify-between">
-                    <span class="font-bold text-slate-600">โทรศัพท์:</span>
-                    <span class="font-bold text-matchaDark">08X-XXX-XXXX</span>
-                </div>
-                <div class="flex items-center justify-between">
-                    <span class="font-bold text-slate-600">เวลาทำการ:</span>
-                    <span class="font-bold text-emerald-600">24 ชั่วโมง (คลาวด์สด)</span>
-                </div>
-            </div>
-            <button @click="showContactAdminModal = false" class="w-full bg-matchaDark text-white py-2.5 rounded-xl font-bold text-xs shadow">ปิดหน้าต่าง</button>
-        </div>
-    </div>
-
     <!-- Modal กรอกข้อมูลลูกค้าด่วน -->
     <div x-show="showBuyerModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-md flex items-center justify-center z-50 p-4" x-transition>
         <div class="bg-white p-6 rounded-2xl sm:rounded-3xl w-full max-w-sm shadow-2xl relative text-sm border" @click.away="showBuyerModal = false">
             <button @click="showBuyerModal = false" class="absolute top-4 right-4 text-slate-400 font-bold">✕</button>
             <div class="text-center mb-4">
                 <div class="text-3xl mb-1">💬</div>
-                <h3 class="text-lg font-extrabold text-slate-900">เริ่มพูดคุยกับร้านค้า</h3>
-                <p class="text-xs text-slate-500 mt-1">ระบุชื่อและเบอร์โทรเพื่อติดต่อร้านค้า (กรอกเพียงครั้งแรกครั้งเดียว)</p>
+                <h3 class="text-lg font-extrabold text-slate-900">เริ่มพูดคุยข้อความ</h3>
+                <p class="text-xs text-slate-500 mt-1">ระบุชื่อและเบอร์โทรเพื่อติดต่อ (กรอกเพียงครั้งแรกครั้งเดียว)</p>
             </div>
             <form @submit.prevent="submitBuyerInfoAndStartChat()" class="space-y-3">
                 <div>
@@ -706,8 +714,8 @@
         <div class="bg-white p-6 rounded-2xl sm:rounded-3xl w-full max-w-sm shadow-2xl relative text-sm border">
             <button @click="showLoginModal = false" class="absolute top-4 right-4 text-slate-400 font-bold">✕</button>
             <h3 class="text-lg font-extrabold text-slate-900 mb-1">เข้าสู่ระบบร้านค้า</h3>
-            <p class="text-xs text-slate-500 mb-4">กรอกชื่อร้านค้าเพื่อจัดการสินค้า</p>
-            <input type="text" x-model="loginInput" placeholder="ชื่อร้านค้าของคุณ" class="w-full border-2 rounded-xl px-4 py-2.5 text-xs mb-3 focus:border-matchaDark outline-none font-bold text-center bg-slate-50">
+            <p class="text-xs text-slate-500 mb-4">กรอกชื่อร้านค้าหรืออีเมลที่ลงทะเบียน</p>
+            <input type="text" x-model="loginInput" placeholder="ชื่อร้านค้า หรือ อีเมล" class="w-full border-2 rounded-xl px-4 py-2.5 text-xs mb-3 focus:border-matchaDark outline-none font-bold text-center bg-slate-50">
             <div class="space-y-2">
                 <button @click="loginAsVendor()" class="w-full bg-matchaDark hover:bg-matchaBlue text-white py-2.5 rounded-xl text-xs font-bold transition shadow-md">เข้าสู่ระบบ (ผู้ขาย)</button>
                 <button @click="goToVendorRegister()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-xl text-xs font-bold transition shadow-md">สมัครเปิดร้านค้า Verified</button>
@@ -740,9 +748,9 @@
                 showLoginModal: false,
                 showProductModal: false,
                 showBuyerModal: false,
-                showContactAdminModal: false,
                 selectedProduct: null,
                 pendingProductForChat: null,
+                isContactingAdmin: false,
                 isUploading: false,
                 
                 currentUser: localStorage.getItem('matcha_user') || null,
@@ -804,7 +812,6 @@
                     onSnapshot(collection(db, "approvedVendors"), (snapshot) => {
                         this.approvedVendors = snapshot.docs.map(doc => ({ firebaseId: doc.id, ...doc.data() }));
                         
-                        // ตรวจสอบสถานะตัวเอง และสถานะการโดนแบน
                         if (this.currentUser && this.userRole === 'vendor') {
                             let found = this.approvedVendors.find(v => v.storeName.toLowerCase() === this.currentUser.toLowerCase());
                             if (found) {
@@ -836,7 +843,12 @@
                     this.unreadCountForMe = this.myChatRooms.filter(c => c.unreadForVendor === true).length;
                 },
 
-                // Analytics คำนวณยอด
+                // แชทที่ติดต่อมาหาแอดมิน
+                get adminSupportChats() {
+                    return this.allChats.filter(c => c.storeName === 'MatchaAdmin');
+                },
+
+                // Analytics
                 get totalUsersCount() {
                     let uniqueBuyers = new Set();
                     this.allChats.forEach(c => { if(c.buyerPhone) uniqueBuyers.add(c.buyerPhone); });
@@ -874,6 +886,14 @@
                     }
                 },
 
+                async adminDeleteVendor(v) {
+                    if (confirm(`⚠️ คำเตือน: คุณต้องการลบร้านค้า "${v.storeName}" ออกจากระบบอย่างถาวรใช่หรือไม่?`)) {
+                        const { doc, deleteDoc } = window.firebaseFns;
+                        await deleteDoc(doc(window.db, "approvedVendors", v.firebaseId));
+                        this.showAlert(`ลบร้านค้า "${v.storeName}" ออกจากระบบสำเร็จ`);
+                    }
+                },
+
                 get myProducts() {
                     if (!this.currentUser) return [];
                     return this.products.filter(p => p.storeName && p.storeName.toLowerCase() === this.currentUser.toLowerCase());
@@ -898,7 +918,6 @@
                         items: this.activeChatItems
                     });
 
-                    // ส่งข้อความแจ้งเตือนในแชทว่ายกเลิกสินค้าชิ้นนี้
                     await addDoc(collection(db, `chats/${this.activeChatId}/messages`), {
                         sender: 'ระบบ',
                         text: `⚠️ ลูกค้าขอยกเลิกความสนใจ: "${targetItem.title}" (฿${Number(targetItem.price).toLocaleString()})`,
@@ -1016,8 +1035,9 @@
                     this.currentUser = this.loginInput;
                     this.userRole = 'vendor';
                     
-                    let found = this.approvedVendors.find(v => v.storeName.toLowerCase() === this.currentUser.toLowerCase());
+                    let found = this.approvedVendors.find(v => v.storeName.toLowerCase() === this.currentUser.toLowerCase() || (v.phone && v.phone === this.currentUser));
                     if (found) {
+                        this.currentUser = found.storeName;
                         if (found.isBanned) {
                             this.vendorStatus = 'banned';
                             this.showAlert('⚠️ บัญชีร้านค้าของคุณถูกระงับการใช้งาน กรุณาติดต่อแอดมิน');
@@ -1027,7 +1047,7 @@
                             this.showAlert('เข้าสู่ระบบสำเร็จ!');
                         }
                     } else {
-                        let pendingFound = this.pendingVendors.find(v => v.storeName.toLowerCase() === this.currentUser.toLowerCase());
+                        let pendingFound = this.pendingVendors.find(v => v.storeName.toLowerCase() === this.currentUser.toLowerCase() || (v.phone && v.phone === this.currentUser));
                         this.vendorStatus = pendingFound ? 'pending' : 'none';
                         this.showAlert('เข้าสู่ระบบสำเร็จ! (สถานะ: รอดำเนินการอนุมัติ)');
                     }
@@ -1166,6 +1186,19 @@
                     }
                 },
 
+                // 💬 ติดต่อแอดมินสดภายในเว็บ
+                contactAdminChat() {
+                    this.isContactingAdmin = true;
+                    let dummyItem = {
+                        title: 'สอบถาม / ขอความช่วยเหลือจากแอดมิน',
+                        price: 0,
+                        storeName: 'MatchaAdmin',
+                        bankAccName: 'MatchaMarket Official',
+                        images: ['https://placehold.co/400x400?text=Admin+Help']
+                    };
+                    this.handleBuyerChatClick(dummyItem);
+                },
+
                 handleBuyerChatClick(item) {
                     if (item.status === 'sold') {
                         this.showAlert('❌ สินค้านี้ขายแล้ว ไม่สามารถติดต่อสั่งซื้อได้');
@@ -1174,7 +1207,7 @@
 
                     if (this.currentUser || (this.buyerNameStored && this.buyerPhoneStored)) {
                         let bName = this.currentUser || this.buyerNameStored;
-                        let bPhone = this.buyerPhoneStored || 'ร้านค้า';
+                        let bPhone = this.buyerPhoneStored || 'ผู้ใช้';
                         this.startChatProcess(item, bName, bPhone);
                     } else {
                         this.pendingProductForChat = item;
@@ -1228,7 +1261,6 @@
                             this.activeChatId = chatDoc.id;
                             itemsList = chatDoc.data().items || [];
                             
-                            // ตรวจสอบว่ามีสินค้านี้อยู่แล้วหรือไม่
                             let exists = itemsList.find(i => i.title === item.title && !i.cancelled);
                             if (!exists) {
                                 itemsList.push(newItemObj);
@@ -1241,35 +1273,38 @@
                                 buyerPhone: buyerPhone,
                                 items: itemsList,
                                 unreadForVendor: true,
-                                lastMessage: `สนใจสินค้า: ${item.title}`,
+                                lastMessage: `ทักแชท: ${item.title}`,
                                 updatedAt: Date.now()
                             });
                             this.activeChatId = newChatRef.id;
 
                             await addDoc(collection(db, `chats/${this.activeChatId}/messages`), {
                                 sender: 'ระบบ',
-                                text: `🛡️ ปลอดภัย Verified: ตรวจสอบชื่อบัญชีผู้รับโอน (${item.bankAccName}) ให้ตรงกับร้านค้าก่อนโอนเงิน`,
+                                text: item.storeName === 'MatchaAdmin' 
+                                    ? `🛡️ ศูนย์ช่วยเหลือแอดมิน: สอบถามข้อมูล แจ้งปัญหา หรือปรึกษาการใช้งานได้ตลอด 24 ชั่วโมงครับ` 
+                                    : `🛡️ ปลอดภัย Verified: ตรวจสอบชื่อบัญชีผู้รับโอน (${item.bankAccName}) ให้ตรงกับร้านค้าก่อนโอนเงิน`,
                                 timestamp: Date.now()
                             });
                         }
 
                         this.activeChatItems = itemsList;
 
-                        // แนบการ์ดสินค้า
-                        await addDoc(collection(db, `chats/${this.activeChatId}/messages`), {
-                            sender: buyerPhone,
-                            isProductCard: true,
-                            productTitle: item.title,
-                            productPrice: item.price,
-                            productImage: item.images && item.images[0] ? item.images[0] : '',
-                            timestamp: Date.now()
-                        });
+                        if (item.price > 0) {
+                            await addDoc(collection(db, `chats/${this.activeChatId}/messages`), {
+                                sender: buyerPhone,
+                                isProductCard: true,
+                                productTitle: item.title,
+                                productPrice: item.price,
+                                productImage: item.images && item.images[0] ? item.images[0] : '',
+                                timestamp: Date.now()
+                            });
+                        }
 
                         await updateDoc(doc(db, "chats", this.activeChatId), {
                             items: itemsList,
                             unreadForVendor: true,
                             buyerName: buyerName,
-                            lastMessage: `สนใจสินค้า: ${item.title}`,
+                            lastMessage: `ทักแชท: ${item.title}`,
                             updatedAt: Date.now()
                         });
 
@@ -1288,7 +1323,7 @@
                     this.activeChatId = chatRoom.id;
                     this.activeChatItems = chatRoom.items || [];
 
-                    if (this.currentUser && this.currentUser.toLowerCase() === chatRoom.storeName.toLowerCase()) {
+                    if (this.currentUser && (this.currentUser.toLowerCase() === chatRoom.storeName.toLowerCase() || this.userRole === 'admin')) {
                         const { doc, updateDoc } = window.firebaseFns;
                         await updateDoc(doc(window.db, "chats", chatRoom.id), { unreadForVendor: false });
                     }
@@ -1302,7 +1337,6 @@
                     const { collection, onSnapshot, query, orderBy, doc } = window.firebaseFns;
                     const db = window.db;
 
-                    // ฟังการเปลี่ยนแปลงของห้องแชท (เพื่ออัปเดต Live Mini-Cart)
                     onSnapshot(doc(db, "chats", chatId), (docSnap) => {
                         if (docSnap.exists()) {
                             this.activeChatItems = docSnap.data().items || [];
@@ -1324,7 +1358,9 @@
                     let textToSend = this.newMessage;
                     this.newMessage = '';
 
-                    let senderIdentifier = this.currentUser || this.buyerPhoneStored || 'ผู้ซื้อ';
+                    let senderIdentifier = this.userRole === 'admin' 
+                        ? '🛡️ แอดมิน MatchaMarket' 
+                        : (this.currentUser || this.buyerPhoneStored || 'ผู้ซื้อ');
 
                     const { collection, addDoc, doc, updateDoc } = window.firebaseFns;
                     const db = window.db;
@@ -1336,7 +1372,7 @@
                             timestamp: Date.now()
                         });
 
-                        let isBuyer = senderIdentifier !== this.activeChatStore;
+                        let isBuyer = (this.userRole !== 'admin' && senderIdentifier !== this.activeChatStore);
                         await updateDoc(doc(db, "chats", this.activeChatId), {
                             lastMessage: textToSend,
                             unreadForVendor: isBuyer,
