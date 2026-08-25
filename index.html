@@ -485,6 +485,15 @@
 
                     onSnapshot(collection(db, "approvedVendors"), (snapshot) => {
                         this.approvedVendors = snapshot.docs.map(doc => ({ firebaseId: doc.id, ...doc.data() }));
+                        
+                        // ตรวจสอบสถานะตัวเองแบบเรียลไทม์ ถ้าถูกอนุมัติแล้วปรับสถานะเป็น approved ทันที
+                        if (this.currentUser && this.userRole === 'vendor') {
+                            let found = this.approvedVendors.find(v => v.storeName.toLowerCase() === this.currentUser.toLowerCase());
+                            if (found) {
+                                this.vendorStatus = 'approved';
+                                localStorage.setItem('matcha_status', 'approved');
+                            }
+                        }
                     });
                 },
 
