@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Matcha Market (มัจฉามาเก็ต) - ตลาดซื้อ-ขายสัตว์น้ำและสิ่งมีชีวิตมืออาชีพ</title>
+    <title>MatchaMarket (มัจฉามาเก็ต) - ตลาดซื้อ-ขายสัตว์น้ำและสิ่งมีชีวิตมืออาชีพ</title>
     
     <!-- 🔤 Google Font: Prompt -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,7 +15,7 @@
     <!-- 🌐 Firebase SDK & Real-time Configuration -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, onSnapshot, query, orderBy, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, setDoc, onSnapshot, query, orderBy, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAty0GHQuQg40tisnafT9-GK5olaVmrcPg",
@@ -30,7 +30,7 @@
         const db = getFirestore(app);
 
         window.db = db;
-        window.firebaseFns = { collection, addDoc, getDocs, doc, deleteDoc, updateDoc, onSnapshot, query, orderBy, where, serverTimestamp };
+        window.firebaseFns = { collection, addDoc, getDocs, doc, deleteDoc, updateDoc, setDoc, onSnapshot, query, orderBy, where, serverTimestamp };
     </script>
 
     <script>
@@ -164,7 +164,7 @@
             </div>
         </header>
 
-        <!-- 📢 แบนเนอร์ประกาศวิ่ง -->
+        <!-- 📢 แบนเนอร์ประกาศวิ่ง (ซิงค์แบบเรียลไทม์จากคลาวด์) -->
         <div class="bg-gradient-to-r from-oceanAbyss via-oceanDark to-oceanAbyss text-aquaGlow text-[11px] sm:text-xs py-2 font-bold shadow-inner overflow-hidden border-b border-oceanNavy/40">
             <div class="marquee-container flex items-center">
                 <div class="animate-marquee flex items-center space-x-16">
@@ -174,7 +174,7 @@
             </div>
         </div>
 
-        <!-- ⚠️ แถบเตือนร้านค้าที่โดนแบน (กระพริบช้าๆ เด่นชัด พร้อมบอกเหตุผล) -->
+        <!-- ⚠️ แถบเตือนร้านค้าที่โดนแบน -->
         <template x-if="vendorStatus === 'banned'">
             <div class="bg-gradient-to-r from-red-700 via-red-600 to-red-800 text-white py-2.5 px-4 text-xs font-bold shadow-lg flex flex-wrap items-center justify-between gap-2 border-b-2 border-red-900 animate-slow-glow">
                 <div class="flex items-center space-x-2">
@@ -322,7 +322,7 @@
                 </div>
             </div>
 
-            <!-- 2. หน้า "ร้านของฉัน" (จัดการสต็อก + กล่องข้อความลูกค้า) -->
+            <!-- 2. หน้า "ร้านของฉัน" -->
             <div x-show="currentTab === 'my-shop'" class="max-w-4xl mx-auto space-y-4" x-transition>
                 <div class="glass-card p-4 rounded-3xl shadow-sm border border-slate-200 flex justify-between items-center">
                     <div>
@@ -386,7 +386,7 @@
                     </div>
                 </div>
 
-                <!-- แท็บที่ 2: ข้อความลูกค้า (แชทไม่หายแม้โดนแบน) -->
+                <!-- แท็บที่ 2: ข้อความลูกค้า -->
                 <div x-show="myShopTab === 'chats'" class="space-y-2">
                     <template x-for="chatRoom in myChatRooms" :key="chatRoom.id">
                         <div @click="openExistingChat(chatRoom)" class="p-3 bg-white hover:bg-slate-50 rounded-2xl border cursor-pointer flex justify-between items-center transition shadow-sm" :class="chatRoom.unreadForVendor ? 'border-aquaCyan bg-blue-50/40' : 'border-slate-200'">
@@ -580,7 +580,7 @@
                     </div>
                 </template>
                 
-                <!-- กล่องแสดงข้อความ (แบ่งฝั่งชัดเจน) -->
+                <!-- กล่องแสดงข้อความ -->
                 <div class="flex-1 p-3 sm:p-4 overflow-y-auto space-y-3 bg-slate-50/50 text-xs sm:text-sm" id="chatContainer">
                     <template x-for="msg in chatMessages" :key="msg.timestamp + msg.sender">
                         <div class="flex flex-col" :class="msg.sender === (currentUser || buyerPhoneStored || 'ผู้ซื้อ') ? 'items-end' : (msg.sender === 'ระบบ' ? 'items-center' : 'items-start')">
@@ -622,7 +622,7 @@
                                 </div>
                             </template>
 
-                            <!-- ข้อความทั่วไป: แบ่งฝั่งสีและกรอบชัดเจน -->
+                            <!-- ข้อความทั่วไป -->
                             <template x-if="!msg.isProductCard && !msg.isPaymentCard && !msg.isImage">
                                 <div class="px-3.5 py-2.5 max-w-[82%] shadow-sm leading-relaxed break-words whitespace-pre-wrap" 
                                      :class="msg.sender === (currentUser || buyerPhoneStored || 'ผู้ซื้อ') 
@@ -659,7 +659,7 @@
                 </div>
             </div>
 
-            <!-- 6. หน้าแดชบอร์ดแอดมิน (พร้อมศูนย์ควบคุมหน้าเว็บ) -->
+            <!-- 6. หน้าแดชบอร์ดแอดมิน -->
             <div x-show="currentTab === 'admin-panel'" class="space-y-4 max-w-5xl mx-auto text-xs sm:text-sm" x-transition>
                 <div class="flex justify-between items-center border-b pb-2.5">
                     <div>
@@ -669,7 +669,7 @@
                     <button @click="currentTab = 'home'" class="bg-slate-200 px-3 py-1.5 rounded-xl text-xs font-bold shadow-sm">กลับหน้าเว็บ</button>
                 </div>
 
-                <!-- 🎛️ ศูนย์ควบคุมหน้าเว็บ (Admin Command Bar) -->
+                <!-- 🎛️ ศูนย์ควบคุมประกาศด่วนหน้าเว็บ -->
                 <div class="glass-card p-4 rounded-3xl border border-slate-200 space-y-3">
                     <h3 class="font-extrabold text-slate-900 text-xs sm:text-sm flex items-center space-x-1.5">
                         <span>🎛️</span><span>ศูนย์ควบคุมประกาศด่วนหน้าเว็บ</span>
@@ -984,7 +984,7 @@
                 buyerPhoneStored: localStorage.getItem('matcha_buyer_phone') || '',
                 buyerForm: { name: '', phone: '' },
                 
-                announcementText: localStorage.getItem('matcha_announcement') || 'ระบบยืนยันตัวตนปลอดภัยสูงสุด: โปรดตรวจสอบชื่อบัญชีธนาคารให้ตรงกับร้านค้าที่มีเครื่องหมาย Verified ก่อนโอนเงินทุกครั้ง',
+                announcementText: 'ระบบยืนยันตัวตนปลอดภัยสูงสุด: โปรดตรวจสอบชื่อบัญชีธนาคารให้ตรงกับร้านค้าที่มีเครื่องหมาย Verified ก่อนโอนเงินทุกครั้ง',
                 tempAnnouncement: '',
                 
                 showCustomAlert: false,
@@ -1021,8 +1021,15 @@
                 },
 
                 initRealtimeSync() {
-                    const { collection, onSnapshot, query, orderBy } = window.firebaseFns;
+                    const { collection, onSnapshot, query, orderBy, doc } = window.firebaseFns;
                     const db = window.db;
+
+                    // ซิงค์ข้อความประกาศวิ่งหน้าเว็บจากคลาวด์แบบ Real-time
+                    onSnapshot(doc(db, "settings", "global"), (docSnap) => {
+                        if (docSnap.exists() && docSnap.data().announcement) {
+                            this.announcementText = docSnap.data().announcement;
+                        }
+                    });
 
                     onSnapshot(query(collection(db, "products"), orderBy("id", "desc")), (snapshot) => {
                         this.products = snapshot.docs.map(doc => ({ firebaseId: doc.id, ...doc.data() }));
@@ -1178,12 +1185,26 @@
                     this.tempAnnouncement = text;
                 },
 
-                updateAnnouncement() {
+                // อัปเดตข้อความประกาศวิ่งขึ้นคลาวด์เพื่อให้ทุกเครื่องเห็นตรงกันทันที
+                async updateAnnouncement() {
                     if(!this.tempAnnouncement.trim()) return;
-                    this.announcementText = this.tempAnnouncement;
-                    localStorage.setItem('matcha_announcement', this.announcementText);
-                    this.tempAnnouncement = '';
-                    this.showAlert('อัปเดตประกาศวิ่งหน้าเว็บสำเร็จ!');
+                    const newText = this.tempAnnouncement.trim();
+                    const { doc, setDoc } = window.firebaseFns;
+                    const db = window.db;
+
+                    try {
+                        await setDoc(doc(db, "settings", "global"), {
+                            announcement: newText,
+                            updatedAt: Date.now()
+                        }, { merge: true });
+
+                        this.announcementText = newText;
+                        this.tempAnnouncement = '';
+                        this.showAlert('อัปเดตประกาศขึ้นคลาวด์สำเร็จ ทุกเครื่องจะเห็นข้อความใหม่ทันที!');
+                    } catch (err) {
+                        console.error(err);
+                        this.showAlert('❌ ไม่สามารถอัปเดตประกาศได้');
+                    }
                 },
 
                 get myProducts() {
