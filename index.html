@@ -9,7 +9,7 @@
     <!-- 🌐 Firebase SDK & Real-time Configuration -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, onSnapshot, query, orderBy, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAty0GHQuQg40tisnafT9-GK5olaVmrcPg",
@@ -23,7 +23,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         window.db = db;
-        window.firebaseFns = { collection, addDoc, getDocs, doc, deleteDoc, updateDoc, onSnapshot, query, orderBy };
+        window.firebaseFns = { collection, addDoc, getDocs, doc, deleteDoc, updateDoc, onSnapshot, query, orderBy, where, serverTimestamp };
     </script>
 
     <script>
@@ -70,51 +70,54 @@
 </head>
 <body class="bg-gradient-to-br from-slate-100 via-matchaBg to-slate-200 text-slate-800 font-sans antialiased min-h-screen" x-data="marketplaceApp()">
 
-    <!-- 🌐 Header ระดับโปร -->
-    <header class="bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-50 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between gap-2 sm:gap-4">
-            <div class="flex items-center space-x-2 sm:space-x-3 cursor-pointer flex-shrink-0 group" @click="currentTab = 'home'; selectedCategory = 'all'">
-                <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-matchaDark to-matchaBlue flex items-center justify-center text-white font-black text-lg sm:text-xl shadow-lg group-hover:scale-105 transition">🐟</div>
+    <!-- 🌐 Header รองรับมือถือ ไม่ล้นจอ -->
+    <header class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-3 sm:px-4 h-16 sm:h-20 flex items-center justify-between gap-2">
+            <!-- โลโก้ -->
+            <div class="flex items-center space-x-2 cursor-pointer flex-shrink-0" @click="currentTab = 'home'; selectedCategory = 'all'">
+                <div class="w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-gradient-to-tr from-matchaDark to-matchaBlue flex items-center justify-center text-white font-black text-sm sm:text-xl shadow-md">🐟</div>
                 <div>
-                    <span class="text-xl sm:text-2xl font-black tracking-tight text-matchaDark">Matcha<span class="text-matchaPro">Market</span></span>
+                    <span class="text-base sm:text-2xl font-black tracking-tight text-matchaDark leading-none">Matcha<span class="text-matchaPro">Market</span></span>
                     <span class="hidden sm:block text-[10px] text-slate-400 font-bold tracking-widest uppercase">มัจฉามาเก็ต (Cloud Real-time)</span>
                 </div>
             </div>
             
-            <div class="flex-1 max-w-xl hidden md:flex items-center bg-slate-50 border-2 border-slate-200/80 rounded-2xl overflow-hidden focus-within:border-matchaDark focus-within:bg-white transition shadow-inner">
-                <input type="text" x-model="searchKeyword" placeholder="ค้นหาสินค้าบนคลาวด์..." class="w-full px-4 py-3 text-sm bg-transparent outline-none">
-                <button class="bg-matchaDark text-white px-6 py-3 flex items-center justify-center hover:bg-matchaBlue transition font-bold text-sm">ค้นหา</button>
+            <!-- ช่องค้นหา (แสดงเฉพาะจอคอม/แท็บเล็ต) -->
+            <div class="flex-1 max-w-md hidden md:flex items-center bg-slate-50 border-2 border-slate-200/80 rounded-2xl overflow-hidden focus-within:border-matchaDark focus-within:bg-white transition shadow-inner">
+                <input type="text" x-model="searchKeyword" placeholder="ค้นหาสินค้าบนคลาวด์..." class="w-full px-4 py-2.5 text-xs sm:text-sm bg-transparent outline-none">
+                <button class="bg-matchaDark text-white px-5 py-2.5 flex items-center justify-center hover:bg-matchaBlue transition font-bold text-xs">ค้นหา</button>
             </div>
 
-            <div class="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
+            <!-- กลุ่มปุ่มขวาบน ย่อขนาดบนมือถือ -->
+            <div class="flex items-center space-x-1.5 sm:space-x-2 flex-shrink-0">
                 <template x-if="!currentUser">
-                    <button @click="showLoginModal = true" class="text-xs sm:text-sm font-bold text-slate-700 hover:text-matchaDark px-3 sm:px-4 py-2 sm:py-2.5 rounded-2xl border-2 border-slate-200 hover:bg-slate-50 transition shadow-sm">
+                    <button @click="showLoginModal = true" class="text-xs sm:text-sm font-bold text-slate-700 hover:text-matchaDark px-3 py-1.5 sm:px-4 sm:py-2.5 rounded-xl sm:rounded-2xl border-2 border-slate-200 hover:bg-slate-50 transition shadow-sm">
                         เข้าสู่ระบบ
                     </button>
                 </template>
                 
                 <template x-if="currentUser">
-                    <div class="flex items-center space-x-2">
-                        <span class="text-xs bg-slate-100 px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-2xl font-bold text-slate-700 hidden sm:inline-block border shadow-inner" x-text="'👤 ' + currentUser"></span>
+                    <div class="flex items-center space-x-1 sm:space-x-2">
+                        <span class="text-[11px] sm:text-xs bg-slate-100 px-2 sm:px-3 py-1.5 sm:py-2 rounded-xl font-bold text-slate-700 hidden sm:inline-block border truncate max-w-[120px]" x-text="'👤 ' + currentUser"></span>
                         
                         <template x-if="userRole === 'admin'">
-                            <button @click="currentTab = 'admin-panel'" class="bg-slate-900 text-white px-3 sm:px-4 py-2 sm:py-2.5 rounded-2xl text-xs font-bold shadow hover:bg-black transition">
+                            <button @click="currentTab = 'admin-panel'" class="bg-slate-900 text-white px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-bold shadow hover:bg-black transition">
                                 ⚙️ หลังบ้าน
                             </button>
                         </template>
 
-                        <button @click="logout()" class="text-xs bg-red-50 text-red-600 hover:bg-red-100 px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-2xl font-bold transition shadow-sm">ออก</button>
-                    </div>
-                </template>
+                        <template x-if="userRole === 'vendor' && vendorStatus === 'approved'">
+                            <div class="flex items-center space-x-1">
+                                <button @click="currentTab = 'vendor-chats'" class="bg-matchaBlue hover:bg-matchaDark text-white px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl text-[11px] sm:text-xs font-bold shadow transition">
+                                    💬 <span class="hidden sm:inline">กล่องข้อความ</span>
+                                </button>
+                                <button @click="currentTab = 'post-product'" class="bg-gradient-to-r from-blue-600 to-matchaAccent hover:from-blue-700 text-white px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-xl text-[11px] sm:text-xs font-bold shadow transition">
+                                    + ลงขาย
+                                </button>
+                            </div>
+                        </template>
 
-                <template x-if="userRole === 'vendor' && vendorStatus === 'approved'">
-                    <div class="flex items-center space-x-2">
-                        <button @click="currentTab = 'vendor-chats'" class="bg-matchaBlue hover:bg-matchaDark text-white px-3 py-2 rounded-2xl text-xs font-bold shadow transition">
-                            💬 กล่องข้อความ
-                        </button>
-                        <button @click="currentTab = 'post-product'" class="bg-gradient-to-r from-blue-600 to-matchaAccent hover:from-blue-700 text-white px-3.5 sm:px-5 py-2 sm:py-3 rounded-2xl text-xs sm:text-sm font-bold shadow-lg shadow-blue-500/20 transition transform hover:-translate-y-0.5">
-                            + ลงขาย
-                        </button>
+                        <button @click="logout()" class="text-[11px] sm:text-xs bg-red-50 text-red-600 hover:bg-red-100 px-2 py-1.5 sm:px-3 sm:py-2 rounded-xl font-bold transition shadow-sm">ออก</button>
                     </div>
                 </template>
             </div>
@@ -122,7 +125,7 @@
     </header>
 
     <!-- 📢 แบนเนอร์ประกาศ -->
-    <div class="bg-gradient-to-r from-slate-900 via-matchaDark to-slate-900 text-emerald-300 text-xs py-2.5 sm:py-3 font-bold shadow-inner overflow-hidden border-b border-slate-700">
+    <div class="bg-gradient-to-r from-slate-900 via-matchaDark to-slate-900 text-emerald-300 text-xs py-2 sm:py-2.5 font-bold shadow-inner overflow-hidden border-b border-slate-700">
         <div class="marquee-container flex items-center">
             <div class="animate-marquee flex items-center space-x-16">
                 <span class="flex items-center space-x-1.5"><span>🛡️</span><span x-text="announcementText"></span></span>
@@ -132,53 +135,56 @@
     </div>
 
     <!-- 📦 Main Content -->
-    <main class="max-w-7xl mx-auto px-4 py-6 sm:py-8 space-y-6 sm:space-y-8">
+    <main class="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-8 space-y-5 sm:space-y-8">
 
         <!-- 1. หน้าแรก (Home) -->
-        <div x-show="currentTab === 'home'" x-transition class="space-y-6 sm:space-y-8">
-            <div class="bg-gradient-to-br from-matchaDark via-matchaBlue to-slate-900 rounded-3xl text-white p-6 sm:p-12 shadow-pro relative overflow-hidden flex flex-col justify-center items-center text-center border border-slate-700/50">
-                <span class="bg-matchaPro/20 text-matchaPro text-[10px] sm:text-xs font-black px-3.5 py-1 rounded-full mb-3 sm:mb-4 tracking-wider uppercase border border-matchaPro/30 shadow-sm">Cloud Real-time Marketplace</span>
-                <h1 class="text-2xl sm:text-5xl font-black mb-3 sm:mb-4 tracking-tight">มัจฉามาเก็ต - ตลาดสัตว์และอุปกรณ์ออนไลน์</h1>
-                <p class="text-xs sm:text-base text-slate-300 max-w-xl mx-auto mb-6 sm:mb-8 font-medium">เชื่อมต่อฐานข้อมูลคลาวด์กลาง ข้อมูลร้านค้าและสินค้าซิงค์ถึงกันแบบเรียลไทม์</p>
+        <div x-show="currentTab === 'home'" x-transition class="space-y-5 sm:space-y-8">
+            <div class="bg-gradient-to-br from-matchaDark via-matchaBlue to-slate-900 rounded-2xl sm:rounded-3xl text-white p-5 sm:p-12 shadow-pro relative overflow-hidden flex flex-col justify-center items-center text-center border border-slate-700/50">
+                <span class="bg-matchaPro/20 text-matchaPro text-[10px] sm:text-xs font-black px-3 py-1 rounded-full mb-2 sm:mb-4 tracking-wider uppercase border border-matchaPro/30 shadow-sm">Cloud Real-time Marketplace</span>
+                <h1 class="text-xl sm:text-4xl font-black mb-2 sm:mb-4 tracking-tight">มัจฉามาเก็ต - ตลาดสัตว์และอุปกรณ์ออนไลน์</h1>
+                <p class="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto mb-4 sm:mb-6 font-medium">เชื่อมต่อฐานข้อมูลคลาวด์กลาง ข้อมูลร้านค้าและสินค้าซิงค์ถึงกันแบบเรียลไทม์</p>
+                <div class="w-full max-w-md md:hidden flex items-center bg-white/10 rounded-2xl overflow-hidden border border-white/20">
+                    <input type="text" x-model="searchKeyword" placeholder="ค้นหาสินค้า..." class="w-full px-4 py-2 text-xs text-white placeholder-slate-400 bg-transparent outline-none">
+                </div>
             </div>
 
             <!-- หมวดหมู่ -->
-            <div class="bg-white/80 backdrop-blur-md p-5 sm:p-8 rounded-3xl shadow-pro border border-slate-200/80">
-                <div class="flex justify-between items-center mb-4 sm:mb-6">
-                    <h2 class="text-sm sm:text-base font-extrabold text-slate-900 tracking-tight">📂 หมวดหมู่ยอดนิยมทั้งหมด</h2>
-                    <span class="text-xs text-slate-400 font-bold" x-text="filteredProducts.length + ' ผลลัพธ์'"></span>
+            <div class="bg-white/90 backdrop-blur-md p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-pro border border-slate-200/80">
+                <div class="flex justify-between items-center mb-3 sm:mb-4">
+                    <h2 class="text-xs sm:text-sm font-extrabold text-slate-900 tracking-tight">📂 หมวดหมู่ยอดนิยม</h2>
+                    <span class="text-[11px] text-slate-400 font-bold" x-text="filteredProducts.length + ' ผลลัพธ์'"></span>
                 </div>
-                <div class="grid grid-cols-3 sm:grid-cols-6 gap-3 sm:gap-4 text-center">
+                <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-4 text-center">
                     <template x-for="cat in ['ทั้งหมด', 'สัตว์น้ำ', 'สัตว์บก', 'สัตว์ปีก', 'อุปกรณ์', 'ของตกแต่ง']">
-                        <div @click="selectedCategory = cat === 'ทั้งหมด' ? 'all' : cat" class="cursor-pointer p-3 sm:p-4 rounded-2xl border-2 transition-all flex flex-col items-center space-y-1.5 sm:space-y-2 group shadow-sm" :class="(selectedCategory === cat || (cat === 'ทั้งหมด' && selectedCategory === 'all')) ? 'border-matchaDark bg-matchaDark text-white shadow-md' : 'border-slate-200/60 bg-white text-slate-700'">
-                            <span class="text-2xl sm:text-3xl" x-text="cat === 'ทั้งหมด' ? '🌟' : (cat === 'สัตว์น้ำ' ? '🐟' : (cat === 'สัตว์บก' ? '🐅' : (cat === 'สัตว์ปีก' ? '🐓' : (cat === 'อุปกรณ์' ? '⚙️' : '🪵'))))"></span>
-                            <span class="text-[11px] sm:text-xs font-bold" x-text="cat"></span>
+                        <div @click="selectedCategory = cat === 'ทั้งหมด' ? 'all' : cat" class="cursor-pointer p-2 sm:p-3.5 rounded-xl sm:rounded-2xl border-2 transition-all flex flex-col items-center space-y-1 group shadow-sm" :class="(selectedCategory === cat || (cat === 'ทั้งหมด' && selectedCategory === 'all')) ? 'border-matchaDark bg-matchaDark text-white shadow-md' : 'border-slate-200/60 bg-white text-slate-700'">
+                            <span class="text-xl sm:text-2xl" x-text="cat === 'ทั้งหมด' ? '🌟' : (cat === 'สัตว์น้ำ' ? '🐟' : (cat === 'สัตว์บก' ? '🐅' : (cat === 'สัตว์ปีก' ? '🐓' : (cat === 'อุปกรณ์' ? '⚙️' : '🪵'))))"></span>
+                            <span class="text-[10px] sm:text-xs font-bold" x-text="cat"></span>
                         </div>
                     </template>
                 </div>
             </div>
 
             <!-- รายการสินค้า -->
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5 sm:gap-5">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
                 <template x-for="item in sortedProducts" :key="item.firebaseId || item.id">
-                    <div @click="openProductDetail(item)" class="bg-white rounded-3xl shadow-pro hover:shadow-pro-hover transition-all duration-300 overflow-hidden flex flex-col justify-between border border-slate-200/70 cursor-pointer group">
+                    <div @click="openProductDetail(item)" class="bg-white rounded-2xl sm:rounded-3xl shadow-pro hover:shadow-pro-hover transition overflow-hidden flex flex-col justify-between border border-slate-200/80 cursor-pointer group">
                         <div>
                             <div class="aspect-square bg-slate-100 relative overflow-hidden">
-                                <img :src="item.images && item.images[0] ? item.images[0] : 'https://placehold.co/400x400?text=No+Image'" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" onerror="this.src='https://placehold.co/400x400?text=No+Image'">
-                                <span class="absolute top-2.5 left-2.5 sm:top-3 sm:left-3 bg-slate-900/80 backdrop-blur text-white text-[9px] sm:text-[10px] font-extrabold px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full shadow" x-text="item.category"></span>
+                                <img :src="item.images && item.images[0] ? item.images[0] : 'https://placehold.co/400x400?text=No+Image'" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.src='https://placehold.co/400x400?text=No+Image'">
+                                <span class="absolute top-2 left-2 bg-slate-900/80 backdrop-blur text-white text-[9px] font-extrabold px-2 py-0.5 rounded-full shadow" x-text="item.category"></span>
                             </div>
-                            <div class="p-3.5 sm:p-4">
-                                <h3 class="text-xs font-bold text-slate-900 line-clamp-2 h-8 leading-tight mb-1.5 sm:mb-2 group-hover:text-blue-600 transition" x-text="item.title"></h3>
-                                <div class="flex items-center space-x-1 mb-2.5 sm:mb-3">
+                            <div class="p-3">
+                                <h3 class="text-xs font-bold text-slate-900 line-clamp-2 h-8 leading-tight mb-1 group-hover:text-blue-600 transition" x-text="item.title"></h3>
+                                <div class="flex items-center space-x-1 mb-2">
                                     <span class="text-[10px] sm:text-[11px] font-extrabold text-slate-600 truncate" x-text="item.storeName"></span>
-                                    <span class="text-matchaPro text-[10px] sm:text-xs">✅</span>
+                                    <span class="text-matchaPro text-[10px]">✅</span>
                                 </div>
-                                <div class="text-blue-600 font-black text-sm sm:text-base" x-text="'฿' + Number(item.price).toLocaleString()"></div>
+                                <div class="text-blue-600 font-black text-xs sm:text-sm" x-text="'฿' + Number(item.price).toLocaleString()"></div>
                             </div>
                         </div>
-                        <div class="p-3.5 sm:p-4 pt-0">
-                            <button class="w-full bg-slate-100 group-hover:bg-matchaDark group-hover:text-white text-slate-700 py-2 sm:py-2.5 rounded-2xl text-[11px] sm:text-xs font-bold transition flex items-center justify-center space-x-1 shadow-sm">
-                                <span>ดูรายละเอียด</span>
+                        <div class="p-3 pt-0">
+                            <button class="w-full bg-slate-100 group-hover:bg-matchaDark group-hover:text-white text-slate-700 py-1.5 sm:py-2 rounded-xl text-[10px] sm:text-xs font-bold transition">
+                                ดูรายละเอียด
                             </button>
                         </div>
                     </div>
@@ -187,30 +193,30 @@
         </div>
 
         <!-- Modal รายละเอียดสินค้า -->
-        <div x-show="showProductModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-md flex items-center justify-center z-50 p-4 overflow-y-auto" x-transition.opacity>
-            <div class="bg-white rounded-3xl max-w-2xl w-full shadow-2xl overflow-hidden relative border border-slate-200 my-auto" @click.away="showProductModal = false">
-                <button @click="showProductModal = false" class="absolute top-3 right-3 sm:top-4 sm:right-4 bg-slate-100 hover:bg-slate-200 text-slate-600 w-8 h-8 sm:w-10 sm:h-10 rounded-full font-bold flex items-center justify-center transition z-10 shadow-sm">✕</button>
+        <div x-show="showProductModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-md flex items-center justify-center z-50 p-3 sm:p-4 overflow-y-auto" x-transition.opacity>
+            <div class="bg-white rounded-2xl sm:rounded-3xl max-w-xl w-full shadow-2xl overflow-hidden relative border border-slate-200 my-auto" @click.away="showProductModal = false">
+                <button @click="showProductModal = false" class="absolute top-3 right-3 bg-slate-100 hover:bg-slate-200 text-slate-600 w-8 h-8 rounded-full font-bold flex items-center justify-center transition z-10 shadow-sm text-xs">✕</button>
                 <template x-if="selectedProduct">
                     <div class="grid grid-cols-1 sm:grid-cols-2">
                         <div class="bg-slate-100 aspect-square relative">
                             <img :src="selectedProduct.images && selectedProduct.images[0] ? selectedProduct.images[0] : 'https://placehold.co/400x400?text=No+Image'" class="w-full h-full object-cover">
                         </div>
-                        <div class="p-5 sm:p-8 flex flex-col justify-between">
+                        <div class="p-4 sm:p-6 flex flex-col justify-between space-y-3">
                             <div>
-                                <span class="bg-blue-50 text-matchaBlue text-[11px] sm:text-xs font-extrabold px-3 py-1 rounded-full" x-text="selectedProduct.category"></span>
-                                <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 mt-2 mb-2" x-text="selectedProduct.title"></h2>
-                                <div class="text-xl sm:text-2xl font-black text-blue-600 mb-3 sm:mb-4" x-text="'฿' + Number(selectedProduct.price).toLocaleString()"></div>
-                                <p class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 sm:p-3.5 rounded-2xl border border-slate-200 mb-3 sm:mb-4 shadow-inner" x-text="selectedProduct.desc"></p>
-                                <div class="bg-emerald-50 border border-emerald-200 p-3 sm:p-3.5 rounded-2xl mb-3 sm:mb-4 shadow-sm">
-                                    <div class="flex items-center space-x-1 font-bold text-xs text-emerald-900 mb-1">
-                                        <span>🛡️ ร้านค้า Verified ปลอดภัย</span><span class="text-matchaPro">✅</span>
+                                <span class="bg-blue-50 text-matchaBlue text-[10px] font-extrabold px-2.5 py-0.5 rounded-full" x-text="selectedProduct.category"></span>
+                                <h2 class="text-base sm:text-lg font-extrabold text-slate-900 mt-1 mb-1" x-text="selectedProduct.title"></h2>
+                                <div class="text-lg sm:text-xl font-black text-blue-600 mb-2" x-text="'฿' + Number(selectedProduct.price).toLocaleString()"></div>
+                                <p class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200 mb-3" x-text="selectedProduct.desc"></p>
+                                <div class="bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl text-xs">
+                                    <div class="flex items-center space-x-1 font-bold text-emerald-900">
+                                        <span>🛡️ ร้าน Verified</span><span class="text-matchaPro">✅</span>
                                     </div>
-                                    <div class="text-[11px] text-emerald-700" x-text="'ชื่อร้าน: ' + selectedProduct.storeName"></div>
-                                    <div class="text-[11px] font-extrabold text-emerald-900 mt-0.5" x-text="'ชื่อบัญชีผู้รับโอน: ' + selectedProduct.bankAccName"></div>
+                                    <div class="text-[11px] text-emerald-700" x-text="'ร้าน: ' + selectedProduct.storeName"></div>
+                                    <div class="text-[11px] font-extrabold text-emerald-900" x-text="'ผู้รับโอน: ' + selectedProduct.bankAccName"></div>
                                 </div>
                             </div>
-                            <button @click="openChat(selectedProduct)" class="w-full bg-matchaDark hover:bg-matchaBlue text-white py-3 sm:py-3.5 rounded-2xl font-bold shadow-lg transition flex items-center justify-center space-x-2 text-xs sm:text-sm">
-                                <span>💬 ทักแชทร้านค้านี้เลย (คลาวด์สด)</span>
+                            <button @click="openChat(selectedProduct)" class="w-full bg-matchaDark hover:bg-matchaBlue text-white py-2.5 sm:py-3 rounded-xl font-bold shadow transition flex items-center justify-center space-x-1.5 text-xs sm:text-sm">
+                                <span>💬 ทักแชทร้านค้านี้เลย</span>
                             </button>
                         </div>
                     </div>
@@ -219,40 +225,40 @@
         </div>
 
         <!-- 2. หน้าลงทะเบียนร้าน -->
-        <div x-show="currentTab === 'register-vendor'" class="max-w-md mx-auto bg-white/90 backdrop-blur-md p-6 sm:p-10 rounded-3xl shadow-pro border border-slate-200/80" x-transition>
-            <h2 class="text-xl sm:text-2xl font-extrabold text-matchaDark mb-2">สมัครเปิดร้านค้ามัจฉามาเก็ต</h2>
-            <p class="text-xs text-slate-500 mb-5 sm:mb-6">ข้อมูลจะถูกส่งขึ้นคลาวด์ไปยังหลังบ้านแอดมินทันที</p>
-            <form @submit.prevent="submitVendorRegistration()" class="space-y-3.5 sm:space-y-4 text-sm">
+        <div x-show="currentTab === 'register-vendor'" class="max-w-md mx-auto bg-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl shadow-pro border border-slate-200/80" x-transition>
+            <h2 class="text-lg sm:text-xl font-extrabold text-matchaDark mb-1">สมัครเปิดร้านค้ามัจฉามาเก็ต</h2>
+            <p class="text-xs text-slate-500 mb-4">ข้อมูลจะถูกส่งขึ้นคลาวด์ไปยังหลังบ้านแอดมินทันที</p>
+            <form @submit.prevent="submitVendorRegistration()" class="space-y-3 text-xs sm:text-sm">
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1 text-xs sm:text-sm">ชื่อร้านค้า</label>
-                    <input type="text" x-model="vendorForm.storeName" required class="w-full border-2 rounded-2xl px-4 py-2.5 sm:py-3 focus:border-matchaDark outline-none bg-slate-50/50 text-xs sm:text-sm">
-                </div>
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1 text-xs sm:text-sm">ชื่อ-นามสกุลจริง (เจ้าของร้าน)</label>
-                    <input type="text" x-model="vendorForm.ownerName" required class="w-full border-2 rounded-2xl px-4 py-2.5 sm:py-3 focus:border-matchaDark outline-none bg-slate-50/50 text-xs sm:text-sm">
+                    <label class="block font-bold text-slate-700 mb-1">ชื่อร้านค้า</label>
+                    <input type="text" x-model="vendorForm.storeName" required class="w-full border-2 rounded-xl px-3 py-2 sm:py-2.5 focus:border-matchaDark outline-none bg-slate-50/50">
                 </div>
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1 text-xs sm:text-sm">เลขที่บัญชีธนาคาร</label>
-                    <input type="text" x-model="vendorForm.bankAcc" required class="w-full border-2 rounded-2xl px-4 py-2.5 sm:py-3 focus:border-matchaDark outline-none bg-slate-50/50 text-xs sm:text-sm" placeholder="เช่น 123-4-56789-0">
+                    <label class="block font-bold text-slate-700 mb-1">ชื่อ-นามสกุลจริง (เจ้าของร้าน)</label>
+                    <input type="text" x-model="vendorForm.ownerName" required class="w-full border-2 rounded-xl px-3 py-2 sm:py-2.5 focus:border-matchaDark outline-none bg-slate-50/50">
                 </div>
-                <div class="bg-emerald-50 p-3.5 sm:p-4 rounded-2xl border border-emerald-200">
-                    <label class="block font-bold text-slate-700 mb-1 text-xs sm:text-sm">ชื่อบัญชีธนาคาร <span class="text-matchaPro">*ต้องตรงกับชื่อเจ้าของร้าน</span></label>
-                    <input type="text" x-model="vendorForm.bankAccName" required class="w-full border-2 border-white rounded-xl px-3.5 py-2.5 sm:py-3 focus:border-matchaDark outline-none font-bold bg-white text-xs sm:text-sm">
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">เลขที่บัญชีธนาคาร</label>
+                    <input type="text" x-model="vendorForm.bankAcc" required class="w-full border-2 rounded-xl px-3 py-2 sm:py-2.5 focus:border-matchaDark outline-none bg-slate-50/50" placeholder="เช่น 123-4-56789-0">
                 </div>
-                <button type="submit" class="w-full bg-matchaDark hover:bg-matchaBlue text-white py-3 sm:py-3.5 rounded-2xl font-bold shadow-lg transition text-xs sm:text-sm">ส่งข้อมูลขึ้นคลาวด์ขออนุมัติ</button>
+                <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-200">
+                    <label class="block font-bold text-slate-700 mb-1">ชื่อบัญชีธนาคาร <span class="text-matchaPro">*ต้องตรงกับชื่อเจ้าของร้าน</span></label>
+                    <input type="text" x-model="vendorForm.bankAccName" required class="w-full border-2 border-white rounded-lg px-3 py-2 focus:border-matchaDark outline-none font-bold bg-white">
+                </div>
+                <button type="submit" class="w-full bg-matchaDark hover:bg-matchaBlue text-white py-3 rounded-xl font-bold shadow transition">ส่งข้อมูลขึ้นคลาวด์ขออนุมัติ</button>
             </form>
         </div>
 
         <!-- 3. หน้าลงโพสต์ขายสินค้า -->
-        <div x-show="currentTab === 'post-product'" class="max-w-xl mx-auto bg-white/90 backdrop-blur-md p-6 sm:p-10 rounded-3xl shadow-pro border border-slate-200/80" x-transition>
-            <div class="mb-5 sm:mb-6 border-b pb-3 sm:pb-4">
-                <h2 class="text-xl sm:text-2xl font-extrabold text-matchaDark">➕ ลงขายสินค้าใหม่</h2>
-                <p class="text-xs text-slate-500 mt-1">เพิ่มข้อมูลสินค้าขึ้นคลาวด์เพื่อให้ผู้ซื้อเห็นทันที</p>
+        <div x-show="currentTab === 'post-product'" class="max-w-lg mx-auto bg-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl shadow-pro border border-slate-200/80" x-transition>
+            <div class="mb-4 border-b pb-3">
+                <h2 class="text-lg sm:text-xl font-extrabold text-matchaDark">➕ ลงขายสินค้าใหม่</h2>
+                <p class="text-xs text-slate-500 mt-0.5">เพิ่มข้อมูลสินค้าขึ้นคลาวด์เพื่อให้ผู้ซื้อเห็นทันที</p>
             </div>
-            <form @submit.prevent="submitProduct()" class="space-y-3.5 sm:space-y-4 text-sm">
+            <form @submit.prevent="submitProduct()" class="space-y-3 text-xs sm:text-sm">
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1 text-xs sm:text-sm">หมวดหมู่สินค้า</label>
-                    <select x-model="productForm.category" required class="w-full border-2 rounded-2xl px-4 py-3 sm:py-3.5 focus:border-matchaDark outline-none bg-slate-50/50 font-bold text-xs sm:text-sm">
+                    <label class="block font-bold text-slate-700 mb-1">หมวดหมู่สินค้า</label>
+                    <select x-model="productForm.category" required class="w-full border-2 rounded-xl px-3 py-2.5 focus:border-matchaDark outline-none bg-slate-50/50 font-bold">
                         <option value="">-- เลือกหมวดหมู่ --</option>
                         <option value="สัตว์น้ำ">🐟 สัตว์น้ำ</option>
                         <option value="สัตว์บก">🐅 สัตว์บก</option>
@@ -262,71 +268,70 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1 text-xs sm:text-sm">ชื่อสินค้า</label>
-                    <input type="text" x-model="productForm.title" required class="w-full border-2 rounded-2xl px-4 py-3 sm:py-3.5 focus:border-matchaDark outline-none bg-slate-50/50 text-xs sm:text-sm">
+                    <label class="block font-bold text-slate-700 mb-1">ชื่อสินค้า</label>
+                    <input type="text" x-model="productForm.title" required class="w-full border-2 rounded-xl px-3 py-2 focus:border-matchaDark outline-none bg-slate-50/50">
                 </div>
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1 text-xs sm:text-sm">ราคา (บาท)</label>
-                    <input type="number" x-model="productForm.price" required class="w-full border-2 rounded-2xl px-4 py-3 sm:py-3.5 focus:border-matchaDark outline-none bg-slate-50/50 text-xs sm:text-sm">
+                    <label class="block font-bold text-slate-700 mb-1">ราคา (บาท)</label>
+                    <input type="number" x-model="productForm.price" required class="w-full border-2 rounded-xl px-3 py-2 focus:border-matchaDark outline-none bg-slate-50/50">
                 </div>
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1 text-xs sm:text-sm">รายละเอียดสินค้า</label>
-                    <textarea x-model="productForm.desc" rows="3" required class="w-full border-2 rounded-2xl px-4 py-3 sm:py-3.5 focus:border-matchaDark outline-none bg-slate-50/50 text-xs sm:text-sm"></textarea>
+                    <label class="block font-bold text-slate-700 mb-1">รายละเอียดสินค้า</label>
+                    <textarea x-model="productForm.desc" rows="3" required class="w-full border-2 rounded-xl px-3 py-2 focus:border-matchaDark outline-none bg-slate-50/50"></textarea>
                 </div>
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1 text-xs sm:text-sm">รูปภาพสินค้า</label>
-                    <input type="file" @change="handleImageUpload" accept="image/*" multiple class="w-full border-2 border-dashed rounded-2xl p-3 sm:p-4 text-xs bg-slate-50 cursor-pointer">
-                    <div class="flex gap-2 mt-3 overflow-x-auto" x-show="productForm.images.length > 0">
+                    <label class="block font-bold text-slate-700 mb-1">รูปภาพสินค้า</label>
+                    <input type="file" @change="handleImageUpload" accept="image/*" multiple class="w-full border-2 border-dashed rounded-xl p-3 text-xs bg-slate-50 cursor-pointer">
+                    <div class="flex gap-2 mt-2 overflow-x-auto" x-show="productForm.images.length > 0">
                         <template x-for="img in productForm.images">
-                            <img :src="img" class="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-2xl border flex-shrink-0">
+                            <img :src="img" class="w-14 h-14 object-cover rounded-xl border flex-shrink-0">
                         </template>
                     </div>
                 </div>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 sm:py-4 rounded-2xl font-bold shadow-lg transition text-xs sm:text-sm">ยืนยันลงขายสินค้า</button>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold shadow transition">ยืนยันลงขายสินค้า</button>
             </form>
         </div>
 
         <!-- 4. หน้าแชทสดบนคลาวด์ (Real-time Cloud Chat) -->
-        <div x-show="currentTab === 'chat'" class="max-w-2xl mx-auto bg-white/90 backdrop-blur-md rounded-3xl shadow-pro border border-slate-200/80 overflow-hidden flex flex-col h-[550px] sm:h-[600px]" x-transition>
-            <div class="bg-matchaDark text-white px-5 sm:px-6 py-4 flex justify-between items-center shadow-md">
-                <div>
+        <div x-show="currentTab === 'chat'" class="max-w-2xl mx-auto bg-white rounded-2xl sm:rounded-3xl shadow-pro border border-slate-200 overflow-hidden flex flex-col h-[500px] sm:h-[580px]" x-transition>
+            <div class="bg-matchaDark text-white px-4 py-3 flex justify-between items-center shadow-md">
+                <div class="truncate mr-2">
                     <div class="font-bold text-xs sm:text-sm" x-text="'แชทร้าน: ' + activeChatStore"></div>
-                    <div class="text-[10px] sm:text-[11px] text-slate-300 truncate max-w-[200px] sm:max-w-md" x-text="'สินค้า: ' + activeChatProduct"></div>
+                    <div class="text-[10px] sm:text-[11px] text-slate-300 truncate" x-text="'สินค้า: ' + activeChatProduct"></div>
                 </div>
-                <button @click="currentTab = 'home'" class="bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-xl text-xs font-bold transition flex-shrink-0">← กลับ</button>
+                <button @click="currentTab = 'home'" class="bg-white/20 hover:bg-white/30 px-3 py-1 rounded-lg text-xs font-bold transition flex-shrink-0">← กลับ</button>
             </div>
-            <div class="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-50 text-xs sm:text-sm" id="chatContainer">
-                <template x-for="msg in chatMessages" :key="msg.id">
+            <div class="flex-1 p-3 sm:p-4 overflow-y-auto space-y-2.5 bg-slate-50 text-xs sm:text-sm" id="chatContainer">
+                <template x-for="msg in chatMessages" :key="msg.timestamp + msg.sender">
                     <div class="flex flex-col" :class="msg.sender === (currentUser || 'ผู้ซื้อ') ? 'items-end' : 'items-start'">
-                        <div class="text-[10px] text-slate-400 mb-0.5 px-1 font-bold" x-text="msg.sender"></div>
-                        <div class="px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-2xl max-w-[85%] sm:max-w-[80%] shadow-sm leading-relaxed" 
+                        <div class="text-[9px] text-slate-400 mb-0.5 px-1 font-bold" x-text="msg.sender"></div>
+                        <div class="px-3 py-2 rounded-2xl max-w-[85%] shadow-sm leading-relaxed" 
                              :class="msg.sender === (currentUser || 'ผู้ซื้อ') ? 'bg-matchaDark text-white' : (msg.sender === 'ระบบ' ? 'bg-emerald-100 text-emerald-900 border border-emerald-300 w-full text-center' : 'bg-white text-slate-800 border')" 
                              x-text="msg.text">
                         </div>
                     </div>
                 </template>
             </div>
-            <div class="p-3 sm:p-4 bg-white border-t flex space-x-2 sm:space-x-3 items-center">
-                <input type="text" x-model="newMessage" @keyup.enter="sendCloudChatMessage()" placeholder="พิมพ์ข้อความคุยสดบนคลาวด์..." class="flex-1 border-2 rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm focus:border-matchaDark outline-none bg-slate-50/50">
-                <button @click="sendCloudChatMessage()" class="bg-matchaDark text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-2xl text-xs font-bold shadow hover:bg-matchaBlue transition flex-shrink-0">ส่ง</button>
+            <div class="p-2.5 sm:p-3 bg-white border-t flex space-x-2 items-center">
+                <input type="text" x-model="newMessage" @keyup.enter="sendCloudChatMessage()" placeholder="พิมพ์ข้อความคุยสด..." class="flex-1 border-2 rounded-xl px-3 py-2 text-xs sm:text-sm focus:border-matchaDark outline-none bg-slate-50">
+                <button @click="sendCloudChatMessage()" class="bg-matchaDark text-white px-4 sm:px-5 py-2 rounded-xl text-xs font-bold shadow hover:bg-matchaBlue transition flex-shrink-0">ส่ง</button>
             </div>
         </div>
 
         <!-- 4.1 หน้ากล่องข้อความรวมสำหรับร้านค้า -->
-        <div x-show="currentTab === 'vendor-chats'" class="max-w-4xl mx-auto bg-white p-6 sm:p-8 rounded-3xl shadow-pro border border-slate-200/80 space-y-6" x-transition>
-            <div class="flex justify-between items-center border-b pb-4">
-                <h2 class="text-xl font-black text-slate-900">💬 กล่องข้อความลูกค้า (ร้านค้าของคุณ)</h2>
-                <button @click="currentTab = 'home'" class="bg-slate-200 px-4 py-2 rounded-xl text-xs font-bold">กลับหน้าหลัก</button>
+        <div x-show="currentTab === 'vendor-chats'" class="max-w-3xl mx-auto bg-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl shadow-pro border border-slate-200 space-y-4" x-transition>
+            <div class="flex justify-between items-center border-b pb-3">
+                <h2 class="text-base sm:text-lg font-black text-slate-900">💬 กล่องข้อความร้านค้า</h2>
+                <button @click="currentTab = 'home'" class="bg-slate-200 px-3 py-1 rounded-lg text-xs font-bold">กลับ</button>
             </div>
-            <p class="text-xs text-slate-500">รายชื่อห้องแชททั้งหมดที่มีลูกค้าติดต่อเข้ามาที่ร้านของคุณ:</p>
-            <div class="space-y-3">
+            <div class="space-y-2.5">
                 <template x-for="chatRoom in myChatRooms" :key="chatRoom.id">
-                    <div @click="openExistingChat(chatRoom)" class="p-4 bg-slate-50 hover:bg-slate-100 rounded-2xl border border-slate-200 cursor-pointer flex justify-between items-center transition shadow-sm">
-                        <div>
-                            <div class="font-bold text-slate-900 text-sm" x-text="'สินค้า: ' + chatRoom.productName"></div>
-                            <div class="text-xs text-slate-500 mt-0.5" x-text="'ห้องแชทระหว่างคุณกับลูกค้า'"></div>
+                    <div @click="openExistingChat(chatRoom)" class="p-3 bg-slate-50 hover:bg-slate-100 rounded-xl border border-slate-200 cursor-pointer flex justify-between items-center transition shadow-sm">
+                        <div class="truncate mr-2">
+                            <div class="font-bold text-slate-900 text-xs sm:text-sm truncate" x-text="'สินค้า: ' + chatRoom.productName"></div>
+                            <div class="text-[11px] text-slate-500">คลิกเพื่อเปิดห้องแชทกับลูกค้า</div>
                         </div>
-                        <span class="bg-matchaDark text-white px-4 py-2 rounded-xl text-xs font-bold">เปิดแชทคุยสด</span>
+                        <span class="bg-matchaDark text-white px-3 py-1.5 rounded-lg text-xs font-bold flex-shrink-0">เปิดแชท</span>
                     </div>
                 </template>
                 <template x-if="myChatRooms.length === 0">
@@ -335,95 +340,93 @@
             </div>
         </div>
 
-        <!-- 5. หน้าแอดมิน (Cloud Real-time Dashboard) -->
-        <div x-show="currentTab === 'admin-panel'" class="space-y-6 max-w-4xl mx-auto text-xs sm:text-sm" x-transition>
+        <!-- 5. หน้าแอดมิน (Cloud Dashboard) -->
+        <div x-show="currentTab === 'admin-panel'" class="space-y-4 max-w-4xl mx-auto text-xs sm:text-sm" x-transition>
             <div class="flex justify-between items-center">
-                <h2 class="text-xl sm:text-2xl font-black text-slate-900">⚙️ แดชบอร์ดแอดมิน</h2>
-                <button @click="currentTab = 'home'" class="bg-slate-200 px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm">กลับหน้าเว็บ</button>
+                <h2 class="text-base sm:text-xl font-black text-slate-900">⚙️ แดชบอร์ดแอดมิน</h2>
+                <button @click="currentTab = 'home'" class="bg-slate-200 px-3 py-1.5 rounded-lg text-xs font-bold">กลับ</button>
             </div>
 
             <!-- กล่องตั้งค่าประกาศ -->
-            <div class="bg-white p-5 sm:p-6 rounded-3xl shadow-pro border border-slate-200/80">
-                <h3 class="font-extrabold text-slate-800 mb-3 text-sm sm:text-base">📢 ตั้งค่าข้อความประกาศวิ่งหน้าเว็บ</h3>
-                <div class="flex flex-col sm:flex-row gap-3">
-                    <input type="text" x-model="tempAnnouncement" class="flex-1 border-2 rounded-2xl px-4 py-2.5 outline-none focus:border-matchaDark text-xs bg-slate-50" placeholder="พิมพ์ข้อความประกาศด่วน...">
-                    <button @click="updateAnnouncement()" class="bg-matchaDark text-white px-5 py-2.5 rounded-2xl font-bold text-xs shadow flex-shrink-0">อัปเดตประกาศ</button>
+            <div class="bg-white p-4 sm:p-5 rounded-2xl shadow-pro border border-slate-200">
+                <h3 class="font-extrabold text-slate-800 mb-2 text-xs sm:text-sm">📢 ตั้งค่าข้อความประกาศวิ่งหน้าเว็บ</h3>
+                <div class="flex flex-col sm:flex-row gap-2">
+                    <input type="text" x-model="tempAnnouncement" class="flex-1 border-2 rounded-xl px-3 py-2 outline-none focus:border-matchaDark text-xs bg-slate-50" placeholder="พิมพ์ข้อความประกาศ...">
+                    <button @click="updateAnnouncement()" class="bg-matchaDark text-white px-4 py-2 rounded-xl font-bold text-xs shadow flex-shrink-0">อัปเดต</button>
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5 sm:gap-4">
-                <div class="bg-white p-4 sm:p-5 rounded-3xl shadow-pro text-center border">
-                    <div class="text-2xl sm:text-3xl font-black text-matchaDark" x-text="products.length"></div>
-                    <div class="text-[11px] sm:text-xs text-slate-500 font-bold mt-1">สินค้าทั้งหมด</div>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
+                <div class="bg-white p-3 sm:p-4 rounded-2xl shadow-pro text-center border">
+                    <div class="text-xl sm:text-2xl font-black text-matchaDark" x-text="products.length"></div>
+                    <div class="text-[10px] sm:text-xs text-slate-500 font-bold mt-0.5">สินค้าทั้งหมด</div>
                 </div>
-                <div class="bg-white p-4 sm:p-5 rounded-3xl shadow-pro text-center border">
-                    <div class="text-2xl sm:text-3xl font-black text-green-600" x-text="approvedVendors.length"></div>
-                    <div class="text-[11px] sm:text-xs text-slate-500 font-bold mt-1">ร้าน Verified แล้ว</div>
+                <div class="bg-white p-3 sm:p-4 rounded-2xl shadow-pro text-center border">
+                    <div class="text-xl sm:text-2xl font-black text-green-600" x-text="approvedVendors.length"></div>
+                    <div class="text-[10px] sm:text-xs text-slate-500 font-bold mt-0.5">ร้าน Verified</div>
                 </div>
-                <div class="bg-white p-4 sm:p-5 rounded-3xl shadow-pro text-center border">
-                    <div class="text-2xl sm:text-3xl font-black text-amber-500" x-text="pendingVendors.length"></div>
-                    <div class="text-[11px] sm:text-xs text-slate-500 font-bold mt-1">รอดำเนินการ</div>
+                <div class="bg-white p-3 sm:p-4 rounded-2xl shadow-pro text-center border">
+                    <div class="text-xl sm:text-2xl font-black text-amber-500" x-text="pendingVendors.length"></div>
+                    <div class="text-[10px] sm:text-xs text-slate-500 font-bold mt-0.5">รอดำเนินการ</div>
                 </div>
-                <div class="bg-white p-4 sm:p-5 rounded-3xl shadow-pro text-center border">
-                    <div class="text-2xl sm:text-3xl font-black text-blue-600" x-text="Object.keys(categoryCounts).length"></div>
-                    <div class="text-[11px] sm:text-xs text-slate-500 font-bold mt-1">หมวดหมู่Active</div>
+                <div class="bg-white p-3 sm:p-4 rounded-2xl shadow-pro text-center border">
+                    <div class="text-xl sm:text-2xl font-black text-blue-600" x-text="Object.keys(categoryCounts).length"></div>
+                    <div class="text-[10px] sm:text-xs text-slate-500 font-bold mt-0.5">หมวด Active</div>
                 </div>
             </div>
 
-            <!-- คำขอเปิดร้านค้าใหม่ (เรียลไทม์จากคลาวด์) -->
-            <div class="bg-white p-5 sm:p-6 rounded-3xl shadow-pro border border-slate-200/80">
-                <h3 class="font-extrabold text-slate-800 mb-4 text-sm sm:text-base">🔔 คำขอเปิดร้านค้าใหม่บนคลาวด์ (รอตรวจสอบ Verified)</h3>
-                <div class="space-y-3">
+            <!-- คำขอเปิดร้านค้าใหม่ -->
+            <div class="bg-white p-4 sm:p-5 rounded-2xl shadow-pro border border-slate-200">
+                <h3 class="font-extrabold text-slate-800 mb-3 text-xs sm:text-sm">🔔 คำขอเปิดร้านค้าใหม่</h3>
+                <div class="space-y-2.5">
                     <template x-for="(v, index) in pendingVendors" :key="v.firebaseId || index">
-                        <div class="p-3.5 sm:p-4 border-2 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-amber-50/70 text-xs shadow-sm">
+                        <div class="p-3 border-2 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 bg-amber-50/70 text-xs">
                             <div>
-                                <div class="font-bold text-slate-900 text-sm" x-text="v.storeName"></div>
-                                <div class="text-slate-600 mt-0.5" x-text="'เจ้าของ: ' + v.ownerName + ' | บัญชี: ' + v.bankAcc + ' (' + v.bankAccName + ')'"></div>
+                                <div class="font-bold text-slate-900" x-text="v.storeName"></div>
+                                <div class="text-slate-600 text-[11px]" x-text="'เจ้าของ: ' + v.ownerName + ' | บัญชี: ' + v.bankAcc + ' (' + v.bankAccName + ')'"></div>
                             </div>
-                            <div class="space-x-2 flex self-end sm:self-auto">
-                                <button @click="approveVendor(v)" class="bg-green-500 hover:bg-green-600 text-white px-3.5 py-2 rounded-xl font-bold shadow">อนุมัติ Verified</button>
-                                <button @click="rejectVendor(v)" class="bg-red-500 hover:bg-red-600 text-white px-3.5 py-2 rounded-xl font-bold shadow">ปฏิเสธ</button>
+                            <div class="space-x-1.5 flex self-end sm:self-auto">
+                                <button @click="approveVendor(v)" class="bg-green-500 text-white px-3 py-1 rounded-lg font-bold shadow text-xs">อนุมัติ</button>
+                                <button @click="rejectVendor(v)" class="bg-red-500 text-white px-3 py-1 rounded-lg font-bold shadow text-xs">ปฏิเสธ</button>
                             </div>
                         </div>
                     </template>
                     <template x-if="pendingVendors.length === 0">
-                        <p class="text-xs text-slate-400 text-center py-4">ไม่มีคำขอเปิดร้านในขณะนี้</p>
+                        <p class="text-xs text-slate-400 text-center py-3">ไม่มีคำขอเปิดร้านในขณะนี้</p>
                     </template>
                 </div>
             </div>
 
-            <!-- จัดการสินค้าทั้งหมด -->
-            <div class="bg-white p-5 sm:p-6 rounded-3xl shadow-pro border border-slate-200/80">
-                <h3 class="font-extrabold text-slate-800 mb-4 text-sm sm:text-base">🗑️ จัดการสินค้าทั้งหมดบนคลาวด์</h3>
-                <div class="space-y-3 max-h-72 overflow-y-auto pr-1">
+            <!-- จัดการสินค้า -->
+            <div class="bg-white p-4 sm:p-5 rounded-2xl shadow-pro border border-slate-200">
+                <h3 class="font-extrabold text-slate-800 mb-3 text-xs sm:text-sm">🗑️ จัดการสินค้าทั้งหมด</h3>
+                <div class="space-y-2 max-h-60 overflow-y-auto pr-1">
                     <template x-for="item in products" :key="item.firebaseId">
-                        <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 flex justify-between items-center text-xs">
-                            <div class="flex items-center space-x-3">
-                                <img :src="item.images && item.images[0] ? item.images[0] : 'https://placehold.co/400x400?text=No+Image'" class="w-12 h-12 object-cover rounded-xl border flex-shrink-0">
-                                <div>
-                                    <div class="font-bold text-slate-900 text-sm line-clamp-1" x-text="item.title"></div>
-                                    <div class="text-slate-500" x-text="'ร้าน: ' + item.storeName + ' | ' + item.price + ' ฿'"></div>
+                        <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 flex justify-between items-center text-xs">
+                            <div class="flex items-center space-x-2.5 truncate mr-2">
+                                <img :src="item.images && item.images[0] ? item.images[0] : 'https://placehold.co/400x400?text=No+Image'" class="w-10 h-10 object-cover rounded-lg border flex-shrink-0">
+                                <div class="truncate">
+                                    <div class="font-bold text-slate-900 truncate" x-text="item.title"></div>
+                                    <div class="text-slate-500 text-[11px]" x-text="'ร้าน: ' + item.storeName + ' | ' + item.price + ' ฿'"></div>
                                 </div>
                             </div>
-                            <button @click="adminDeleteProduct(item)" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-xl font-bold shadow flex-shrink-0">ลบ</button>
+                            <button @click="adminDeleteProduct(item)" class="bg-red-500 text-white px-2.5 py-1 rounded-lg font-bold shadow text-xs flex-shrink-0">ลบ</button>
                         </div>
                     </template>
                 </div>
             </div>
 
             <!-- จัดการร้านค้า Verified -->
-            <div class="bg-white p-5 sm:p-6 rounded-3xl shadow-pro border border-slate-200/80">
-                <h3 class="font-extrabold text-slate-800 mb-4 text-sm sm:text-base">👥 ร้านค้า Verified บนคลาวด์</h3>
-                <div class="space-y-3">
+            <div class="bg-white p-4 sm:p-5 rounded-2xl shadow-pro border border-slate-200">
+                <h3 class="font-extrabold text-slate-800 mb-3 text-xs sm:text-sm">👥 ร้านค้า Verified</h3>
+                <div class="space-y-2">
                     <template x-for="v in approvedVendors" :key="v.firebaseId || v.storeName">
-                        <div class="p-3.5 sm:p-4 bg-slate-50 rounded-2xl border border-slate-200 flex justify-between items-center text-xs shadow-sm">
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex justify-between items-center text-xs">
                             <div>
-                                <div class="font-bold text-slate-900 text-sm flex items-center space-x-1">
-                                    <span x-text="v.storeName"></span><span class="text-matchaPro">✅</span>
-                                </div>
-                                <div class="text-slate-500 mt-0.5" x-text="'เจ้าของ: ' + v.ownerName + ' | บัญชี: ' + v.bankAcc + ' (' + v.bankAccName + ')'"></div>
+                                <div class="font-bold text-slate-900" x-text="v.storeName + ' ✅'"></div>
+                                <div class="text-slate-500 text-[11px]" x-text="'เจ้าของ: ' + v.ownerName + ' | บัญชี: ' + v.bankAcc + ' (' + v.bankAccName + ')'"></div>
                             </div>
-                            <button @click="banVendor(v)" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-xl font-bold shadow flex-shrink-0">ระงับ</button>
+                            <button @click="banVendor(v)" class="bg-red-500 text-white px-2.5 py-1 rounded-lg font-bold shadow text-xs flex-shrink-0">ระงับ</button>
                         </div>
                     </template>
                 </div>
@@ -434,16 +437,16 @@
 
     <!-- Modal ล็อกอิน -->
     <div x-show="showLoginModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-md flex items-center justify-center z-50 p-4" x-transition>
-        <div class="bg-white p-6 sm:p-8 rounded-3xl w-full max-w-sm shadow-2xl relative text-sm border">
+        <div class="bg-white p-6 rounded-2xl sm:rounded-3xl w-full max-w-sm shadow-2xl relative text-sm border">
             <button @click="showLoginModal = false" class="absolute top-4 right-4 text-slate-400 font-bold">✕</button>
-            <h3 class="text-lg sm:text-xl font-extrabold text-slate-900 mb-1">เข้าสู่ระบบ / สมัครร้านค้า</h3>
-            <p class="text-xs text-slate-500 mb-5 sm:mb-6">กรอกอีเมลหรือเบอร์โทรศัพท์ของคุณ</p>
-            <input type="text" x-model="loginInput" placeholder="E-mail หรือ เบอร์โทร" class="w-full border-2 rounded-2xl px-4 py-3 text-xs mb-4 focus:border-matchaDark outline-none font-bold text-center bg-slate-50/50">
-            <div class="space-y-2.5 sm:space-y-3">
-                <button @click="goToVendorRegister()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-2xl text-xs font-bold transition shadow-md">สมัครเปิดร้านค้า Verified</button>
-                <button @click="loginAsVendor()" class="w-full bg-matchaDark hover:bg-matchaBlue text-white py-3 rounded-2xl text-xs font-bold transition shadow-md">เข้าสู่ระบบ (ผู้ขาย)</button>
-                <div class="pt-2 sm:pt-3 border-t">
-                    <button @click="loginAsAdmin()" class="w-full bg-slate-900 text-white py-2.5 rounded-2xl text-xs font-bold">🔐 เข้าสู่ระบบแอดมิน</button>
+            <h3 class="text-lg font-extrabold text-slate-900 mb-1">เข้าสู่ระบบ / สมัครร้านค้า</h3>
+            <p class="text-xs text-slate-500 mb-4">กรอกอีเมลหรือเบอร์โทรศัพท์ของคุณ</p>
+            <input type="text" x-model="loginInput" placeholder="E-mail หรือ เบอร์โทร" class="w-full border-2 rounded-xl px-4 py-2.5 text-xs mb-3 focus:border-matchaDark outline-none font-bold text-center bg-slate-50">
+            <div class="space-y-2">
+                <button @click="goToVendorRegister()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-xl text-xs font-bold transition shadow-md">สมัครเปิดร้านค้า Verified</button>
+                <button @click="loginAsVendor()" class="w-full bg-matchaDark hover:bg-matchaBlue text-white py-2.5 rounded-xl text-xs font-bold transition shadow-md">เข้าสู่ระบบ (ผู้ขาย)</button>
+                <div class="pt-2 border-t">
+                    <button @click="loginAsAdmin()" class="w-full bg-slate-900 text-white py-2 rounded-xl text-xs font-bold">🔐 เข้าสู่ระบบแอดมิน</button>
                 </div>
             </div>
         </div>
@@ -451,15 +454,15 @@
 
     <!-- Popup แจ้งเตือน -->
     <div x-show="showCustomAlert" class="fixed inset-0 bg-slate-900/70 backdrop-blur-md flex items-center justify-center z-50 p-4" x-transition>
-        <div class="bg-white p-6 rounded-3xl w-full max-w-xs shadow-2xl text-center relative text-sm border">
-            <div class="text-3xl mb-2">🔔</div>
-            <h3 class="text-base font-extrabold text-slate-900 mb-2">แจ้งเตือนระบบ</h3>
-            <p class="text-xs text-slate-600 mb-6" x-text="alertMessage"></p>
-            <button @click="showCustomAlert = false" class="w-full bg-matchaDark text-white py-3 rounded-2xl text-xs font-bold shadow">ตกลง</button>
+        <div class="bg-white p-5 rounded-2xl w-full max-w-xs shadow-2xl text-center relative text-sm border">
+            <div class="text-2xl mb-1">🔔</div>
+            <h3 class="text-sm font-extrabold text-slate-900 mb-1">แจ้งเตือนระบบ</h3>
+            <p class="text-xs text-slate-600 mb-4" x-text="alertMessage"></p>
+            <button @click="showCustomAlert = false" class="w-full bg-matchaDark text-white py-2 rounded-xl text-xs font-bold shadow">ตกลง</button>
         </div>
     </div>
 
-    <!-- Script ควบคุมระบบเชื่อมต่อ Firebase Cloud Real-time Chat -->
+    <!-- Script ควบคุมระบบ เชื่อมต่อ Cloud Real-time Chat -->
     <script>
         function marketplaceApp() {
             return {
@@ -504,7 +507,7 @@
                             clearInterval(checkFirebase);
                             this.initRealtimeSync();
                         }
-                    }, 500);
+                    }, 300);
                 },
 
                 initRealtimeSync() {
@@ -598,7 +601,7 @@
                 },
 
                 loginAsVendor() {
-                    if(!this.loginInput) { this.showAlert('กรุณากรอกอีเมลหรือเบอร์โทร'); return; }
+                    if(!this.loginInput) { this.showAlert('กรุณากรอกข้อมูลในช่อง'); return; }
                     this.currentUser = this.loginInput;
                     this.userRole = 'vendor';
                     
@@ -669,7 +672,7 @@
                     localStorage.setItem('matcha_role', 'vendor');
                     localStorage.setItem('matcha_status', 'pending');
 
-                    this.showAlert('ส่งข้อมูลขอเปิดร้านขึ้นคลาวด์สำเร็จ! ข้อมูลเด้งไปที่หลังบ้านแอดมินแล้ว');
+                    this.showAlert('ส่งข้อมูลขอเปิดร้านขึ้นคลาวด์สำเร็จ!');
                     this.vendorForm = { storeName: '', ownerName: '', bankAcc: '', bankAccName: '' };
                     this.currentTab = 'home';
                 },
@@ -685,7 +688,7 @@
                         this.vendorStatus = 'approved';
                         localStorage.setItem('matcha_status', 'approved');
                     }
-                    this.showAlert('อนุมัติ Verified ร้านค้าบนคลาวด์สำเร็จ!');
+                    this.showAlert('อนุมัติ Verified สำเร็จ!');
                 },
 
                 async rejectVendor(v) {
@@ -725,7 +728,7 @@
                     let newProduct = {
                         id: Date.now(),
                         category: this.productForm.category,
-                        storeName: this.currentUser || 'ร้านค้าทดสอบ',
+                        storeName: this.currentUser || 'ร้านค้าทั่วไป',
                         bankAccName: bankName,
                         title: this.productForm.title,
                         desc: this.productForm.desc || '-',
@@ -742,7 +745,7 @@
                         this.currentTab = 'home';
                     } catch (error) {
                         console.error(error);
-                        this.showAlert('❌ เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาลองใหม่อีกครั้ง');
+                        this.showAlert('❌ เกิดข้อผิดพลาดในการบันทึกข้อมูล');
                     }
                 },
 
@@ -751,33 +754,41 @@
                     this.activeChatStore = item.storeName;
                     this.activeChatProduct = item.title;
                     
-                    const { collection, addDoc, getDocs, query, where } = window.firebaseFns;
-                    const db = window.db;
+                    try {
+                        const { collection, addDoc, getDocs, query, where } = window.firebaseFns;
+                        const db = window.db;
 
-                    let q = query(collection(db, "chats"), where("storeName", "==", item.storeName), where("productName", "==", item.title));
-                    let querySnapshot = await getDocs(q);
+                        let q = query(collection(db, "chats"), where("storeName", "==", item.storeName), where("productName", "==", item.title));
+                        let querySnapshot = await getDocs(q);
 
-                    if (!querySnapshot.empty) {
-                        let chatDoc = querySnapshot.docs[0];
-                        this.activeChatId = chatDoc.id;
+                        if (!querySnapshot.empty) {
+                            let chatDoc = querySnapshot.docs[0];
+                            this.activeChatId = chatDoc.id;
+                        } else {
+                            let newChatRef = await addDoc(collection(db, "chats"), {
+                                storeName: item.storeName,
+                                productName: item.title,
+                                createdAt: Date.now()
+                            });
+                            this.activeChatId = newChatRef.id;
+
+                            await addDoc(collection(db, `chats/${this.activeChatId}/messages`), {
+                                sender: 'ระบบ',
+                                text: `🛡️ ปลอดภัย Verified: ตรวจสอบชื่อบัญชีผู้รับโอน (${item.bankAccName}) ให้ตรงกับร้านค้าก่อนโอนเงิน`,
+                                timestamp: Date.now()
+                            });
+                        }
+
                         this.listenToChatMessages(this.activeChatId);
-                    } else {
-                        let newChatRef = await addDoc(collection(db, "chats"), {
-                            storeName: item.storeName,
-                            productName: item.title,
-                            createdAt: Date.now()
-                        });
-                        this.activeChatId = newChatRef.id;
-
-                        await addDoc(collection(db, `chats/${this.activeChatId}/messages`), {
-                            sender: 'ระบบ',
-                            text: `🛡️ ปลอดภัย Verified: ตรวจสอบชื่อบัญชีผู้รับโอน (${item.bankAccName}) ให้ตรงกับร้านค้าก่อนชำระเงิน`,
-                            timestamp: Date.now()
-                        });
-                        this.listenToChatMessages(this.activeChatId);
+                        this.currentTab = 'chat';
+                    } catch (err) {
+                        console.error("Chat error:", err);
+                        this.activeChatId = 'local_chat';
+                        this.chatMessages = [
+                            { sender: 'ระบบ', text: `🛡️ ปลอดภัย Verified: ตรวจสอบชื่อบัญชี (${item.bankAccName}) ก่อนโอนเงิน`, timestamp: Date.now() }
+                        ];
+                        this.currentTab = 'chat';
                     }
-
-                    this.currentTab = 'chat';
                 },
 
                 openExistingChat(chatRoom) {
@@ -813,11 +824,15 @@
                     const { collection, addDoc } = window.firebaseFns;
                     const db = window.db;
 
-                    await addDoc(collection(db, `chats/${this.activeChatId}/messages`), {
-                        sender: senderName,
-                        text: textToSend,
-                        timestamp: Date.now()
-                    });
+                    try {
+                        await addDoc(collection(db, `chats/${this.activeChatId}/messages`), {
+                            sender: senderName,
+                            text: textToSend,
+                            timestamp: Date.now()
+                        });
+                    } catch (err) {
+                        this.chatMessages.push({ sender: senderName, text: textToSend, timestamp: Date.now() });
+                    }
                 }
             }
         }
