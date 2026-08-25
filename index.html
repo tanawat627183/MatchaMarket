@@ -5,6 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MatchaMarket (มัจฉามาเก็ต) - ตลาดซื้อ-ขายสิ่งมีชีวิตและอุปกรณ์มืออาชีพ</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 🌐 Firebase SDK & Real-time Configuration -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAty0GHQuQg40tisnafT9-GK5olaVmrcPg",
+            authDomain: "matchamarket-264b3.firebaseapp.com",
+            projectId: "matchamarket-264b3",
+            storageBucket: "matchamarket-264b3.appspot.com",
+            messagingSenderId: "816587912694",
+            appId: "1:816587912694:web:166f8b9581ab75f76c03d7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        window.db = db;
+        window.firebaseFns = { collection, addDoc, getDocs, doc, deleteDoc, updateDoc, onSnapshot, query, orderBy };
+    </script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -47,24 +68,19 @@
     <!-- 🌐 Header ระดับโปร -->
     <header class="bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between gap-4">
-            <!-- โลโก้ MatchaMarket -->
             <div class="flex items-center space-x-3 cursor-pointer flex-shrink-0 group" @click="currentTab = 'home'; selectedCategory = 'all'">
                 <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-matchaDark to-matchaBlue flex items-center justify-center text-white font-black text-xl shadow-lg group-hover:scale-105 transition">🐟</div>
                 <div>
                     <span class="text-2xl font-black tracking-tight text-matchaDark">Matcha<span class="text-matchaPro">Market</span></span>
-                    <span class="block text-[10px] text-slate-400 font-bold tracking-widest uppercase">มัจฉามาเก็ต (ตลาดมืออาชีพ)</span>
+                    <span class="block text-[10px] text-slate-400 font-bold tracking-widest uppercase">มัจฉามาเก็ต (Cloud Real-time)</span>
                 </div>
             </div>
             
-            <!-- ช่องค้นหาสินค้า -->
             <div class="flex-1 max-w-2xl hidden md:flex items-center bg-slate-50 border-2 border-slate-200/80 rounded-2xl overflow-hidden focus-within:border-matchaDark focus-within:bg-white transition shadow-inner">
-                <input type="text" x-model="searchKeyword" placeholder="ค้นหาสินค้า..." class="w-full px-4 py-3 text-sm bg-transparent outline-none">
-                <button class="bg-matchaDark text-white px-6 py-3 flex items-center justify-center hover:bg-matchaBlue transition font-bold text-sm">
-                    ค้นหา
-                </button>
+                <input type="text" x-model="searchKeyword" placeholder="ค้นหาสินค้าบนคลาวด์..." class="w-full px-4 py-3 text-sm bg-transparent outline-none">
+                <button class="bg-matchaDark text-white px-6 py-3 flex items-center justify-center hover:bg-matchaBlue transition font-bold text-sm">ค้นหา</button>
             </div>
 
-            <!-- เมนูด้านขวา -->
             <div class="flex items-center space-x-3 flex-shrink-0">
                 <template x-if="!currentUser">
                     <button @click="showLoginModal = true" class="text-sm font-bold text-slate-700 hover:text-matchaDark px-4 py-2.5 rounded-2xl border-2 border-slate-200 hover:bg-slate-50 transition shadow-sm">
@@ -95,13 +111,12 @@
         </div>
     </header>
 
-    <!-- 📢 แบนเนอร์ประกาศแบบเลื่อน -->
+    <!-- 📢 แบนเนอร์ประกาศ -->
     <div class="bg-gradient-to-r from-slate-900 via-matchaDark to-slate-900 text-emerald-300 text-xs py-3 font-bold shadow-inner overflow-hidden border-b border-slate-700">
         <div class="marquee-container flex items-center">
             <div class="animate-marquee flex items-center space-x-16">
                 <span class="flex items-center space-x-1.5"><span>🛡️</span><span x-text="announcementText"></span></span>
-                <span class="flex items-center space-x-1.5"><span>🐟</span><span>ยินดีต้อนรับสู่ MatchaMarket (มัจฉามาเก็ต) ศูนย์รวมตลาดซื้อขายสัตว์และอุปกรณ์ตู้ปลาอันดับ 1</span></span>
-                <span class="flex items-center space-x-1.5"><span>⭐</span><span>ซื้อขายมั่นใจ ปลอดภัย ตรวจสอบชื่อบัญชีธนาคารทุกร้านค้าก่อนโอนเงิน</span></span>
+                <span class="flex items-center space-x-1.5"><span>🐟</span><span>MatchaMarket ระบบคลาวด์ Real-time ซิงค์ข้อมูลข้ามเครื่องทันที</span></span>
             </div>
         </div>
     </div>
@@ -112,39 +127,24 @@
         <!-- 1. หน้าแรก (Home) -->
         <div x-show="currentTab === 'home'" x-transition class="space-y-8">
             <div class="bg-gradient-to-br from-matchaDark via-matchaBlue to-slate-900 rounded-3xl text-white p-8 sm:p-12 shadow-pro relative overflow-hidden flex flex-col justify-center items-center text-center border border-slate-700/50">
-                <div class="absolute -right-10 -bottom-10 w-60 h-60 bg-matchaPro/10 rounded-full blur-3xl pointer-events-none"></div>
-                <span class="bg-matchaPro/20 text-matchaPro text-xs font-black px-4 py-1.5 rounded-full mb-4 tracking-wider uppercase border border-matchaPro/30 shadow-sm">MatchaMarket Verified Platform</span>
+                <span class="bg-matchaPro/20 text-matchaPro text-xs font-black px-4 py-1.5 rounded-full mb-4 tracking-wider uppercase border border-matchaPro/30 shadow-sm">Cloud Real-time Marketplace</span>
                 <h1 class="text-3xl sm:text-5xl font-black mb-4 tracking-tight">มัจฉามาเก็ต - ตลาดสัตว์และอุปกรณ์ออนไลน์</h1>
-                <p class="text-sm sm:text-base text-slate-300 max-w-xl mx-auto mb-8 font-medium">ศูนย์รวมผู้เพาะพันธุ์สัตว์น้ำ สัตว์บก สัตว์ปีก และอุปกรณ์ตกแต่งตู้ปลา ตรวจสอบร้านค้าจริงโดยทีมงาน</p>
+                <p class="text-sm sm:text-base text-slate-300 max-w-xl mx-auto mb-8 font-medium">เชื่อมต่อฐานข้อมูลคลาวด์กลาง ข้อมูลร้านค้าและสินค้าซิงค์ถึงกันแบบเรียลไทม์</p>
             </div>
 
             <!-- หมวดหมู่ -->
             <div class="bg-white/80 backdrop-blur-md p-6 sm:p-8 rounded-3xl shadow-pro border border-slate-200/80">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-base font-extrabold text-slate-900 tracking-tight flex items-center space-x-2">
-                        <span>📂</span><span>หมวดหมู่ยอดนิยมทั้งหมด</span>
-                    </h2>
+                    <h2 class="text-base font-extrabold text-slate-900 tracking-tight">📂 หมวดหมู่ยอดนิยมทั้งหมด</h2>
                     <span class="text-xs text-slate-400 font-bold" x-text="filteredProducts.length + ' ผลลัพธ์'"></span>
                 </div>
                 <div class="grid grid-cols-2 sm:grid-cols-6 gap-4 text-center">
-                    <div @click="selectedCategory = 'all'" class="cursor-pointer p-4 rounded-2xl border-2 transition-all flex flex-col items-center space-y-2 group shadow-sm" :class="selectedCategory === 'all' ? 'border-matchaDark bg-matchaDark text-white shadow-md' : 'border-slate-200/60 bg-white text-slate-700'">
-                        <span class="text-3xl">🌟</span><span class="text-xs font-bold">ทั้งหมด</span>
-                    </div>
-                    <div @click="selectedCategory = 'สัตว์น้ำ'" class="cursor-pointer p-4 rounded-2xl border-2 transition-all flex flex-col items-center space-y-2 group shadow-sm" :class="selectedCategory === 'สัตว์น้ำ' ? 'border-matchaDark bg-matchaDark text-white shadow-md' : 'border-slate-200/60 bg-white text-slate-700'">
-                        <span class="text-3xl">🐟</span><span class="text-xs font-bold">สัตว์น้ำ</span>
-                    </div>
-                    <div @click="selectedCategory = 'สัตว์บก'" class="cursor-pointer p-4 rounded-2xl border-2 transition-all flex flex-col items-center space-y-2 group shadow-sm" :class="selectedCategory === 'สัตว์บก' ? 'border-matchaDark bg-matchaDark text-white shadow-md' : 'border-slate-200/60 bg-white text-slate-700'">
-                        <span class="text-3xl">🐅</span><span class="text-xs font-bold">สัตว์บก</span>
-                    </div>
-                    <div @click="selectedCategory = 'สัตว์ปีก'" class="cursor-pointer p-4 rounded-2xl border-2 transition-all flex flex-col items-center space-y-2 group shadow-sm" :class="selectedCategory === 'สัตว์ปีก' ? 'border-matchaDark bg-matchaDark text-white shadow-md' : 'border-slate-200/60 bg-white text-slate-700'">
-                        <span class="text-3xl">🐓</span><span class="text-xs font-bold">สัตว์ปีก</span>
-                    </div>
-                    <div @click="selectedCategory = 'อุปกรณ์'" class="cursor-pointer p-4 rounded-2xl border-2 transition-all flex flex-col items-center space-y-2 group shadow-sm" :class="selectedCategory === 'อุปกรณ์' ? 'border-matchaDark bg-matchaDark text-white shadow-md' : 'border-slate-200/60 bg-white text-slate-700'">
-                        <span class="text-3xl">⚙️</span><span class="text-xs font-bold">อุปกรณ์</span>
-                    </div>
-                    <div @click="selectedCategory = 'ของตกแต่ง'" class="cursor-pointer p-4 rounded-2xl border-2 transition-all flex flex-col items-center space-y-2 group shadow-sm" :class="selectedCategory === 'ของตกแต่ง' ? 'border-matchaDark bg-matchaDark text-white shadow-md' : 'border-slate-200/60 bg-white text-slate-700'">
-                        <span class="text-3xl">🪵</span><span class="text-xs font-bold">ของตกแต่ง</span>
-                    </div>
+                    <template x-for="cat in ['ทั้งหมด', 'สัตว์น้ำ', 'สัตว์บก', 'สัตว์ปีก', 'อุปกรณ์', 'ของตกแต่ง']">
+                        <div @click="selectedCategory = cat === 'ทั้งหมด' ? 'all' : cat" class="cursor-pointer p-4 rounded-2xl border-2 transition-all flex flex-col items-center space-y-2 group shadow-sm" :class="(selectedCategory === cat || (cat === 'ทั้งหมด' && selectedCategory === 'all')) ? 'border-matchaDark bg-matchaDark text-white shadow-md' : 'border-slate-200/60 bg-white text-slate-700'">
+                            <span class="text-3xl" x-text="cat === 'ทั้งหมด' ? '🌟' : (cat === 'สัตว์น้ำ' ? '🐟' : (cat === 'สัตว์บก' ? '🐅' : (cat === 'สัตว์ปีก' ? '🐓' : (cat === 'อุปกรณ์' ? '⚙️' : '🪵'))))"></span>
+                            <span class="text-xs font-bold" x-text="cat"></span>
+                        </div>
+                    </template>
                 </div>
             </div>
 
@@ -163,7 +163,7 @@
                                     <span class="text-[11px] font-extrabold text-slate-600 truncate" x-text="item.storeName"></span>
                                     <span class="text-matchaPro text-xs">✅</span>
                                 </div>
-                                <div class="text-blue-600 font-black text-base" x-text="'฿' + item.price.toLocaleString()"></div>
+                                <div class="text-blue-600 font-black text-base" x-text="'฿' + Number(item.price).toLocaleString()"></div>
                             </div>
                         </div>
                         <div class="p-4 pt-0">
@@ -189,7 +189,7 @@
                             <div>
                                 <span class="bg-blue-50 text-matchaBlue text-xs font-extrabold px-3 py-1 rounded-full" x-text="selectedProduct.category"></span>
                                 <h2 class="text-xl font-extrabold text-slate-900 mt-2 mb-2" x-text="selectedProduct.title"></h2>
-                                <div class="text-2xl font-black text-blue-600 mb-4" x-text="'฿' + selectedProduct.price.toLocaleString()"></div>
+                                <div class="text-2xl font-black text-blue-600 mb-4" x-text="'฿' + Number(selectedProduct.price).toLocaleString()"></div>
                                 <p class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3.5 rounded-2xl border border-slate-200 mb-4 shadow-inner" x-text="selectedProduct.desc"></p>
                                 <div class="bg-emerald-50 border border-emerald-200 p-3.5 rounded-2xl mb-4 shadow-sm">
                                     <div class="flex items-center space-x-1 font-bold text-xs text-emerald-900 mb-1">
@@ -211,8 +211,7 @@
         <!-- 2. หน้าลงทะเบียนร้าน -->
         <div x-show="currentTab === 'register-vendor'" class="max-w-md mx-auto bg-white/90 backdrop-blur-md p-8 sm:p-10 rounded-3xl shadow-pro border border-slate-200/80" x-transition>
             <h2 class="text-2xl font-extrabold text-matchaDark mb-2">สมัครเปิดร้านค้ามัจฉามาเก็ต</h2>
-            <p class="text-xs text-slate-500 mb-6">กรอกข้อมูลจริงเพื่อส่งคำขอให้แอดมินตรวจสอบ Verified</p>
-            
+            <p class="text-xs text-slate-500 mb-6">ข้อมูลจะถูกส่งขึ้นคลาวด์ไปยังหลังบ้านแอดมินทันที</p>
             <form @submit.prevent="submitVendorRegistration()" class="space-y-4 text-sm">
                 <div>
                     <label class="block font-bold text-slate-700 mb-1.5">ชื่อร้านค้า</label>
@@ -230,7 +229,7 @@
                     <label class="block font-bold text-slate-700 mb-1">ชื่อบัญชีธนาคาร <span class="text-matchaPro">*ต้องตรงกับชื่อเจ้าของร้าน</span></label>
                     <input type="text" x-model="vendorForm.bankAccName" required class="w-full border-2 border-white rounded-xl px-4 py-3 focus:border-matchaDark outline-none font-bold bg-white">
                 </div>
-                <button type="submit" class="w-full bg-matchaDark hover:bg-matchaBlue text-white py-3.5 rounded-2xl font-bold shadow-lg transition">ส่งข้อมูลขออนุมัติ Verified</button>
+                <button type="submit" class="w-full bg-matchaDark hover:bg-matchaBlue text-white py-3.5 rounded-2xl font-bold shadow-lg transition">ส่งข้อมูลขึ้นคลาวด์ขออนุมัติ</button>
             </form>
         </div>
 
@@ -238,7 +237,7 @@
         <div x-show="currentTab === 'post-product'" class="max-w-xl mx-auto bg-white/90 backdrop-blur-md p-8 sm:p-10 rounded-3xl shadow-pro border border-slate-200/80" x-transition>
             <div class="mb-6 border-b pb-4">
                 <h2 class="text-2xl font-extrabold text-matchaDark">➕ ลงขายสินค้าใหม่</h2>
-                <p class="text-xs text-slate-500 mt-1">เพิ่มข้อมูลสินค้าและรูปภาพจริงจากอัลบั้ม</p>
+                <p class="text-xs text-slate-500 mt-1">เพิ่มข้อมูลสินค้าขึ้นคลาวด์เพื่อให้ผู้ซื้อเห็นทันที</p>
             </div>
             <form @submit.prevent="submitProduct()" class="space-y-4 text-sm">
                 <div>
@@ -303,14 +302,14 @@
             </div>
         </div>
 
-        <!-- 5. หน้าแอดมิน (God Mode Dashboard) -->
+        <!-- 5. หน้าแอดมิน (Cloud Real-time Dashboard) -->
         <div x-show="currentTab === 'admin-panel'" class="space-y-6 max-w-4xl mx-auto text-sm" x-transition>
             <div class="flex justify-between items-center">
-                <h2 class="text-2xl font-black text-slate-900">⚙️ แดชบอร์ดแอดมินมัจฉามาเก็ต</h2>
+                <h2 class="text-2xl font-black text-slate-900">⚙️ แดชบอร์ดแอดมิน (Cloud Real-time)</h2>
                 <button @click="currentTab = 'home'" class="bg-slate-200 px-4 py-2 rounded-xl text-xs font-bold shadow-sm">กลับหน้าเว็บ</button>
             </div>
 
-            <!-- กล่องตั้งค่าข้อความประกาศวิ่ง -->
+            <!-- กล่องตั้งค่าประกาศ -->
             <div class="bg-white p-6 rounded-3xl shadow-pro border border-slate-200/80">
                 <h3 class="font-extrabold text-slate-800 mb-3 text-base">📢 ตั้งค่าข้อความประกาศวิ่งหน้าเว็บ</h3>
                 <div class="flex gap-3">
@@ -338,19 +337,19 @@
                 </div>
             </div>
 
-            <!-- คำขอเปิดร้านค้า (รออนุมัติ) -->
+            <!-- คำขอเปิดร้านค้าใหม่ (เรียลไทม์จากคลาวด์) -->
             <div class="bg-white p-6 rounded-3xl shadow-pro border border-slate-200/80">
-                <h3 class="font-extrabold text-slate-800 mb-4 text-base">🔔 คำขอเปิดร้านค้าใหม่ (รอตรวจสอบ Verified)</h3>
+                <h3 class="font-extrabold text-slate-800 mb-4 text-base">🔔 คำขอเปิดร้านค้าใหม่บนคลาวด์ (รอตรวจสอบ Verified)</h3>
                 <div class="space-y-3">
-                    <template x-for="(v, index) in pendingVendors" :key="index">
+                    <template x-for="(v, index) in pendingVendors" :key="v.firebaseId || index">
                         <div class="p-4 border-2 rounded-2xl flex justify-between items-center bg-amber-50/70 text-xs shadow-sm">
                             <div>
                                 <div class="font-bold text-slate-900 text-sm" x-text="v.storeName"></div>
                                 <div class="text-slate-600" x-text="'เจ้าของ: ' + v.ownerName + ' | บัญชี: ' + v.bankAcc + ' (' + v.bankAccName + ')'"></div>
                             </div>
                             <div class="space-x-2">
-                                <button @click="approveVendor(index)" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-xl font-bold shadow">อนุมัติ Verified</button>
-                                <button @click="rejectVendor(index)" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl font-bold shadow">ปฏิเสธ</button>
+                                <button @click="approveVendor(v)" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-xl font-bold shadow">อนุมัติ Verified</button>
+                                <button @click="rejectVendor(v)" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl font-bold shadow">ปฏิเสธ</button>
                             </div>
                         </div>
                     </template>
@@ -362,9 +361,9 @@
 
             <!-- จัดการสินค้าทั้งหมด -->
             <div class="bg-white p-6 rounded-3xl shadow-pro border border-slate-200/80">
-                <h3 class="font-extrabold text-slate-800 mb-4 text-base">🗑️ จัดการสินค้าทั้งหมดในระบบ</h3>
+                <h3 class="font-extrabold text-slate-800 mb-4 text-base">🗑️ จัดการสินค้าทั้งหมดบนคลาวด์</h3>
                 <div class="space-y-3 max-h-72 overflow-y-auto pr-1">
-                    <template x-for="(item, index) in products" :key="item.id">
+                    <template x-for="item in products" :key="item.firebaseId">
                         <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 flex justify-between items-center text-xs">
                             <div class="flex items-center space-x-3">
                                 <img :src="item.images[0]" class="w-12 h-12 object-cover rounded-xl border">
@@ -373,7 +372,7 @@
                                     <div class="text-slate-500" x-text="'ร้าน: ' + item.storeName + ' | ราคา: ' + item.price + ' ฿'"></div>
                                 </div>
                             </div>
-                            <button @click="adminDeleteProduct(index)" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-xl font-bold shadow">ลบสินค้า</button>
+                            <button @click="adminDeleteProduct(item)" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-xl font-bold shadow">ลบสินค้า</button>
                         </div>
                     </template>
                 </div>
@@ -381,9 +380,9 @@
 
             <!-- จัดการร้านค้า Verified -->
             <div class="bg-white p-6 rounded-3xl shadow-pro border border-slate-200/80">
-                <h3 class="font-extrabold text-slate-800 mb-4 text-base">👥 ร้านค้า Verified ในระบบ</h3>
+                <h3 class="font-extrabold text-slate-800 mb-4 text-base">👥 ร้านค้า Verified บนคลาวด์</h3>
                 <div class="space-y-3">
-                    <template x-for="(v, index) in approvedVendors">
+                    <template x-for="v in approvedVendors" :key="v.firebaseId || v.storeName">
                         <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 flex justify-between items-center text-xs shadow-sm">
                             <div>
                                 <div class="font-bold text-slate-900 text-sm flex items-center space-x-1">
@@ -391,7 +390,7 @@
                                 </div>
                                 <div class="text-slate-500 mt-0.5" x-text="'เจ้าของ: ' + v.ownerName + ' | บัญชี: ' + v.bankAcc + ' (' + v.bankAccName + ')'"></div>
                             </div>
-                            <button @click="banVendor(index)" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-xl font-bold shadow">ระงับร้านค้า</button>
+                            <button @click="banVendor(v)" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-xl font-bold shadow">ระงับร้านค้า</button>
                         </div>
                     </template>
                 </div>
@@ -427,7 +426,7 @@
         </div>
     </div>
 
-    <!-- Script ควบคุมระบบ (Real-time Sync & Persistent Storage) -->
+    <!-- Script ควบคุมระบบเชื่อมต่อ Firebase Cloud Real-time -->
     <script>
         function marketplaceApp() {
             return {
@@ -451,23 +450,9 @@
                 alertMessage: '',
                 showAlert(msg) { this.alertMessage = msg; this.showCustomAlert = true; },
                 
-                // ดึงข้อมูลร้านค้ารออนุมัติจาก localStorage อย่างแม่นยำ
-                pendingVendors: JSON.parse(localStorage.getItem('matcha_pending')) || [
-                    { storeName: 'ฟาร์มปลาสวยงาม', ownerName: 'คุณสมชาย', bankAcc: '111-2-33344-5', bankAccName: 'คุณสมชาย' }
-                ],
-                
-                approvedVendors: JSON.parse(localStorage.getItem('matcha_approved')) || [
-                    { storeName: 'Aqua World', ownerName: 'คุณสมศักดิ์', bankAcc: '999-1-88877-6', bankAccName: 'คุณสมศักดิ์' },
-                    { storeName: 'Exotic Pet TH', ownerName: 'คุณวิชัย', bankAcc: '888-2-55544-3', bankAccName: 'คุณวิชัย' }
-                ],
-
-                products: JSON.parse(localStorage.getItem('matcha_products')) || [
-                    { id: 1, category: 'สัตว์น้ำ', storeName: 'Aqua World', bankAccName: 'คุณสมศักดิ์', title: 'ปลาทองรันชู หัววุ้นสวยๆ แข็งแรง', desc: 'ขนาด 3.5 นิ้ว กินเก่ง ร่าเริง เลี้ยงง่ายในตู้ปลา ฟอร์มประกวด', price: 350, images: ['https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?q=80&w=800&auto=format&fit=crop'] },
-                    { id: 2, category: 'สัตว์บก', storeName: 'Exotic Pet TH', bankAccName: 'คุณวิชัย', title: 'กิ้งก่าคาดาร์ (Bearded Dragon) สีสวย', desc: 'เชื่องมาก สุขภาพแข็งแรง เหมาะสำหรับมือใหม่หัดเลี้ยง กินเก่งมาก', price: 2500, images: ['https://images.unsplash.com/photo-1508265434106-d664a737f07a?q=80&w=800&auto=format&fit=crop'] },
-                    { id: 3, category: 'สัตว์ปีก', storeName: 'Bantam Farm', bankAccName: 'คุณไก่แจ้', title: 'ไก่แจ้สายประกวด ขนสวยเต็มฟอร์ม', desc: 'เสียงขันไพเราะ เลี้ยงระบบปิด สะอาดแข็งแรง ปลอดโรค', price: 800, images: ['https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?q=80&w=800&auto=format&fit=crop'] },
-                    { id: 4, category: 'อุปกรณ์', storeName: 'Nano Tank Club', bankAccName: 'คุณอุปกรณ์', title: 'กรองแขวนตู้ปลาเสียงเงียบ ประหยัดไฟ', desc: 'พร้อมใช้งาน กรองน้ำใสสะอาดได้ดีเยี่ยม รับประกัน 6 เดือน', price: 280, images: ['https://images.unsplash.com/photo-1509423350716-97f9360b4e09?q=80&w=800&auto=format&fit=crop'] },
-                    { id: 5, category: 'ของตกแต่ง', storeName: 'AquaScape Pro', bankAccName: 'คุณแต่งตู้', title: 'ขอนไม้เรดบิวจัดตู้ปลาทรงธรรมชาติ', desc: 'จมน้ำแล้ว ไม่ทำให้น้ำเหลือง จัดตู้สวยงามเหมือนธรรมชาติแท้', price: 350, images: ['https://images.unsplash.com/photo-1544551763-46a013bb70d5?q=80&w=800&auto=format&fit=crop'] }
-                ],
+                pendingVendors: [],
+                approvedVendors: [],
+                products: [],
 
                 vendorForm: { storeName: '', ownerName: '', bankAcc: '', bankAccName: '' },
                 productForm: { category: '', title: '', price: '', desc: '', images: [] },
@@ -477,10 +462,30 @@
                 newMessage: '',
                 chatMessages: [],
 
-                saveData() {
-                    localStorage.setItem('matcha_products', JSON.stringify(this.products));
-                    localStorage.setItem('matcha_pending', JSON.stringify(this.pendingVendors));
-                    localStorage.setItem('matcha_approved', JSON.stringify(this.approvedVendors));
+                init() {
+                    let checkFirebase = setInterval(() => {
+                        if (window.db && window.firebaseFns) {
+                            clearInterval(checkFirebase);
+                            this.initRealtimeSync();
+                        }
+                    }, 500);
+                },
+
+                initRealtimeSync() {
+                    const { collection, onSnapshot, query, orderBy } = window.firebaseFns;
+                    const db = window.db;
+
+                    onSnapshot(query(collection(db, "products"), orderBy("id", "desc")), (snapshot) => {
+                        this.products = snapshot.docs.map(doc => ({ firebaseId: doc.id, ...doc.data() }));
+                    });
+
+                    onSnapshot(collection(db, "pendingVendors"), (snapshot) => {
+                        this.pendingVendors = snapshot.docs.map(doc => ({ firebaseId: doc.id, ...doc.data() }));
+                    });
+
+                    onSnapshot(collection(db, "approvedVendors"), (snapshot) => {
+                        this.approvedVendors = snapshot.docs.map(doc => ({ firebaseId: doc.id, ...doc.data() }));
+                    });
                 },
 
                 updateAnnouncement() {
@@ -591,68 +596,71 @@
                     localStorage.removeItem('matcha_status');
                 },
 
-                submitVendorRegistration() {
+                async submitVendorRegistration() {
                     if(this.vendorForm.bankAccName !== this.vendorForm.ownerName) {
                         this.showAlert('⚠️ ชื่อบัญชีธนาคารต้องตรงกับชื่อเจ้าของร้าน!');
                         return;
                     }
                     
-                    // บันทึกชื่อร้านลงในช่องผู้ใช้ปัจจุบัน และใส่คิวรออนุมัติทันที
                     this.currentUser = this.vendorForm.storeName;
-                    this.pendingVendors.push({...this.vendorForm});
                     this.vendorStatus = 'pending';
                     
+                    const { collection, addDoc } = window.firebaseFns;
+                    await addDoc(collection(window.db, "pendingVendors"), { ...this.vendorForm });
+
                     localStorage.setItem('matcha_user', this.currentUser);
                     localStorage.setItem('matcha_role', 'vendor');
                     localStorage.setItem('matcha_status', 'pending');
-                    this.saveData();
 
-                    this.showAlert('ส่งข้อมูลขอเปิดร้านสำเร็จ! ข้อมูลถูกส่งไปที่หลังบ้านแอดมินแล้ว รอตรวจสอบ Verified');
+                    this.showAlert('ส่งข้อมูลขอเปิดร้านขึ้นคลาวด์สำเร็จ! ข้อมูลเด้งไปที่หลังบ้านแอดมินแล้ว');
                     this.vendorForm = { storeName: '', ownerName: '', bankAcc: '', bankAccName: '' };
                     this.currentTab = 'home';
                 },
 
-                approveVendor(index) {
-                    let approvedStore = this.pendingVendors.splice(index, 1)[0];
-                    this.approvedVendors.push(approvedStore);
-                    if (this.currentUser && this.currentUser.toLowerCase() === approvedStore.storeName.toLowerCase()) {
+                async approveVendor(v) {
+                    const { collection, addDoc, doc, deleteDoc } = window.firebaseFns;
+                    const db = window.db;
+
+                    await addDoc(collection(db, "approvedVendors"), { storeName: v.storeName, ownerName: v.ownerName, bankAcc: v.bankAcc, bankAccName: v.bankAccName });
+                    await deleteDoc(doc(db, "pendingVendors", v.firebaseId));
+
+                    if (this.currentUser && this.currentUser.toLowerCase() === v.storeName.toLowerCase()) {
                         this.vendorStatus = 'approved';
-                        localStorage.setItem('matcha_status', this.vendorStatus);
+                        localStorage.setItem('matcha_status', 'approved');
                     }
-                    this.saveData();
-                    this.showAlert('อนุมัติ Verified ร้านค้าสำเร็จ!');
+                    this.showAlert('อนุมัติ Verified ร้านค้าบนคลาวด์สำเร็จ!');
                 },
 
-                rejectVendor(index) { 
-                    this.pendingVendors.splice(index, 1); 
-                    this.saveData();
-                    this.showAlert('ปฏิเสธคำขอเรียบร้อย'); 
+                async rejectVendor(v) {
+                    const { doc, deleteDoc } = window.firebaseFns;
+                    await deleteDoc(doc(window.db, "pendingVendors", v.firebaseId));
+                    this.showAlert('ปฏิเสธคำขอเรียบร้อย');
                 },
 
-                adminDeleteProduct(index) {
-                    if(confirm('คุณต้องการลบสินค้านี้ออกจากระบบใช่หรือไม่?')) {
-                        this.products.splice(index, 1);
-                        this.saveData();
+                async adminDeleteProduct(item) {
+                    if(confirm('คุณต้องการลบสินค้านี้ออกจากระบบคลาวด์ใช่หรือไม่?')) {
+                        const { doc, deleteDoc } = window.firebaseFns;
+                        await deleteDoc(doc(window.db, "products", item.firebaseId));
                         this.showAlert('ลบสินค้าสำเร็จเรียบร้อย');
                     }
                 },
 
-                banVendor(index) {
-                    if(confirm('คุณต้องการระงับ/ลบร้านค้านี้ออกจากระบบใช่หรือไม่?')) {
-                        this.approvedVendors.splice(index, 1);
-                        this.saveData();
+                async banVendor(v) {
+                    if(confirm('คุณต้องการระงับร้านค้านี้ออกจากระบบคลาวด์ใช่หรือไม่?')) {
+                        const { doc, deleteDoc } = window.firebaseFns;
+                        await deleteDoc(doc(window.db, "approvedVendors", v.firebaseId));
                         this.showAlert('ระงับร้านค้าสำเร็จเรียบร้อย');
                     }
                 },
 
-                submitProduct() {
+                async submitProduct() {
                     if(!this.productForm.category) { this.showAlert('กรุณาเลือกหมวดหมู่'); return; }
                     if(this.productForm.images.length === 0) { this.showAlert('กรุณาเลือกรูปภาพ'); return; }
                     
                     let storeInfo = this.approvedVendors.find(v => v.storeName.toLowerCase() === this.currentUser.toLowerCase());
                     let bankName = storeInfo ? storeInfo.bankAccName : this.currentUser;
 
-                    this.products.unshift({
+                    let newProduct = {
                         id: Date.now(),
                         category: this.productForm.category,
                         storeName: this.currentUser,
@@ -661,10 +669,12 @@
                         desc: this.productForm.desc,
                         price: Number(this.productForm.price),
                         images: [...this.productForm.images]
-                    });
-                    
-                    this.saveData();
-                    this.showAlert('เพิ่มสินค้าเข้าระบบสำเร็จ!');
+                    };
+
+                    const { collection, addDoc } = window.firebaseFns;
+                    await addDoc(collection(window.db, "products"), newProduct);
+
+                    this.showAlert('เพิ่มสินค้าขึ้นคลาวด์สำเร็จ!');
                     this.productForm = { category: '', title: '', price: '', desc: '', images: [] };
                     this.currentTab = 'home';
                 },
@@ -682,7 +692,7 @@
                     } else {
                         this.chatMessages = [
                             { sender: 'ระบบ', text: `🛡️ ปลอดภัย Verified: ตรวจสอบชื่อบัญชีผู้รับโอน (${item.bankAccName}) ให้ตรงกับร้านค้าก่อนชำระเงิน` },
-                            { sender: 'ผู้ซื้อ', text: `สวัสดีครับ สนใจสินค้า: ${item.title} ราคา ${item.price.toLocaleString()} บาท มีพร้อมส่งไหมครับ?` }
+                            { sender: 'ผู้ซื้อ', text: `สวัสดีครับ สนใจสินค้า: ${item.title} ราคา ${Number(item.price).toLocaleString()} บาท มีพร้อมส่งไหมครับ?` }
                         ];
                     }
 
