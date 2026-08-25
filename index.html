@@ -71,7 +71,7 @@
 </head>
 <body class="bg-gradient-to-br from-slate-100 via-matchaBg to-slate-200 text-slate-800 font-sans antialiased min-h-screen" x-data="marketplaceApp()">
 
-    <!-- 🌐 Header คลีน ไม่รก ไม่ล้นจอ -->
+    <!-- 🌐 Header คลีน รองรับทุกหน้าจอ -->
     <header class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-3 sm:px-4 h-16 sm:h-20 flex items-center justify-between gap-2">
             <!-- โลโก้ -->
@@ -91,20 +91,18 @@
 
             <!-- กลุ่มปุ่มขวาบน -->
             <div class="flex items-center space-x-1.5 sm:space-x-2 flex-shrink-0">
-                <!-- 💬 ปุ่มติดต่อแอดมินสดภายในเว็บ -->
                 <button @click="contactAdminChat()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl font-bold transition flex items-center space-x-1 border">
                     <span>💬</span><span class="hidden sm:inline">ติดต่อแอดมิน</span>
                 </button>
 
                 <template x-if="!currentUser">
-                    <button @click="showLoginModal = true" class="text-xs sm:text-sm font-bold text-slate-700 hover:text-matchaDark px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-2xl border-2 border-slate-200 hover:bg-slate-50 transition shadow-sm">
+                    <button @click="showLoginModal = true" class="text-xs sm:text-sm font-bold text-slate-700 hover:text-matchaDark px-3 py-1.5 sm:px-4 sm:py-2.5 rounded-xl sm:rounded-2xl border-2 border-slate-200 hover:bg-slate-50 transition shadow-sm">
                         เข้าสู่ระบบร้านค้า
                     </button>
                 </template>
                 
                 <template x-if="currentUser">
                     <div class="flex items-center space-x-1 sm:space-x-2">
-                        <!-- ปุ่มร้านของฉัน -->
                         <template x-if="userRole === 'vendor' && vendorStatus === 'approved'">
                             <div class="flex items-center space-x-1.5">
                                 <button @click="currentTab = 'my-shop'" class="relative bg-matchaDark hover:bg-matchaBlue text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs font-bold shadow transition flex items-center space-x-1">
@@ -141,6 +139,13 @@
             </div>
         </div>
     </div>
+
+    <!-- ⚠️ แถบเตือนบัญชีถูกระงับ (แสดงตลอดเมื่อร้านโดนแบน) -->
+    <template x-if="vendorStatus === 'banned'">
+        <div class="bg-red-600 text-white text-center py-2.5 px-4 text-xs font-bold shadow-md">
+            ⚠️ บัญชีร้านค้าของคุณถูกระงับการใช้งานชั่วคราว (ไม่สามารถลงขายสินค้า แก้ไขสต็อก หรือตอบแชทได้) กรุณาติดต่อแอดมิน
+        </div>
+    </template>
 
     <!-- 📦 Main Content -->
     <main class="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-8 space-y-5 sm:space-y-8">
@@ -246,7 +251,8 @@
                                         <span>🛡️ ร้าน Verified ปลอดภัย</span><span class="text-matchaPro">✅</span>
                                     </div>
                                     <div class="text-[11px] text-emerald-700" x-text="'ร้าน: ' + selectedProduct.storeName"></div>
-                                    <div class="text-[11px] font-extrabold text-emerald-900" x-text="'ผู้รับโอน: ' + selectedProduct.bankAccName"></div>
+                                    <div class="text-[11px] text-slate-600" x-text="'ธนาคาร: ' + (selectedProduct.bankType || 'พร้อมเพย์/ธนาคาร')"></div>
+                                    <div class="text-[11px] font-extrabold text-emerald-900" x-text="'ชื่อบัญชี: ' + selectedProduct.bankAccName"></div>
                                 </div>
                             </div>
 
@@ -313,10 +319,10 @@
                                 </div>
                             </div>
                             <div class="flex items-center space-x-1.5 self-end sm:self-auto">
-                                <button @click="updateProductStatus(item, 'available')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold transition" :class="(!item.status || item.status === 'available') ? 'bg-emerald-600 text-white shadow' : 'bg-slate-100 text-slate-600'">พร้อมขาย</button>
-                                <button @click="updateProductStatus(item, 'reserved')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold transition" :class="item.status === 'reserved' ? 'bg-amber-500 text-white shadow' : 'bg-slate-100 text-slate-600'">ติดจอง</button>
-                                <button @click="updateProductStatus(item, 'sold')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold transition" :class="item.status === 'sold' ? 'bg-red-600 text-white shadow' : 'bg-slate-100 text-slate-600'">ขายแล้ว</button>
-                                <button @click="deleteMyProduct(item)" class="p-1 text-slate-400 hover:text-red-600 transition ml-2">🗑️</button>
+                                <button @click="updateProductStatus(item, 'available')" :disabled="vendorStatus === 'banned'" class="px-2.5 py-1 rounded-lg text-[10px] font-bold transition" :class="(!item.status || item.status === 'available') ? 'bg-emerald-600 text-white shadow' : 'bg-slate-100 text-slate-600'">พร้อมขาย</button>
+                                <button @click="updateProductStatus(item, 'reserved')" :disabled="vendorStatus === 'banned'" class="px-2.5 py-1 rounded-lg text-[10px] font-bold transition" :class="item.status === 'reserved' ? 'bg-amber-500 text-white shadow' : 'bg-slate-100 text-slate-600'">ติดจอง</button>
+                                <button @click="updateProductStatus(item, 'sold')" :disabled="vendorStatus === 'banned'" class="px-2.5 py-1 rounded-lg text-[10px] font-bold transition" :class="item.status === 'sold' ? 'bg-red-600 text-white shadow' : 'bg-slate-100 text-slate-600'">ขายแล้ว</button>
+                                <button @click="deleteMyProduct(item)" :disabled="vendorStatus === 'banned'" class="p-1 text-slate-400 hover:text-red-600 transition ml-2">🗑️</button>
                             </div>
                         </div>
                     </template>
@@ -351,88 +357,116 @@
             </div>
         </div>
 
-        <!-- 3. หน้าลงทะเบียนร้าน (เก็บเบอร์โทรและช่องทางติดต่อ) -->
+        <!-- 3. หน้าลงทะเบียนร้าน (เฉพาะข้อมูลสำคัญ + เลือกธนาคาร) -->
         <div x-show="currentTab === 'register-vendor'" class="max-w-md mx-auto bg-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl shadow-pro border border-slate-200/80" x-transition>
             <h2 class="text-lg sm:text-xl font-extrabold text-matchaDark mb-1">สมัครเปิดร้านค้ามัจฉามาเก็ต</h2>
-            <p class="text-xs text-slate-500 mb-4">ข้อมูลจะถูกส่งขึ้นคลาวด์ไปยังหลังบ้านแอดมินเพื่อตรวจสอบ</p>
+            <p class="text-xs text-slate-500 mb-4">กรอกข้อมูลสำคัญเพื่อขอรับการอนุมัติ Verified</p>
             <form @submit.prevent="submitVendorRegistration()" class="space-y-3 text-xs sm:text-sm">
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">ชื่อร้านค้า (หรืออีเมลที่ใช้ล็อกอิน)</label>
-                    <input type="text" x-model="vendorForm.storeName" required class="w-full border-2 rounded-xl px-3 py-2 sm:py-2.5 focus:border-matchaDark outline-none bg-slate-50/50" placeholder="เช่น ร้านปลากัดเมืองกำแพง หรือ your-email@gmail.com">
+                    <label class="block font-bold text-slate-700 mb-1">ชื่อร้านค้า <span class="text-red-500">*</span></label>
+                    <input type="text" x-model="vendorForm.storeName" required class="w-full border-2 rounded-xl px-3 py-2 sm:py-2.5 focus:border-matchaDark outline-none bg-slate-50/50" placeholder="เช่น ร้านปลากัดศิลาเพชร">
                 </div>
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">ชื่อ-นามสกุลจริง (เจ้าของร้าน)</label>
+                    <label class="block font-bold text-slate-700 mb-1">ชื่อ-นามสกุลจริง (ผู้เปิดร้าน) <span class="text-red-500">*</span></label>
                     <input type="text" x-model="vendorForm.ownerName" required class="w-full border-2 rounded-xl px-3 py-2 sm:py-2.5 focus:border-matchaDark outline-none bg-slate-50/50">
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block font-bold text-slate-700 mb-1">เบอร์โทรศัพท์ (ใช้ล็อกอินได้) <span class="text-slate-400 font-normal">*(แอดมินเห็น)</span></label>
-                        <input type="tel" x-model="vendorForm.phone" required class="w-full border-2 rounded-xl px-3 py-2 sm:py-2.5 focus:border-matchaDark outline-none bg-slate-50/50" placeholder="08XXXXXXXX">
-                    </div>
-                    <div>
-                        <label class="block font-bold text-slate-700 mb-1">LINE ID / Facebook <span class="text-slate-400 font-normal">*(แอดมินเห็น)</span></label>
-                        <input type="text" x-model="vendorForm.contactInfo" required class="w-full border-2 rounded-xl px-3 py-2 sm:py-2.5 focus:border-matchaDark outline-none bg-slate-50/50" placeholder="เช่น @lineid">
-                    </div>
-                </div>
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">เลขที่บัญชีธนาคาร</label>
-                    <input type="text" x-model="vendorForm.bankAcc" required class="w-full border-2 rounded-xl px-3 py-2 sm:py-2.5 focus:border-matchaDark outline-none bg-slate-50/50" placeholder="เช่น 123-4-56789-0">
+                    <label class="block font-bold text-slate-700 mb-1">เบอร์โทรศัพท์ <span class="text-red-500">*</span></label>
+                    <input type="tel" x-model="vendorForm.phone" required class="w-full border-2 rounded-xl px-3 py-2 sm:py-2.5 focus:border-matchaDark outline-none bg-slate-50/50" placeholder="08XXXXXXXX">
                 </div>
-                <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-200">
-                    <label class="block font-bold text-slate-700 mb-1">ชื่อบัญชีธนาคาร <span class="text-matchaPro">*ต้องตรงกับชื่อเจ้าของร้าน</span></label>
-                    <input type="text" x-model="vendorForm.bankAccName" required class="w-full border-2 border-white rounded-lg px-3 py-2 focus:border-matchaDark outline-none font-bold bg-white">
+                
+                <!-- เลือกธนาคาร -->
+                <div class="bg-emerald-50/70 p-3 sm:p-4 rounded-2xl border border-emerald-200 space-y-2.5">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">ธนาคารที่ใช้รับเงิน <span class="text-red-500">*</span></label>
+                        <select x-model="vendorForm.bankType" required class="w-full border-2 border-white rounded-xl px-3 py-2 focus:border-matchaDark outline-none font-bold bg-white text-xs">
+                            <option value="">-- เลือกธนาคาร / พร้อมเพย์ --</option>
+                            <option value="ธนาคารกสิกรไทย (KBANK)">ธนาคารกสิกรไทย (KBANK)</option>
+                            <option value="ธนาคารไทยพาณิชย์ (SCB)">ธนาคารไทยพาณิชย์ (SCB)</option>
+                            <option value="ธนาคารกรุงไทย (KTB)">ธนาคารกรุงไทย (KTB)</option>
+                            <option value="ธนาคารกรุงเทพ (BBL)">ธนาคารกรุงเทพ (BBL)</option>
+                            <option value="ธนาคารกรุงศรีอยุธยา (BAY)">ธนาคารกรุงศรีอยุธยา (BAY)</option>
+                            <option value="ธนาคารทหารไทยธนชาต (ttb)">ธนาคารทหารไทยธนชาต (ttb)</option>
+                            <option value="ธนาคารออมสิน (GSB)">ธนาคารออมสิน (GSB)</option>
+                            <option value="ธ.ก.ส.">ธนาคารเพื่อการเกษตรและสหกรณ์การเกษตร (ธ.ก.ส.)</option>
+                            <option value="พร้อมเพย์ (PromptPay)">พร้อมเพย์ (PromptPay)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">เลขที่บัญชีธนาคาร / เบอร์พร้อมเพย์ <span class="text-red-500">*</span></label>
+                        <input type="text" x-model="vendorForm.bankAcc" required class="w-full border-2 border-white rounded-xl px-3 py-2 focus:border-matchaDark outline-none bg-white font-mono" placeholder="เช่น 123-4-56789-0">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">ชื่อบัญชี <span class="text-matchaPro text-[11px]">*ต้องตรงกับชื่อผู้เปิดร้าน</span></label>
+                        <input type="text" x-model="vendorForm.bankAccName" required class="w-full border-2 border-white rounded-xl px-3 py-2 focus:border-matchaDark outline-none font-bold bg-white">
+                    </div>
                 </div>
-                <button type="submit" class="w-full bg-matchaDark hover:bg-matchaBlue text-white py-3 rounded-xl font-bold shadow transition">ส่งข้อมูลขึ้นคลาวด์ขออนุมัติ</button>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">ช่องทางติดต่ออื่นๆ เช่น LINE ID / Facebook <span class="text-slate-400 font-normal">(ไม่บังคับ)</span></label>
+                    <input type="text" x-model="vendorForm.contactInfo" class="w-full border-2 rounded-xl px-3 py-2 sm:py-2.5 focus:border-matchaDark outline-none bg-slate-50/50" placeholder="เช่น @lineid หรือ ลิงก์เฟส">
+                </div>
+
+                <button type="submit" class="w-full bg-matchaDark hover:bg-matchaBlue text-white py-3 rounded-xl font-bold shadow transition">ส่งข้อมูลขอเปิดร้านค้า</button>
             </form>
         </div>
 
-        <!-- 4. หน้าลงโพสต์ขายสินค้า -->
+        <!-- 4. หน้าลงโพสต์ขายสินค้า (One-Tap Fast Post สะดวกและไวกว่าเดิม) -->
         <div x-show="currentTab === 'post-product'" class="max-w-lg mx-auto bg-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl shadow-pro border border-slate-200/80" x-transition>
-            <div class="mb-4 border-b pb-3">
-                <h2 class="text-lg sm:text-xl font-extrabold text-matchaDark">➕ ลงขายสินค้าใหม่</h2>
-                <p class="text-xs text-slate-500 mt-0.5">เพิ่มข้อมูลสินค้าขึ้นคลาวด์เพื่อให้ผู้ซื้อเห็นทันที</p>
+            <div class="mb-4 border-b pb-3 flex justify-between items-center">
+                <div>
+                    <h2 class="text-lg sm:text-xl font-extrabold text-matchaDark">➕ ลงขายสินค้าใหม่</h2>
+                    <p class="text-xs text-slate-500 mt-0.5">กรอกข้อมูลสินค้าเพื่อเปิดขายได้ทันที</p>
+                </div>
+                <button @click="currentTab = 'home'" class="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-xl font-bold text-slate-600">✕ ยกเลิก</button>
             </div>
-            <form @submit.prevent="submitProduct()" class="space-y-3 text-xs sm:text-sm">
+            <form @submit.prevent="submitProduct()" class="space-y-3.5 text-xs sm:text-sm">
+                <!-- หมวดหมู่แบบปุ่มกด One-Tap -->
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">หมวดหมู่สินค้า</label>
-                    <select x-model="productForm.category" required class="w-full border-2 rounded-xl px-3 py-2.5 focus:border-matchaDark outline-none bg-slate-50/50 font-bold">
-                        <option value="">-- เลือกหมวดหมู่ --</option>
-                        <option value="สัตว์น้ำ">🐟 สัตว์น้ำ</option>
-                        <option value="สัตว์บก">🐅 สัตว์บก</option>
-                        <option value="สัตว์ปีก">🐓 สัตว์ปีก</option>
-                        <option value="อุปกรณ์">⚙️ อุปกรณ์</option>
-                        <option value="ของตกแต่ง">🪵 ของตกแต่ง</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">ชื่อสินค้า</label>
-                    <input type="text" x-model="productForm.title" required class="w-full border-2 rounded-xl px-3 py-2 focus:border-matchaDark outline-none bg-slate-50/50">
-                </div>
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">ราคา (บาท)</label>
-                    <input type="number" x-model="productForm.price" required class="w-full border-2 rounded-xl px-3 py-2 focus:border-matchaDark outline-none bg-slate-50/50">
-                </div>
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">รายละเอียดสินค้า</label>
-                    <textarea x-model="productForm.desc" rows="3" required class="w-full border-2 rounded-xl px-3 py-2 focus:border-matchaDark outline-none bg-slate-50/50"></textarea>
-                </div>
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">รูปภาพสินค้า (ย่อขนาดอัตโนมัติ)</label>
-                    <input type="file" @change="handleImageUpload" accept="image/*" multiple class="w-full border-2 border-dashed rounded-xl p-3 text-xs bg-slate-50 cursor-pointer">
-                    <div class="flex gap-2 mt-2 overflow-x-auto" x-show="productForm.images.length > 0">
-                        <template x-for="img in productForm.images">
-                            <img :src="img" class="w-14 h-14 object-cover rounded-xl border flex-shrink-0">
+                    <label class="block font-bold text-slate-700 mb-1.5">เลือกหมวดหมู่ <span class="text-red-500">*</span></label>
+                    <div class="grid grid-cols-3 sm:grid-cols-5 gap-1.5">
+                        <template x-for="cat in ['สัตว์น้ำ', 'สัตว์บก', 'สัตว์ปีก', 'อุปกรณ์', 'ของตกแต่ง']">
+                            <button type="button" @click="productForm.category = cat" class="p-2 rounded-xl border-2 text-center font-bold text-xs transition" :class="productForm.category === cat ? 'bg-matchaDark text-white border-matchaDark shadow' : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'" x-text="cat"></button>
                         </template>
                     </div>
                 </div>
-                <button type="submit" :disabled="isUploading" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold shadow transition flex items-center justify-center space-x-2">
-                    <span x-show="!isUploading">ยืนยันลงขายสินค้า</span>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">ชื่อสินค้า <span class="text-red-500">*</span></label>
+                    <input type="text" x-model="productForm.title" required placeholder="เช่น ปลากัดหม้อฮาล์ฟมูน สีสด เกรดประกวด" class="w-full border-2 rounded-xl px-3 py-2.5 focus:border-matchaDark outline-none bg-slate-50/50">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">ราคาขาย (บาท) <span class="text-red-500">*</span></label>
+                    <input type="number" x-model="productForm.price" required placeholder="เช่น 350" class="w-full border-2 rounded-xl px-3 py-2.5 focus:border-matchaDark outline-none bg-slate-50/50 font-bold text-blue-600">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">รายละเอียดเพิ่มเติม</label>
+                    <textarea x-model="productForm.desc" rows="2" placeholder="ขนาด, เพศ, ตำหนิ, หรือการดูแล (ถ้ามี)" class="w-full border-2 rounded-xl px-3 py-2 focus:border-matchaDark outline-none bg-slate-50/50"></textarea>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">รูปภาพสินค้า <span class="text-slate-400 font-normal">(บีบอัดอัตโนมัติ)</span></label>
+                    <input type="file" @change="handleImageUpload" accept="image/*" multiple class="w-full border-2 border-dashed rounded-xl p-3 text-xs bg-slate-50 cursor-pointer">
+                    <div class="flex gap-2 mt-2 overflow-x-auto" x-show="productForm.images.length > 0">
+                        <template x-for="(img, idx) in productForm.images" :key="idx">
+                            <div class="relative flex-shrink-0">
+                                <img :src="img" class="w-14 h-14 object-cover rounded-xl border">
+                                <button type="button" @click="productForm.images.splice(idx, 1)" class="absolute -top-1.5 -right-1.5 bg-red-500 text-white rounded-full w-4 h-4 text-[10px] font-bold flex items-center justify-center">✕</button>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <button type="submit" :disabled="isUploading || vendorStatus === 'banned'" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold shadow transition flex items-center justify-center space-x-2">
+                    <span x-show="!isUploading">🚀 โพสต์ลงขายทันที</span>
                     <span x-show="isUploading">⏳ กำลังบันทึกข้อมูล...</span>
                 </button>
             </form>
         </div>
 
-        <!-- 5. หน้าแชทสดบนคลาวด์ + Live Mini-Cart -->
+        <!-- 5. หน้าแชทสดบนคลาวด์ + Live Mini-Cart + ปุ่มปิดการขาย -->
         <div x-show="currentTab === 'chat'" class="max-w-2xl mx-auto bg-white rounded-2xl sm:rounded-3xl shadow-pro border border-slate-200 overflow-hidden flex flex-col h-[560px] sm:h-[620px]" x-transition>
             <!-- ส่วนหัวแชท -->
             <div class="bg-matchaDark text-white px-4 py-3 flex justify-between items-center shadow-md">
@@ -445,7 +479,16 @@
                     </div>
                     <div class="text-[10px] text-slate-300">ห้องแชทเรียลไทม์ MatchaMarket</div>
                 </div>
-                <button @click="currentTab = (userRole === 'admin' ? 'admin-panel' : (userRole === 'vendor' ? 'my-shop' : 'home'))" class="bg-white/20 hover:bg-white/30 px-3 py-1 rounded-lg text-xs font-bold transition flex-shrink-0">← กลับ</button>
+
+                <div class="flex items-center space-x-1.5 flex-shrink-0">
+                    <!-- ปุ่มปิดการขาย (เฉพาะฝั่งร้านค้า และต้องไม่ใช่แชทแอดมิน) -->
+                    <template x-if="currentUser === activeChatStore && activeChatStore !== 'MatchaAdmin'">
+                        <button @click="closeDeal()" :disabled="vendorStatus === 'banned'" class="bg-emerald-500 hover:bg-emerald-600 text-white px-2.5 py-1 rounded-lg text-xs font-bold transition shadow flex items-center space-x-1">
+                            <span>💰 ปิดการขาย</span>
+                        </button>
+                    </template>
+                    <button @click="currentTab = (userRole === 'admin' ? 'admin-panel' : (userRole === 'vendor' ? 'my-shop' : 'home'))" class="bg-white/20 hover:bg-white/30 px-3 py-1 rounded-lg text-xs font-bold transition">← กลับ</button>
+                </div>
             </div>
 
             <!-- 🛒 Live Mini-Cart -->
@@ -453,7 +496,7 @@
                 <div class="bg-slate-100 border-b border-slate-200 p-2.5 px-3 sm:px-4 flex flex-col space-y-1.5 shadow-inner">
                     <div class="flex justify-between items-center text-[11px]">
                         <span class="font-extrabold text-slate-700 flex items-center space-x-1">
-                            <span>🛒 รายการที่สนใจ</span>
+                            <span>🛒 รายการที่สนใจ (รอบปัจจุบัน)</span>
                             <span class="text-slate-400 font-normal" x-text="'(' + activeChatItems.filter(i => !i.cancelled).length + ' รายการ)'"></span>
                         </span>
                         <span class="font-black text-blue-600 text-xs" x-text="'ยอดรวม: ฿' + activeChatTotal.toLocaleString()"></span>
@@ -504,26 +547,35 @@
 
             <!-- กล่องพิมพ์ส่งข้อความ -->
             <div class="p-2.5 sm:p-3 bg-white border-t flex space-x-2 items-center">
-                <input type="text" x-model="newMessage" @keyup.enter="sendCloudChatMessage()" placeholder="พิมพ์ข้อความคุยสด..." class="flex-1 border-2 rounded-xl px-3 py-2 text-xs sm:text-sm focus:border-matchaDark outline-none bg-slate-50">
-                <button @click="sendCloudChatMessage()" class="bg-matchaDark text-white px-4 sm:px-5 py-2 rounded-xl text-xs font-bold shadow hover:bg-matchaBlue transition flex-shrink-0">ส่ง</button>
+                <template x-if="vendorStatus === 'banned'">
+                    <div class="w-full text-center text-xs text-red-600 font-bold py-2 bg-red-50 rounded-xl">
+                        🔒 ร้านของคุณถูกระงับการใช้งาน ไม่สามารถส่งข้อความได้
+                    </div>
+                </template>
+                <template x-if="vendorStatus !== 'banned'">
+                    <div class="flex-1 flex space-x-2">
+                        <input type="text" x-model="newMessage" @keyup.enter="sendCloudChatMessage()" placeholder="พิมพ์ข้อความคุยสด..." class="flex-1 border-2 rounded-xl px-3 py-2 text-xs sm:text-sm focus:border-matchaDark outline-none bg-slate-50">
+                        <button @click="sendCloudChatMessage()" class="bg-matchaDark text-white px-4 sm:px-5 py-2 rounded-xl text-xs font-bold shadow hover:bg-matchaBlue transition flex-shrink-0">ส่ง</button>
+                    </div>
+                </template>
             </div>
         </div>
 
-        <!-- 6. หน้าแดชบอร์ดแอดมิน (โชว์ข้อมูลล็อกอิน, สรุปยอดขาย, แบน/ปลดแบน, ลบร้านค้า, ลบสินค้า, กล่องข้อความซัพพอร์ต) -->
+        <!-- 6. หน้าแดชบอร์ดแอดมิน (จัดการผู้ใช้, สรุปยอดขาย, ลบร้านค้า, ลบสินค้า) -->
         <div x-show="currentTab === 'admin-panel'" class="space-y-5 max-w-5xl mx-auto text-xs sm:text-sm" x-transition>
             <div class="flex justify-between items-center border-b pb-3">
                 <div>
                     <h2 class="text-lg sm:text-2xl font-black text-slate-900">⚙️ แดชบอร์ดแอดมิน (Matcha Admin Pro)</h2>
-                    <p class="text-xs text-slate-500">จัดการร้านค้า, ดูข้อมูลการล็อกอิน, และตอบข้อความติดต่อแอดมิน</p>
+                    <p class="text-xs text-slate-500">จัดการร้านค้า, ดูข้อมูลผู้ใช้ และควบคุมระบบทั้งหมด</p>
                 </div>
                 <button @click="currentTab = 'home'" class="bg-slate-200 px-3.5 py-1.5 rounded-xl text-xs font-bold shadow-sm">กลับหน้าเว็บ</button>
             </div>
 
-            <!-- การ์ดสรุปตัวเลขระบบ 4 ช่อง -->
+            <!-- การ์ดสรุปตัวเลขระบบ 4 ช่อง (การ์ดผู้ใช้กดดูรายชื่อได้) -->
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <div class="bg-white p-4 rounded-2xl border shadow-sm text-center">
-                    <div class="text-2xl sm:text-3xl font-black text-matchaDark" x-text="totalUsersCount"></div>
-                    <div class="text-[11px] text-slate-500 font-bold mt-1">👥 ผู้ใช้ทั้งหมด (ผู้ซื้อ+ร้าน)</div>
+                <div @click="showUsersModal = true" class="bg-white p-4 rounded-2xl border shadow-sm text-center cursor-pointer hover:border-matchaDark hover:shadow-md transition">
+                    <div class="text-2xl sm:text-3xl font-black text-matchaDark" x-text="allUniqueBuyers.length + approvedVendors.length"></div>
+                    <div class="text-[11px] text-slate-500 font-bold mt-1">👥 ผู้ใช้ทั้งหมด (คลิกเพื่อจัดการ)</div>
                 </div>
                 <div class="bg-white p-4 rounded-2xl border shadow-sm text-center">
                     <div class="text-2xl sm:text-3xl font-black text-emerald-600" x-text="approvedVendors.length"></div>
@@ -539,7 +591,7 @@
                 </div>
             </div>
 
-            <!-- 💬 กล่องข้อความผู้ใช้ติดต่อแอดมิน (Support Inbox) -->
+            <!-- 💬 กล่องข้อความผู้ใช้ติดต่อแอดมิน -->
             <div class="bg-white p-5 rounded-3xl shadow-pro border border-slate-200 space-y-3">
                 <div class="flex justify-between items-center">
                     <h3 class="font-extrabold text-slate-900 text-sm">💬 กล่องข้อความผู้ใช้ติดต่อแอดมิน (Support Inbox)</h3>
@@ -564,20 +616,20 @@
                 </div>
             </div>
 
-            <!-- 📊 ตารางสรุปยอดขาย + ข้อมูลล็อกอิน + แบน/ปลดแบน + ลบร้านค้า -->
+            <!-- 📊 ตารางสรุปรายชื่อร้านค้า + แบน/ปลดแบน + ลบร้านค้าถาวร -->
             <div class="bg-white p-5 rounded-3xl shadow-pro border border-slate-200/80 space-y-3">
                 <div class="flex justify-between items-center">
-                    <h3 class="font-extrabold text-slate-900 text-sm sm:text-base">📊 รายชื่อร้านค้าทั้งหมด & ข้อมูลการล็อกอิน (Admin Control)</h3>
+                    <h3 class="font-extrabold text-slate-900 text-sm sm:text-base">📊 รายชื่อร้านค้าทั้งหมด & จัดการบัญชี</h3>
                     <span class="text-xs text-slate-400" x-text="approvedVendors.length + ' ร้านค้า'"></span>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs">
                         <thead class="bg-slate-50 text-slate-500 border-b">
                             <tr>
-                                <th class="p-2.5">ชื่อร้าน / เจ้าของ</th>
-                                <th class="p-2.5">ข้อมูลที่ใช้ล็อกอิน (Login ID)</th>
-                                <th class="p-2.5">เบอร์โทร & ติดต่อ</th>
-                                <th class="p-2.5 text-center">ลงขาย / ขายแล้ว</th>
+                                <th class="p-2.5">ชื่อร้าน / บัญชีที่ใช้ล็อกอิน</th>
+                                <th class="p-2.5">ข้อมูลผู้เปิด & ธนาคาร</th>
+                                <th class="p-2.5">เบอร์โทรติดต่อ</th>
+                                <th class="p-2.5 text-center">ลงขาย/ขายแล้ว</th>
                                 <th class="p-2.5 text-right">ยอดขายรวม</th>
                                 <th class="p-2.5 text-center">สถานะ</th>
                                 <th class="p-2.5 text-center">จัดการร้านค้า</th>
@@ -588,25 +640,21 @@
                                 <tr class="hover:bg-slate-50 transition">
                                     <td class="p-2.5">
                                         <div class="font-bold text-slate-900" x-text="v.storeName"></div>
-                                        <div class="text-[11px] text-slate-400" x-text="v.ownerName"></div>
-                                    </td>
-                                    <!-- โชว์ข้อมูลการล็อกอิน -->
-                                    <td class="p-2.5">
-                                        <span class="bg-slate-100 text-matchaDark font-mono font-bold px-2 py-0.5 rounded text-[11px] border border-slate-200" x-text="v.storeName"></span>
-                                        <template x-if="v.phone">
-                                            <div class="text-[10px] text-slate-500 mt-0.5" x-text="'หรือเบอร์: ' + v.phone"></div>
-                                        </template>
+                                        <div class="text-[10px] text-slate-400 font-mono" x-text="'Login: ' + v.storeName"></div>
                                     </td>
                                     <td class="p-2.5">
-                                        <div class="font-bold text-slate-800" x-text="v.phone || '-'"></div>
-                                        <div class="text-[11px] text-blue-600" x-text="v.contactInfo || '-'"></div>
+                                        <div class="font-bold text-slate-800" x-text="v.ownerName"></div>
+                                        <div class="text-[11px] text-slate-500" x-text="(v.bankType || 'ธนาคาร') + ' ' + (v.bankAcc || '')"></div>
+                                    </td>
+                                    <td class="p-2.5">
+                                        <div class="font-bold text-blue-600" x-text="v.phone || '-'"></div>
+                                        <div class="text-[10px] text-slate-400" x-text="v.contactInfo || '-'"></div>
                                     </td>
                                     <td class="p-2.5 text-center font-bold" x-text="getStoreProductsCount(v.storeName) + ' / ' + getStoreSoldCount(v.storeName)"></td>
                                     <td class="p-2.5 text-right font-black text-blue-600" x-text="'฿' + getStoreSalesAmount(v.storeName).toLocaleString()"></td>
                                     <td class="p-2.5 text-center">
                                         <span class="px-2 py-0.5 rounded-full text-[10px] font-bold" :class="v.isBanned ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-700'" x-text="v.isBanned ? 'ถูกระงับ' : 'ปกติ'"></span>
                                     </td>
-                                    <!-- ปุ่ม แบน / ปลดแบน / ลบร้านค้า -->
                                     <td class="p-2.5 text-center">
                                         <div class="flex items-center justify-center space-x-1">
                                             <template x-if="!v.isBanned">
@@ -615,7 +663,7 @@
                                             <template x-if="v.isBanned">
                                                 <button @click="toggleBanVendor(v, false)" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2 py-1 rounded-lg font-bold text-[10px] transition">✅ ปลดแบน</button>
                                             </template>
-                                            <button @click="adminDeleteVendor(v)" class="bg-red-50 hover:bg-red-100 text-red-600 px-2 py-1 rounded-lg font-bold text-[10px] transition border border-red-200" title="ลบร้านค้านี้ถาวร">🗑️ ลบร้าน</button>
+                                            <button @click="adminDeleteVendor(v)" class="bg-red-50 hover:bg-red-100 text-red-600 px-2 py-1 rounded-lg font-bold text-[10px] transition border border-red-200" title="ลบร้านค้าและสินค้าทั้งหมด">🗑️ ลบร้าน</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -625,7 +673,7 @@
                 </div>
             </div>
 
-            <!-- 🔔 คำขอเปิดร้านค้าใหม่ (แสดงข้อมูลการล็อกอิน) -->
+            <!-- 🔔 คำขอเปิดร้านค้าใหม่ -->
             <div class="bg-white p-5 rounded-3xl shadow-pro border border-slate-200">
                 <h3 class="font-extrabold text-slate-800 mb-3 text-sm">🔔 คำขอเปิดร้านค้าใหม่ (รอตรวจสอบ)</h3>
                 <div class="space-y-2.5">
@@ -634,12 +682,10 @@
                             <div>
                                 <div class="font-bold text-slate-900 text-sm" x-text="v.storeName"></div>
                                 <div class="text-slate-600 mt-0.5">
-                                    <span class="font-bold">ข้อมูลล็อกอิน:</span> <span class="font-mono bg-white px-1.5 py-0.5 rounded border" x-text="v.storeName"></span> | 
-                                    <span>เจ้าของ: </span><span x-text="v.ownerName"></span> | 
-                                    <span>โทร: </span><span class="font-bold text-blue-600" x-text="v.phone || '-'"></span> | 
-                                    <span>ติดต่อ: </span><span x-text="v.contactInfo || '-'"></span>
+                                    <span>ผู้เปิด: </span><span class="font-bold" x-text="v.ownerName"></span> | 
+                                    <span>โทร: </span><span class="font-bold text-blue-600" x-text="v.phone || '-'"></span>
                                 </div>
-                                <div class="text-slate-500 text-[11px] mt-0.5" x-text="'บัญชีโอน: ' + v.bankAcc + ' (' + v.bankAccName + ')'"></div>
+                                <div class="text-slate-500 text-[11px] mt-0.5" x-text="'ธนาคาร: ' + (v.bankType || '-') + ' เลขบัญชี: ' + v.bankAcc + ' (' + v.bankAccName + ')'"></div>
                             </div>
                             <div class="space-x-1.5 flex self-end sm:self-auto">
                                 <button @click="approveVendor(v)" class="bg-green-500 text-white px-3.5 py-1.5 rounded-xl font-bold shadow text-xs">อนุมัติ Verified</button>
@@ -671,18 +717,32 @@
                     </template>
                 </div>
             </div>
-
-            <!-- ตั้งค่าประกาศ -->
-            <div class="bg-white p-5 rounded-3xl shadow-pro border border-slate-200">
-                <h3 class="font-extrabold text-slate-800 mb-2 text-sm">📢 ตั้งค่าข้อความประกาศวิ่งหน้าเว็บ</h3>
-                <div class="flex flex-col sm:flex-row gap-2">
-                    <input type="text" x-model="tempAnnouncement" class="flex-1 border-2 rounded-xl px-3 py-2 outline-none focus:border-matchaDark text-xs bg-slate-50" placeholder="พิมพ์ข้อความประกาศ...">
-                    <button @click="updateAnnouncement()" class="bg-matchaDark text-white px-5 py-2 rounded-xl font-bold text-xs shadow flex-shrink-0">อัปเดตประกาศ</button>
-                </div>
-            </div>
         </div>
 
     </main>
+
+    <!-- Modal จัดการผู้ใช้ทั้งหมด (สำหรับแอดมิน) -->
+    <div x-show="showUsersModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-md flex items-center justify-center z-50 p-4" x-transition>
+        <div class="bg-white p-6 rounded-3xl w-full max-w-xl shadow-2xl relative text-sm border" @click.away="showUsersModal = false">
+            <button @click="showUsersModal = false" class="absolute top-4 right-4 text-slate-400 font-bold">✕</button>
+            <h3 class="text-lg font-black text-slate-900 mb-1">👥 รายชื่อผู้ใช้งาน/ลูกค้าทั้งหมด</h3>
+            <p class="text-xs text-slate-500 mb-4">แสดงรายชื่อผู้ซื้อที่มีการติดต่อเข้ามาในระบบ (แอดมินสามารถลบข้อมูลได้)</p>
+            <div class="space-y-2 max-h-72 overflow-y-auto pr-1">
+                <template x-for="buyer in allUniqueBuyers" :key="buyer.phone">
+                    <div class="p-3 bg-slate-50 rounded-2xl border flex justify-between items-center text-xs">
+                        <div>
+                            <div class="font-bold text-slate-900" x-text="'👤 ' + buyer.name"></div>
+                            <div class="text-blue-600 text-[11px]" x-text="'📞 ' + buyer.phone"></div>
+                        </div>
+                        <button @click="adminDeleteBuyer(buyer)" class="bg-red-50 hover:bg-red-100 text-red-600 px-3 py-1 rounded-xl font-bold border border-red-200">🗑️ ลบข้อมูล</button>
+                    </div>
+                </template>
+                <template x-if="allUniqueBuyers.length === 0">
+                    <p class="text-xs text-slate-400 text-center py-6">ยังไม่มีข้อมูลลูกค้าในระบบ</p>
+                </template>
+            </div>
+        </div>
+    </div>
 
     <!-- Modal กรอกข้อมูลลูกค้าด่วน -->
     <div x-show="showBuyerModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-md flex items-center justify-center z-50 p-4" x-transition>
@@ -695,11 +755,11 @@
             </div>
             <form @submit.prevent="submitBuyerInfoAndStartChat()" class="space-y-3">
                 <div>
-                    <label class="block font-bold text-slate-700 text-xs mb-1">ชื่อเล่นของคุณ</label>
+                    <label class="block font-bold text-slate-700 text-xs mb-1">ชื่อเล่นของคุณ <span class="text-red-500">*</span></label>
                     <input type="text" x-model="buyerForm.name" required placeholder="เช่น คุณเดียร์" class="w-full border-2 rounded-xl px-3 py-2 text-xs focus:border-matchaDark outline-none bg-slate-50">
                 </div>
                 <div>
-                    <label class="block font-bold text-slate-700 text-xs mb-1">เบอร์โทรศัพท์สำหรับติดต่อ</label>
+                    <label class="block font-bold text-slate-700 text-xs mb-1">เบอร์โทรศัพท์สำหรับติดต่อ <span class="text-red-500">*</span></label>
                     <input type="tel" x-model="buyerForm.phone" required placeholder="เช่น 0812345678" class="w-full border-2 rounded-xl px-3 py-2 text-xs focus:border-matchaDark outline-none bg-slate-50">
                 </div>
                 <button type="submit" class="w-full bg-matchaDark hover:bg-matchaBlue text-white py-2.5 rounded-xl text-xs font-bold transition shadow mt-2">
@@ -714,8 +774,8 @@
         <div class="bg-white p-6 rounded-2xl sm:rounded-3xl w-full max-w-sm shadow-2xl relative text-sm border">
             <button @click="showLoginModal = false" class="absolute top-4 right-4 text-slate-400 font-bold">✕</button>
             <h3 class="text-lg font-extrabold text-slate-900 mb-1">เข้าสู่ระบบร้านค้า</h3>
-            <p class="text-xs text-slate-500 mb-4">กรอกชื่อร้านค้าหรืออีเมลที่ลงทะเบียน</p>
-            <input type="text" x-model="loginInput" placeholder="ชื่อร้านค้า หรือ อีเมล" class="w-full border-2 rounded-xl px-4 py-2.5 text-xs mb-3 focus:border-matchaDark outline-none font-bold text-center bg-slate-50">
+            <p class="text-xs text-slate-500 mb-4">กรอกชื่อร้านค้าหรือเบอร์โทรที่ลงทะเบียน</p>
+            <input type="text" x-model="loginInput" placeholder="ชื่อร้านค้า หรือ เบอร์โทร" class="w-full border-2 rounded-xl px-4 py-2.5 text-xs mb-3 focus:border-matchaDark outline-none font-bold text-center bg-slate-50">
             <div class="space-y-2">
                 <button @click="loginAsVendor()" class="w-full bg-matchaDark hover:bg-matchaBlue text-white py-2.5 rounded-xl text-xs font-bold transition shadow-md">เข้าสู่ระบบ (ผู้ขาย)</button>
                 <button @click="goToVendorRegister()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-xl text-xs font-bold transition shadow-md">สมัครเปิดร้านค้า Verified</button>
@@ -748,9 +808,9 @@
                 showLoginModal: false,
                 showProductModal: false,
                 showBuyerModal: false,
+                showUsersModal: false,
                 selectedProduct: null,
                 pendingProductForChat: null,
-                isContactingAdmin: false,
                 isUploading: false,
                 
                 currentUser: localStorage.getItem('matcha_user') || null,
@@ -776,8 +836,8 @@
                 myChatRooms: [],
                 unreadCountForMe: 0,
 
-                vendorForm: { storeName: '', ownerName: '', phone: '', contactInfo: '', bankAcc: '', bankAccName: '' },
-                productForm: { category: '', title: '', price: '', desc: '', images: [] },
+                vendorForm: { storeName: '', ownerName: '', phone: '', bankType: '', bankAcc: '', bankAccName: '', contactInfo: '' },
+                productForm: { category: 'สัตว์น้ำ', title: '', price: '', desc: '', images: [] },
 
                 activeChatStore: '',
                 activeChatBuyer: '',
@@ -818,7 +878,6 @@
                                 if (found.isBanned) {
                                     this.vendorStatus = 'banned';
                                     localStorage.setItem('matcha_status', 'banned');
-                                    this.showAlert('⚠️ บัญชีร้านค้าของคุณถูกระงับการใช้งาน กรุณาติดต่อแอดมิน');
                                 } else {
                                     this.vendorStatus = 'approved';
                                     localStorage.setItem('matcha_status', 'approved');
@@ -843,16 +902,18 @@
                     this.unreadCountForMe = this.myChatRooms.filter(c => c.unreadForVendor === true).length;
                 },
 
-                // แชทที่ติดต่อมาหาแอดมิน
                 get adminSupportChats() {
                     return this.allChats.filter(c => c.storeName === 'MatchaAdmin');
                 },
 
-                // Analytics
-                get totalUsersCount() {
-                    let uniqueBuyers = new Set();
-                    this.allChats.forEach(c => { if(c.buyerPhone) uniqueBuyers.add(c.buyerPhone); });
-                    return uniqueBuyers.size + this.approvedVendors.length;
+                get allUniqueBuyers() {
+                    let map = new Map();
+                    this.allChats.forEach(c => {
+                        if (c.buyerPhone && !map.has(c.buyerPhone)) {
+                            map.set(c.buyerPhone, { name: c.buyerName || 'ลูกค้า', phone: c.buyerPhone });
+                        }
+                    });
+                    return Array.from(map.values());
                 },
 
                 get totalSystemSales() {
@@ -886,11 +947,40 @@
                     }
                 },
 
+                // ลบร้านค้าถาวร (ลบทั้งบัญชีร้านค้าและสินค้าทั้งหมดของร้านนั้น)
                 async adminDeleteVendor(v) {
-                    if (confirm(`⚠️ คำเตือน: คุณต้องการลบร้านค้า "${v.storeName}" ออกจากระบบอย่างถาวรใช่หรือไม่?`)) {
+                    if (confirm(`⚠️ คำเตือน: คุณต้องการลบร้านค้า "${v.storeName}" และสินค้าทั้งหมดของร้านนี้ออกจากระบบอย่างถาวรใช่หรือไม่?`)) {
                         const { doc, deleteDoc } = window.firebaseFns;
-                        await deleteDoc(doc(window.db, "approvedVendors", v.firebaseId));
-                        this.showAlert(`ลบร้านค้า "${v.storeName}" ออกจากระบบสำเร็จ`);
+                        const db = window.db;
+
+                        // 1. ลบเอกสารร้านค้า
+                        await deleteDoc(doc(db, "approvedVendors", v.firebaseId));
+
+                        // 2. ลบสินค้าทั้งหมดของร้านนี้
+                        let storeProducts = this.products.filter(p => p.storeName && p.storeName.toLowerCase() === v.storeName.toLowerCase());
+                        for (let prod of storeProducts) {
+                            if (prod.firebaseId) {
+                                await deleteDoc(doc(db, "products", prod.firebaseId));
+                            }
+                        }
+
+                        this.showAlert(`ลบร้านค้า "${v.storeName}" และสินค้าทั้งหมดเรียบร้อยแล้ว`);
+                    }
+                },
+
+                // ลบข้อมูลผู้ใช้
+                async adminDeleteBuyer(buyer) {
+                    if (confirm(`คุณต้องการลบข้อมูลประวัติของลูกค้า "${buyer.name} (${buyer.phone})" ใช่หรือไม่?`)) {
+                        const { doc, deleteDoc } = window.firebaseFns;
+                        const db = window.db;
+
+                        let buyerChats = this.allChats.filter(c => c.buyerPhone === buyer.phone);
+                        for (let chat of buyerChats) {
+                            if (chat.id) {
+                                await deleteDoc(doc(db, "chats", chat.id));
+                            }
+                        }
+                        this.showAlert('ลบข้อมูลลูกค้าเรียบร้อย');
                     }
                 },
 
@@ -925,7 +1015,43 @@
                     });
                 },
 
+                // 💰 ฟังก์ชันปิดการขาย
+                async closeDeal() {
+                    if (this.vendorStatus === 'banned') {
+                        this.showAlert('⚠️ บัญชีถูกระงับ ไม่สามารถทำรายการได้');
+                        return;
+                    }
+                    if (!this.activeChatId) return;
+
+                    if (confirm('คุณต้องการปิดการขายรายการนี้ใช่หรือไม่? (ระบบจะเริ่มบิลคำนวณสินค้าใหม่เมื่อลูกค้าสั่งรอบหน้า)')) {
+                        const { doc, updateDoc, collection, addDoc } = window.firebaseFns;
+                        const db = window.db;
+
+                        let totalDeal = this.activeChatTotal;
+
+                        // เคลียร์รายการ Mini-Cart เพื่อเริ่มรอบใหม่
+                        await updateDoc(doc(db, "chats", this.activeChatId), {
+                            items: [],
+                            lastMessage: `✅ ร้านค้าได้ปิดการขายยอด ฿${totalDeal.toLocaleString()} เรียบร้อยแล้ว`,
+                            updatedAt: Date.now()
+                        });
+
+                        await addDoc(collection(db, `chats/${this.activeChatId}/messages`), {
+                            sender: 'ระบบ',
+                            text: `🎉 ร้านค้าได้ทำการ [ปิดการขาย] ยอดรวม ฿${totalDeal.toLocaleString()} บาท เรียบร้อยแล้ว ขอบคุณที่ใช้บริการครับ! (เริ่มการสั่งซื้อรอบใหม่)`,
+                            timestamp: Date.now()
+                        });
+
+                        this.activeChatItems = [];
+                        this.showAlert('ปิดการขายสำเร็จ!');
+                    }
+                },
+
                 async updateProductStatus(item, newStatus) {
+                    if (this.vendorStatus === 'banned') {
+                        this.showAlert('⚠️ บัญชีถูกระงับ ไม่สามารถแก้ไขสต็อกได้');
+                        return;
+                    }
                     if (!item || !item.firebaseId) return;
                     try {
                         const { doc, updateDoc } = window.firebaseFns;
@@ -939,6 +1065,10 @@
                 },
 
                 async deleteMyProduct(item) {
+                    if (this.vendorStatus === 'banned') {
+                        this.showAlert('⚠️ บัญชีถูกระงับ ไม่สามารถลบสินค้าได้');
+                        return;
+                    }
                     if (confirm(`คุณต้องการลบสินค้า "${item.title}" ใช่หรือไม่?`)) {
                         const { doc, deleteDoc } = window.firebaseFns;
                         await deleteDoc(doc(window.db, "products", item.firebaseId));
@@ -989,8 +1119,6 @@
 
                 handleImageUpload(event) {
                     const files = event.target.files;
-                    this.productForm.images = [];
-
                     for (let i = 0; i < Math.min(files.length, 5); i++) {
                         const file = files[i];
                         const reader = new FileReader();
@@ -1095,7 +1223,7 @@
 
                 async submitVendorRegistration() {
                     if(this.vendorForm.bankAccName !== this.vendorForm.ownerName) {
-                        this.showAlert('⚠️ ชื่อบัญชีธนาคารต้องตรงกับชื่อเจ้าของร้าน!');
+                        this.showAlert('⚠️ ชื่อบัญชีธนาคารต้องตรงกับชื่อผู้เปิดร้าน!');
                         return;
                     }
                     
@@ -1110,7 +1238,7 @@
                     localStorage.setItem('matcha_status', 'pending');
 
                     this.showAlert('ส่งข้อมูลขอเปิดร้านขึ้นคลาวด์สำเร็จ!');
-                    this.vendorForm = { storeName: '', ownerName: '', phone: '', contactInfo: '', bankAcc: '', bankAccName: '' };
+                    this.vendorForm = { storeName: '', ownerName: '', phone: '', bankType: '', bankAcc: '', bankAccName: '', contactInfo: '' };
                     this.currentTab = 'home';
                 },
 
@@ -1122,9 +1250,10 @@
                         storeName: v.storeName, 
                         ownerName: v.ownerName, 
                         phone: v.phone || '', 
-                        contactInfo: v.contactInfo || '', 
+                        bankType: v.bankType || 'พร้อมเพย์/ธนาคาร',
                         bankAcc: v.bankAcc, 
                         bankAccName: v.bankAccName,
+                        contactInfo: v.contactInfo || '', 
                         isBanned: false
                     });
                     await deleteDoc(doc(db, "pendingVendors", v.firebaseId));
@@ -1158,12 +1287,14 @@
 
                     let storeInfo = this.approvedVendors.find(v => v.storeName.toLowerCase() === this.currentUser.toLowerCase());
                     let bankName = storeInfo ? storeInfo.bankAccName : (this.currentUser || 'บัญชีกลาง');
+                    let bankType = storeInfo ? storeInfo.bankType : 'พร้อมเพย์/ธนาคาร';
 
                     let newProduct = {
                         id: Date.now(),
                         category: this.productForm.category,
                         storeName: this.currentUser || 'ร้านค้าทั่วไป',
                         bankAccName: bankName,
+                        bankType: bankType,
                         title: this.productForm.title,
                         desc: this.productForm.desc || '-',
                         price: Number(this.productForm.price),
@@ -1176,7 +1307,7 @@
                         await addDoc(collection(window.db, "products"), newProduct);
 
                         this.showAlert('เพิ่มสินค้าขึ้นคลาวด์สำเร็จ!');
-                        this.productForm = { category: '', title: '', price: '', desc: '', images: [] };
+                        this.productForm = { category: 'สัตว์น้ำ', title: '', price: '', desc: '', images: [] };
                         this.currentTab = 'home';
                     } catch (error) {
                         console.error(error);
@@ -1186,9 +1317,7 @@
                     }
                 },
 
-                // 💬 ติดต่อแอดมินสดภายในเว็บ
                 contactAdminChat() {
-                    this.isContactingAdmin = true;
                     let dummyItem = {
                         title: 'สอบถาม / ขอความช่วยเหลือจากแอดมิน',
                         price: 0,
@@ -1262,11 +1391,11 @@
                             itemsList = chatDoc.data().items || [];
                             
                             let exists = itemsList.find(i => i.title === item.title && !i.cancelled);
-                            if (!exists) {
+                            if (!exists && item.price > 0) {
                                 itemsList.push(newItemObj);
                             }
                         } else {
-                            itemsList = [newItemObj];
+                            if (item.price > 0) itemsList = [newItemObj];
                             let newChatRef = await addDoc(collection(db, "chats"), {
                                 storeName: item.storeName,
                                 buyerName: buyerName,
@@ -1354,6 +1483,10 @@
                 },
 
                 async sendCloudChatMessage() {
+                    if (this.vendorStatus === 'banned') {
+                        this.showAlert('⚠️ บัญชีถูกระงับ ไม่สามารถส่งข้อความได้');
+                        return;
+                    }
                     if(!this.newMessage.trim() || !this.activeChatId) return;
                     let textToSend = this.newMessage;
                     this.newMessage = '';
