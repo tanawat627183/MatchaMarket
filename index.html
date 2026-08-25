@@ -9,7 +9,7 @@
     <!-- 🌐 Firebase SDK & Real-time Configuration -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAty0GHQuQg40tisnafT9-GK5olaVmrcPg",
@@ -23,7 +23,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         window.db = db;
-        window.firebaseFns = { collection, addDoc, getDocs, doc, deleteDoc, updateDoc, onSnapshot, query, orderBy };
+        window.firebaseFns = { collection, addDoc, getDocs, doc, deleteDoc, updateDoc, onSnapshot, query, orderBy, serverTimestamp };
     </script>
 
     <script>
@@ -108,9 +108,14 @@
                 </template>
 
                 <template x-if="userRole === 'vendor' && vendorStatus === 'approved'">
-                    <button @click="currentTab = 'post-product'" class="bg-gradient-to-r from-blue-600 to-matchaAccent hover:from-blue-700 text-white px-3.5 sm:px-5 py-2 sm:py-3 rounded-2xl text-xs sm:text-sm font-bold shadow-lg shadow-blue-500/20 transition transform hover:-translate-y-0.5">
-                        + ลงขาย
-                    </button>
+                    <div class="flex items-center space-x-2">
+                        <button @click="currentTab = 'vendor-chats'" class="bg-matchaBlue hover:bg-matchaDark text-white px-3 py-2 rounded-2xl text-xs font-bold shadow transition">
+                            💬 กล่องข้อความร้าน
+                        </button>
+                        <button @click="currentTab = 'post-product'" class="bg-gradient-to-r from-blue-600 to-matchaAccent hover:from-blue-700 text-white px-3.5 sm:px-5 py-2 sm:py-3 rounded-2xl text-xs sm:text-sm font-bold shadow-lg shadow-blue-500/20 transition transform hover:-translate-y-0.5">
+                            + ลงขาย
+                        </button>
+                    </div>
                 </template>
             </div>
         </div>
@@ -205,7 +210,7 @@
                                 </div>
                             </div>
                             <button @click="openChat(selectedProduct)" class="w-full bg-matchaDark hover:bg-matchaBlue text-white py-3 sm:py-3.5 rounded-2xl font-bold shadow-lg transition flex items-center justify-center space-x-2 text-xs sm:text-sm">
-                                <span>💬 ทักแชทร้านค้านี้เลย</span>
+                                <span>💬 ทักแชทร้านค้านี้เลย (คลาวด์สด)</span>
                             </button>
                         </div>
                     </div>
@@ -281,29 +286,52 @@
             </form>
         </div>
 
-        <!-- 4. หน้าแชทร้านค้า -->
+        <!-- 4. หน้าแชทสดบนคลาวด์ (Real-time Cloud Chat) -->
         <div x-show="currentTab === 'chat'" class="max-w-2xl mx-auto bg-white/90 backdrop-blur-md rounded-3xl shadow-pro border border-slate-200/80 overflow-hidden flex flex-col h-[550px] sm:h-[600px]" x-transition>
             <div class="bg-matchaDark text-white px-5 sm:px-6 py-4 flex justify-between items-center shadow-md">
                 <div>
-                    <div class="font-bold text-xs sm:text-sm" x-text="'ร้าน: ' + activeChatStore"></div>
+                    <div class="font-bold text-xs sm:text-sm" x-text="'แชทร้าน: ' + activeChatStore"></div>
                     <div class="text-[10px] sm:text-[11px] text-slate-300 truncate max-w-[200px] sm:max-w-md" x-text="'สินค้า: ' + activeChatProduct"></div>
                 </div>
                 <button @click="currentTab = 'home'" class="bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-xl text-xs font-bold transition flex-shrink-0">← กลับ</button>
             </div>
             <div class="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-50 text-xs sm:text-sm" id="chatContainer">
-                <template x-for="msg in chatMessages">
-                    <div class="flex flex-col" :class="msg.sender === 'ผู้ซื้อ' ? 'items-end' : 'items-start'">
+                <template x-for="msg in chatMessages" :key="msg.id">
+                    <div class="flex flex-col" :class="msg.sender === (currentUser || 'ผู้ซื้อ') ? 'items-end' : 'items-start'">
                         <div class="text-[10px] text-slate-400 mb-0.5 px-1 font-bold" x-text="msg.sender"></div>
                         <div class="px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-2xl max-w-[85%] sm:max-w-[80%] shadow-sm leading-relaxed" 
-                             :class="msg.sender === 'ผู้ซื้อ' ? 'bg-matchaDark text-white' : (msg.sender === 'ระบบ' ? 'bg-emerald-100 text-emerald-900 border border-emerald-300 w-full text-center' : 'bg-white text-slate-800 border')" 
+                             :class="msg.sender === (currentUser || 'ผู้ซื้อ') ? 'bg-matchaDark text-white' : (msg.sender === 'ระบบ' ? 'bg-emerald-100 text-emerald-900 border border-emerald-300 w-full text-center' : 'bg-white text-slate-800 border')" 
                              x-text="msg.text">
                         </div>
                     </div>
                 </template>
             </div>
             <div class="p-3 sm:p-4 bg-white border-t flex space-x-2 sm:space-x-3 items-center">
-                <input type="text" x-model="newMessage" @keyup.enter="sendChatMessage()" placeholder="พิมพ์ข้อความคุยกับร้านค้า..." class="flex-1 border-2 rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm focus:border-matchaDark outline-none bg-slate-50/50">
-                <button @click="sendChatMessage()" class="bg-matchaDark text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-2xl text-xs font-bold shadow hover:bg-matchaBlue transition flex-shrink-0">ส่ง</button>
+                <input type="text" x-model="newMessage" @keyup.enter="sendCloudChatMessage()" placeholder="พิมพ์ข้อความคุยสดบนคลาวด์..." class="flex-1 border-2 rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm focus:border-matchaDark outline-none bg-slate-50/50">
+                <button @click="sendCloudChatMessage()" class="bg-matchaDark text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-2xl text-xs font-bold shadow hover:bg-matchaBlue transition flex-shrink-0">ส่ง</button>
+            </div>
+        </div>
+
+        <!-- 4.1 หน้ากล่องข้อความรวมสำหรับร้านค้า -->
+        <div x-show="currentTab === 'vendor-chats'" class="max-w-4xl mx-auto bg-white p-6 sm:p-8 rounded-3xl shadow-pro border border-slate-200/80 space-y-6" x-transition>
+            <div class="flex justify-between items-center border-b pb-4">
+                <h2 class="text-xl font-black text-slate-900">💬 กล่องข้อความลูกค้า (ร้านค้าของคุณ)</h2>
+                <button @click="currentTab = 'home'" class="bg-slate-200 px-4 py-2 rounded-xl text-xs font-bold">กลับหน้าหลัก</button>
+            </div>
+            <p class="text-xs text-slate-500">รายชื่อห้องแชททั้งหมดที่มีลูกค้าติดต่อเข้ามาที่ร้านของคุณ:</p>
+            <div class="space-y-3">
+                <template x-for="chatRoom in myChatRooms" :key="chatRoom.id">
+                    <div @click="openExistingChat(chatRoom)" class="p-4 bg-slate-50 hover:bg-slate-100 rounded-2xl border border-slate-200 cursor-pointer flex justify-between items-center transition shadow-sm">
+                        <div>
+                            <div class="font-bold text-slate-900 text-sm" x-text="'สินค้า: ' + chatRoom.productName"></div>
+                            <div class="text-xs text-slate-500 mt-0.5" x-text="'ห้องแชทระหว่างคุณกับลูกค้า'"></div>
+                        </div>
+                        <span class="bg-matchaDark text-white px-4 py-2 rounded-xl text-xs font-bold">เปิดแชทคุยสด</span>
+                    </div>
+                </template>
+                <template x-if="myChatRooms.length === 0">
+                    <p class="text-xs text-slate-400 text-center py-6">ยังไม่มีลูกค้าทักแชทเข้ามาในขณะนี้</p>
+                </template>
             </div>
         </div>
 
@@ -431,7 +459,7 @@
         </div>
     </div>
 
-    <!-- Script ควบคุมระบบเชื่อมต่อ Firebase Cloud Real-time -->
+    <!-- Script ควบคุมระบบเชื่อมต่อ Firebase Cloud Real-time Chat -->
     <script>
         function marketplaceApp() {
             return {
@@ -443,7 +471,7 @@
                 showProductModal: false,
                 selectedProduct: null,
                 
-                currentUser: localStorage.getItem('matcha_user') || null,
+                currentUser: localStorage.getItem('matcha_user'] || null,
                 userRole: localStorage.getItem('matcha_role') || 'guest', 
                 vendorStatus: localStorage.getItem('matcha_status') || 'none', 
                 loginInput: '',
@@ -458,14 +486,17 @@
                 pendingVendors: [],
                 approvedVendors: [],
                 products: [],
+                myChatRooms: [],
 
                 vendorForm: { storeName: '', ownerName: '', bankAcc: '', bankAccName: '' },
                 productForm: { category: '', title: '', price: '', desc: '', images: [] },
 
                 activeChatStore: '',
                 activeChatProduct: '',
+                activeChatId: '',
                 newMessage: '',
                 chatMessages: [],
+                chatUnsubscribe: null,
 
                 init() {
                     let checkFirebase = setInterval(() => {
@@ -496,8 +527,20 @@
                             if (found) {
                                 this.vendorStatus = 'approved';
                                 localStorage.setItem('matcha_status', 'approved');
+                                this.loadVendorChatRooms();
                             }
                         }
+                    });
+                },
+
+                loadVendorChatRooms() {
+                    if (!this.currentUser) return;
+                    const { collection, onSnapshot, query, where } = window.firebaseFns;
+                    const db = window.db;
+
+                    onSnapshot(collection(db, "chats"), (snapshot) => {
+                        let allChats = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                        this.myChatRooms = allChats.filter(c => c.storeName && c.storeName.toLowerCase() === this.currentUser.toLowerCase());
                     });
                 },
 
@@ -562,6 +605,7 @@
                     let found = this.approvedVendors.find(v => v.storeName.toLowerCase() === this.currentUser.toLowerCase());
                     if (found) {
                         this.vendorStatus = 'approved';
+                        this.loadVendorChatRooms();
                     } else {
                         let pendingFound = this.pendingVendors.find(v => v.storeName.toLowerCase() === this.currentUser.toLowerCase());
                         this.vendorStatus = pendingFound ? 'pending' : 'none';
@@ -702,45 +746,81 @@
                     }
                 },
 
-                openChat(item) {
+                async openChat(item) {
                     this.showProductModal = false;
                     this.activeChatStore = item.storeName;
                     this.activeChatProduct = item.title;
                     
-                    let chatKey = 'matcha_chat_' + item.storeName;
-                    let savedChat = localStorage.getItem(chatKey);
+                    const { collection, addDoc, getDocs, query, where, onSnapshot, orderBy } = window.firebaseFns;
+                    const db = window.db;
 
-                    if (savedChat) {
-                        this.chatMessages = JSON.parse(savedChat);
+                    // ค้นหาห้องแชทของสินค้านี้ หรือสร้างห้องใหม่บนคลาวด์
+                    let q = query(collection(db, "chats"), where("storeName", "==", item.storeName), where("productName", "==", item.title));
+                    let querySnapshot = await getDocs(q);
+
+                    if (!querySnapshot.empty) {
+                        let chatDoc = querySnapshot.docs[0];
+                        this.activeChatId = chatDoc.id;
+                        this.listenToChatMessages(this.activeChatId);
                     } else {
-                        this.chatMessages = [
-                            { sender: 'ระบบ', text: `🛡️ ปลอดภัย Verified: ตรวจสอบชื่อบัญชีผู้รับโอน (${item.bankAccName}) ให้ตรงกับร้านค้าก่อนชำระเงิน` },
-                            { sender: 'ผู้ซื้อ', text: `สวัสดีครับ สนใจสินค้า: ${item.title} ราคา ${Number(item.price).toLocaleString()} บาท มีพร้อมส่งไหมครับ?` }
-                        ];
+                        // สร้างห้องแชทใหม่พร้อมข้อความต้อนรับ
+                        let newChatRef = await addDoc(collection(db, "chats"), {
+                            storeName: item.storeName,
+                            productName: item.title,
+                            createdAt: Date.now()
+                        });
+                        this.activeChatId = newChatRef.id;
+
+                        // เพิ่มข้อความระบบเริ่มต้น
+                        await addDoc(collection(db, `chats/${this.activeChatId}/messages`), {
+                            sender: 'ระบบ',
+                            text: `🛡️ ปลอดภัย Verified: ตรวจสอบชื่อบัญชีผู้รับโอน (${item.bankAccName}) ให้ตรงกับร้านค้าก่อนชำระเงิน`,
+                            timestamp: Date.now()
+                        });
+                        this.listenToChatMessages(this.activeChatId);
                     }
 
                     this.currentTab = 'chat';
-                    setTimeout(() => { let box = document.getElementById('chatContainer'); if(box) box.scrollTop = box.scrollHeight; }, 100);
                 },
 
-                sendChatMessage() {
-                    if(!this.newMessage.trim()) return;
-                    this.chatMessages.push({ sender: 'ผู้ซื้อ', text: this.newMessage });
+                openExistingChat(chatRoom) {
+                    this.activeChatStore = chatRoom.storeName;
+                    this.activeChatProduct = chatRoom.productName;
+                    this.activeChatId = chatRoom.id;
+                    this.listenToChatMessages(chatRoom.id);
+                    this.currentTab = 'chat';
+                },
+
+                listenToChatMessages(chatId) {
+                    if (this.chatUnsubscribe) { this.chatUnsubscribe(); }
+                    const { collection, onSnapshot, query, orderBy } = window.firebaseFns;
+                    const db = window.db;
+
+                    let q = query(collection(db, `chats/${chatId}/messages`), orderBy("timestamp", "asc"));
+                    this.chatUnsubscribe = onSnapshot(q, (snapshot) => {
+                        this.chatMessages = snapshot.docs.map(doc => doc.data());
+                        setTimeout(() => {
+                            let box = document.getElementById('chatContainer');
+                            if(box) box.scrollTop = box.scrollHeight;
+                        }, 100);
+                    });
+                },
+
+                async sendCloudChatMessage() {
+                    if(!this.newMessage.trim() || !this.activeChatId) return;
+                    let textToSend = this.newMessage;
                     this.newMessage = '';
 
-                    let chatKey = 'matcha_chat_' + this.activeChatStore;
-                    localStorage.setItem(chatKey, JSON.stringify(this.chatMessages));
+                    let senderName = this.currentUser || 'ผู้ซื้อทั่วไป';
 
-                    setTimeout(() => {
-                        let box = document.getElementById('chatContainer');
-                        if(box) box.scrollTop = box.scrollHeight;
-                        setTimeout(() => {
-                            this.chatMessages.push({ sender: this.activeChatStore, text: 'สวัสดีครับ มีสินค้าพร้อมส่งครับ แจ้งที่อยู่จัดส่งได้เลยครับ' });
-                            localStorage.setItem(chatKey, JSON.stringify(this.chatMessages));
-                            let box2 = document.getElementById('chatContainer');
-                            if(box2) box2.scrollTop = box2.scrollHeight;
-                        }, 1000);
-                    }, 50);
+                    const { collection, addDoc } = window.firebaseFns;
+                    const db = window.db;
+
+                    await addDoc(collection(db, `chats/${this.activeChatId}/messages`), {
+                        sender: senderName,
+                        text: textToSend,
+                        timestamp: Date.now()
+                    });
                 }
             }
         }
