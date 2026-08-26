@@ -164,7 +164,7 @@
             </div>
         </header>
 
-        <!-- 📢 แบนเนอร์ประกาศวิ่ง (ซิงค์แบบเรียลไทม์จากคลาวด์) -->
+        <!-- 📢 แบนเนอร์ประกาศวิ่ง -->
         <div class="bg-gradient-to-r from-oceanAbyss via-oceanDark to-oceanAbyss text-aquaGlow text-[11px] sm:text-xs py-2 font-bold shadow-inner overflow-hidden border-b border-oceanNavy/40">
             <div class="marquee-container flex items-center">
                 <div class="animate-marquee flex items-center space-x-16">
@@ -215,16 +215,16 @@
                     </div>
                 </div>
 
-                <!-- หมวดหมู่ -->
+                <!-- หมวดหมู่ (รวม 7 หมวดหมู่: ทั้งหมด, สัตว์น้ำ, สัตว์บก, สัตว์ปีก, อุปกรณ์, ของตกแต่ง, อื่นๆ) -->
                 <div class="glass-card p-4 rounded-3xl shadow-sm border border-slate-200">
                     <div class="flex justify-between items-center mb-3">
                         <h2 class="text-xs sm:text-sm font-extrabold text-oceanAbyss tracking-tight">📂 หมวดหมู่สินค้า</h2>
                         <span class="text-[11px] text-slate-500 font-bold" x-text="filteredProducts.length + ' รายการ'"></span>
                     </div>
-                    <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 text-center">
-                        <template x-for="cat in ['ทั้งหมด', 'สัตว์น้ำ', 'สัตว์บก', 'สัตว์ปีก', 'อุปกรณ์', 'ของตกแต่ง']">
-                            <div @click="selectedCategory = cat === 'ทั้งหมด' ? 'all' : cat" class="cursor-pointer p-2.5 sm:p-3 rounded-2xl border-2 transition-all flex flex-col items-center space-y-1 group shadow-sm" :class="(selectedCategory === cat || (cat === 'ทั้งหมด' && selectedCategory === 'all')) ? 'border-aquaCyan bg-gradient-to-b from-oceanDark to-oceanAbyss text-white shadow-md' : 'border-slate-200 bg-white text-slate-700 hover:border-aquaCyan/60 hover:bg-sky-50/50'">
-                                <span class="text-lg sm:text-xl" x-text="cat === 'ทั้งหมด' ? '🌟' : (cat === 'สัตว์น้ำ' ? '🐟' : (cat === 'สัตว์บก' ? '🐅' : (cat === 'สัตว์ปีก' ? '🐓' : (cat === 'อุปกรณ์' ? '⚙️' : '🪵'))))"></span>
+                    <div class="grid grid-cols-3 sm:grid-cols-7 gap-2 text-center">
+                        <template x-for="cat in ['ทั้งหมด', 'สัตว์น้ำ', 'สัตว์บก', 'สัตว์ปีก', 'อุปกรณ์', 'ของตกแต่ง', 'อื่นๆ']">
+                            <div @click="selectedCategory = cat === 'ทั้งหมด' ? 'all' : cat" class="cursor-pointer p-2 sm:p-3 rounded-2xl border-2 transition-all flex flex-col items-center space-y-1 group shadow-sm" :class="(selectedCategory === cat || (cat === 'ทั้งหมด' && selectedCategory === 'all')) ? 'border-aquaCyan bg-gradient-to-b from-oceanDark to-oceanAbyss text-white shadow-md' : 'border-slate-200 bg-white text-slate-700 hover:border-aquaCyan/60 hover:bg-sky-50/50'">
+                                <span class="text-lg sm:text-xl" x-text="cat === 'ทั้งหมด' ? '🌟' : (cat === 'สัตว์น้ำ' ? '🐟' : (cat === 'สัตว์บก' ? '🐅' : (cat === 'สัตว์ปีก' ? '🐓' : (cat === 'อุปกรณ์' ? '⚙️' : (cat === 'ของตกแต่ง' ? '🪵' : '📦')))))"></span>
                                 <span class="text-[10px] sm:text-xs font-bold" x-text="cat"></span>
                             </div>
                         </template>
@@ -468,7 +468,7 @@
                 </form>
             </div>
 
-            <!-- 4. หน้าลงโพสต์ขายสินค้า -->
+            <!-- 4. หน้าลงโพสต์ขายสินค้า (รองรับหมวดหมู่ "อื่นๆ") -->
             <div x-show="currentTab === 'post-product'" class="max-w-lg mx-auto glass-card p-5 sm:p-7 rounded-3xl shadow-sm border border-slate-200" x-transition>
                 <div class="mb-3.5 border-b pb-2.5 flex justify-between items-center">
                     <div>
@@ -480,8 +480,8 @@
                 <form @submit.prevent="submitProduct()" class="space-y-3 text-xs sm:text-sm">
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">เลือกหมวดหมู่ <span class="text-red-500">*</span></label>
-                        <div class="grid grid-cols-3 sm:grid-cols-5 gap-1.5">
-                            <template x-for="cat in ['สัตว์น้ำ', 'สัตว์บก', 'สัตว์ปีก', 'อุปกรณ์', 'ของตกแต่ง']">
+                        <div class="grid grid-cols-3 sm:grid-cols-6 gap-1.5">
+                            <template x-for="cat in ['สัตว์น้ำ', 'สัตว์บก', 'สัตว์ปีก', 'อุปกรณ์', 'ของตกแต่ง', 'อื่นๆ']">
                                 <button type="button" @click="productForm.category = cat" class="p-2 rounded-xl border-2 text-center font-bold text-xs transition" :class="productForm.category === cat ? 'bg-oceanDark text-white border-oceanDark shadow-sm' : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'" x-text="cat"></button>
                             </template>
                         </div>
@@ -522,7 +522,7 @@
                 </form>
             </div>
 
-            <!-- 5. หน้าแชทสดบนคลาวด์ + Live Mini-Cart + ส่งรูป + ขอข้อมูลชำระเงิน + ปิดการขาย -->
+            <!-- 5. หน้าแชทสดบนคลาวด์ -->
             <div x-show="currentTab === 'chat'" class="max-w-2xl mx-auto bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-[560px] sm:h-[620px]" x-transition>
                 <!-- ส่วนหัวแชท -->
                 <div class="bg-gradient-to-r from-oceanAbyss via-oceanDark to-oceanNavy text-white px-3.5 py-3 flex justify-between items-center shadow-md">
@@ -848,7 +848,7 @@
         </div>
     </footer>
 
-    <!-- Modal เลือกเหตุผลการแบนร้านค้า (สำหรับแอดมิน) -->
+    <!-- Modal เลือกเหตุผลการแบนร้านค้า -->
     <div x-show="showBanModal" class="fixed inset-0 bg-oceanAbyss/75 backdrop-blur-md flex items-center justify-center z-50 p-4" x-transition>
         <div class="bg-white p-5 sm:p-6 rounded-3xl w-full max-w-sm shadow-2xl relative text-sm border border-slate-100" @click.away="showBanModal = false">
             <button @click="showBanModal = false" class="absolute top-4 right-4 text-slate-400 font-bold">✕</button>
@@ -1024,7 +1024,6 @@
                     const { collection, onSnapshot, query, orderBy, doc } = window.firebaseFns;
                     const db = window.db;
 
-                    // ซิงค์ข้อความประกาศวิ่งหน้าเว็บจากคลาวด์แบบ Real-time
                     onSnapshot(doc(db, "settings", "global"), (docSnap) => {
                         if (docSnap.exists() && docSnap.data().announcement) {
                             this.announcementText = docSnap.data().announcement;
@@ -1185,7 +1184,6 @@
                     this.tempAnnouncement = text;
                 },
 
-                // อัปเดตข้อความประกาศวิ่งขึ้นคลาวด์เพื่อให้ทุกเครื่องเห็นตรงกันทันที
                 async updateAnnouncement() {
                     if(!this.tempAnnouncement.trim()) return;
                     const newText = this.tempAnnouncement.trim();
