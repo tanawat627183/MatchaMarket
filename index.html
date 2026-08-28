@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>MatchaMarket (มัจฉามาเก็ต) - ตลาดซื้อ-ขายสัตว์น้ำและสิ่งมีชีวิตมืออาชีพ</title>
     
+    <!-- 📱 Favicon & PWA Web App Icons -->
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="apple-touch-icon" href="logo.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0A2540">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
     <!-- 🔤 Google Font: Prompt -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -100,14 +108,12 @@
 <body class="bg-gradient-to-br from-slate-100 via-sky-50 to-blue-100/70 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between" x-data="marketplaceApp()">
 
     <div>
-        <!-- 🌐 Header สไตล์ Aquatic Glassmorphism -->
+        <!-- 🌐 Header แสดงโลโก้จริง MatchaMarket -->
         <header class="glass-header border-b border-slate-200 sticky top-0 z-50 shadow-sm">
             <div class="max-w-7xl mx-auto px-2.5 sm:px-4 h-16 sm:h-20 flex items-center justify-between gap-1.5 sm:gap-2">
                 <!-- โลโก้ มัจฉามาเก็ต -->
-                <div class="flex items-center space-x-2 cursor-pointer flex-shrink-0 group" @click="currentTab = 'home'; selectedCategory = 'all'">
-                    <div class="w-8 h-8 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-oceanDark via-oceanNavy to-aquaCyan flex items-center justify-center text-white font-black text-sm sm:text-xl shadow-md shadow-aquaCyan/20 group-hover:scale-105 transition-transform duration-300">
-                        🐠
-                    </div>
+                <div class="flex items-center space-x-2.5 cursor-pointer flex-shrink-0 group" @click="currentTab = 'home'; selectedCategory = 'all'">
+                    <img src="logo.png" onerror="this.onerror=null; this.src='https://placehold.co/100x100?text=Matcha'" class="w-9 h-9 sm:w-11 sm:h-11 rounded-2xl object-cover shadow-md border border-slate-200 group-hover:scale-105 transition-transform duration-300">
                     <div>
                         <span class="text-base sm:text-2xl font-extrabold tracking-tight text-oceanAbyss leading-none flex items-center">
                             Matcha<span class="text-transparent bg-clip-text bg-gradient-to-r from-aquaCyan to-oceanNavy">Market</span>
@@ -174,7 +180,7 @@
             </div>
         </div>
 
-        <!-- ⚠️ แถบเตือนร้านค้าที่โดนแบน -->
+        <!-- ⚠️ แถบเตือนร้านค้าที่โดนแบน (กระพริบช้าๆ) -->
         <template x-if="vendorStatus === 'banned'">
             <div class="bg-gradient-to-r from-red-700 via-red-600 to-red-800 text-white py-2.5 px-4 text-xs font-bold shadow-lg flex flex-wrap items-center justify-between gap-2 border-b-2 border-red-900 animate-slow-glow">
                 <div class="flex items-center space-x-2">
@@ -1601,7 +1607,7 @@
 
                 async rejectVendor(v) {
                     const { doc, deleteDoc } = window.firebaseFns;
-                    await deleteDoc(doc(window.db, "pendingVendors", v.firebaseId));
+                    await deleteDoc(doc(db, "pendingVendors", v.firebaseId));
                     this.showAlert('ปฏิเสธคำขอเรียบร้อย');
                 },
 
@@ -1657,7 +1663,7 @@
                         price: 0,
                         storeName: 'MatchaAdmin',
                         bankAccName: 'MatchaMarket Official',
-                        images: ['https://placehold.co/400x400?text=Admin+Help']
+                        images: ['logo.png']
                     };
                     this.handleBuyerChatClick(dummyItem);
                 },
