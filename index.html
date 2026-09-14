@@ -9,7 +9,7 @@
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="apple-touch-icon" href="logo.png">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0A2540">
+    <meta name="theme-color" content="#06162D">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -58,8 +58,9 @@
                         aquaCoral: '#FF6B6B',   
                     },
                     boxShadow: {
-                        'aqua-glow': '0 10px 30px -5px rgba(0, 180, 216, 0.25)',
-                        'card-hover': '0 18px 35px -8px rgba(6, 22, 45, 0.12), 0 10px 15px -8px rgba(6, 22, 45, 0.06)',
+                        'luxury': '0 20px 40px -15px rgba(6, 22, 45, 0.08), 0 0 0 1px rgba(226, 232, 240, 0.8)',
+                        'card-hover': '0 25px 50px -12px rgba(0, 180, 216, 0.18), 0 0 0 1.5px rgba(0, 180, 216, 0.35)',
+                        'badge-glow': '0 8px 20px -4px rgba(0, 180, 216, 0.35)',
                     }
                 }
             }
@@ -72,6 +73,7 @@
             overflow-x: hidden;
             -webkit-text-size-adjust: 100%;
             font-family: 'Prompt', sans-serif;
+            background-color: #F8FAFC;
         }
         @keyframes marquee {
             0% { transform: translateX(100%); }
@@ -94,39 +96,41 @@
             animation: slowGlowPulse 3s ease-in-out infinite;
         }
         .glass-header {
-            background: rgba(255, 255, 255, 0.94);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
         }
         .glass-card {
-            background: rgba(255, 255, 255, 0.96);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 10px 25px -5px rgba(6, 22, 45, 0.08);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(12px);
+        }
+        .badge-shadow {
+            filter: drop-shadow(0 6px 12px rgba(6, 22, 45, 0.12));
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-slate-100 via-sky-50 to-blue-100/70 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between" x-data="marketplaceApp()">
+<body class="text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between" x-data="marketplaceApp()">
 
     <div>
         <!-- 🌐 Header สไตล์แพลตฟอร์ม E-Commerce ระดับพรีเมียม -->
-        <header class="glass-header border-b border-slate-200/80 sticky top-0 z-50 shadow-sm">
+        <header class="glass-header border-b border-slate-200/90 sticky top-0 z-50 shadow-sm">
             <div class="max-w-7xl mx-auto px-3 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-4">
                 <!-- โลโก้ มัจฉามาเก็ต -->
-                <div class="flex items-center space-x-2.5 cursor-pointer flex-shrink-0 group" @click="currentTab = 'home'; selectedCategory = 'all'">
-                    <img src="logo.png" onerror="this.onerror=null; this.src='https://placehold.co/100x100?text=Matcha'" class="w-9 h-9 sm:w-11 sm:h-11 rounded-2xl object-cover shadow-md border border-slate-200 group-hover:scale-105 transition-transform duration-300">
+                <div class="flex items-center space-x-3 cursor-pointer flex-shrink-0 group" @click="currentTab = 'home'; selectedCategory = 'all'">
+                    <img src="logo.png" onerror="this.onerror=null; this.src='https://placehold.co/100x100?text=Matcha'" class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl object-cover shadow-md border border-slate-200 group-hover:scale-105 transition-all duration-300">
                     <div>
-                        <span class="text-base sm:text-2xl font-extrabold tracking-tight text-oceanAbyss leading-none flex items-center">
+                        <span class="text-lg sm:text-2xl font-extrabold tracking-tight text-oceanAbyss leading-none flex items-center">
                             Matcha<span class="text-transparent bg-clip-text bg-gradient-to-r from-aquaCyan to-oceanNavy">Market</span>
                         </span>
-                        <span class="hidden sm:flex items-center space-x-1 text-[10px] text-slate-400 font-bold tracking-wider uppercase mt-0.5">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+                        <span class="hidden sm:flex items-center space-x-1 text-[10px] text-slate-400 font-bold tracking-wider uppercase mt-1">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
                             <span>ตลาดซื้อ-ขายสัตว์น้ำคลาวด์เรียลไทม์</span>
                         </span>
                     </div>
                 </div>
                 
                 <!-- ช่องค้นหาใหญ่ (จอคอม) -->
-                <div class="flex-1 max-w-xl hidden md:flex items-center bg-white border-2 border-slate-200 rounded-2xl overflow-hidden focus-within:border-aquaCyan focus-within:ring-2 focus-within:ring-aquaCyan/20 transition-all shadow-sm">
+                <div class="flex-1 max-w-xl hidden md:flex items-center bg-white border-2 border-slate-200/90 rounded-2xl overflow-hidden focus-within:border-aquaCyan focus-within:ring-2 focus-within:ring-aquaCyan/20 transition-all shadow-sm">
                     <span class="pl-4 text-slate-400 text-sm">🔍</span>
                     <input type="text" x-model="searchKeyword" placeholder="ค้นหาปลากัด, ปลาสวยงาม, ไม้น้ำ หรืออุปกรณ์..." class="w-full px-3 py-2.5 text-xs sm:text-sm bg-transparent outline-none font-medium text-slate-800">
                     <template x-if="searchKeyword">
@@ -136,40 +140,40 @@
                 </div>
 
                 <!-- กลุ่มปุ่มขวาบน -->
-                <div class="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
-                    <button @click="contactAdminChat()" class="text-[11px] sm:text-xs bg-white hover:bg-slate-50 text-slate-700 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl font-bold transition flex items-center space-x-1.5 border border-slate-200 shadow-sm">
+                <div class="flex items-center space-x-1.5 sm:space-x-2 flex-shrink-0">
+                    <button @click="contactAdminChat()" class="text-xs bg-white hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-xl font-bold transition flex items-center space-x-1.5 border border-slate-200 shadow-sm">
                         <span>💬</span><span class="hidden sm:inline">ติดต่อแอดมิน</span>
                     </button>
 
                     <template x-if="!currentUser">
-                        <button @click="showLoginModal = true" class="text-[11px] sm:text-xs font-bold text-oceanDark hover:text-aquaCyan px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-xl border border-slate-200 bg-white hover:border-aquaCyan transition shadow-sm">
+                        <button @click="showLoginModal = true" class="text-xs font-bold text-oceanDark hover:text-aquaCyan px-3.5 sm:px-4 py-2 rounded-xl border border-slate-200 bg-white hover:border-aquaCyan transition shadow-sm">
                             เข้าสู่ระบบร้านค้า
                         </button>
                     </template>
                     
                     <template x-if="currentUser">
-                        <div class="flex items-center space-x-1 sm:space-x-1.5">
+                        <div class="flex items-center space-x-1.5">
                             <template x-if="userRole === 'vendor' && vendorStatus === 'approved'">
-                                <div class="flex items-center space-x-1 sm:space-x-1.5">
-                                    <button @click="currentTab = 'my-shop'" class="relative bg-gradient-to-r from-oceanDark to-oceanNavy text-white px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-bold shadow transition flex items-center space-x-1">
+                                <div class="flex items-center space-x-1.5">
+                                    <button @click="currentTab = 'my-shop'" class="relative bg-gradient-to-r from-oceanDark to-oceanNavy text-white px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold shadow transition flex items-center space-x-1">
                                         <span>🏪 ร้านของฉัน</span>
                                         <template x-if="unreadCountForMe > 0">
                                             <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border border-white animate-pulse"></span>
                                         </template>
                                     </button>
-                                    <button @click="currentTab = 'post-product'" class="bg-gradient-to-r from-aquaCyan to-blue-600 text-white px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-bold shadow transition">
+                                    <button @click="currentTab = 'post-product'" class="bg-gradient-to-r from-aquaCyan to-blue-600 text-white px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold shadow transition">
                                         + ลงขาย
                                     </button>
                                 </div>
                             </template>
 
                             <template x-if="userRole === 'admin'">
-                                <button @click="currentTab = 'admin-panel'" class="bg-slate-900 hover:bg-black text-white px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-bold shadow transition">
+                                <button @click="currentTab = 'admin-panel'" class="bg-slate-900 hover:bg-black text-white px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold shadow transition">
                                     ⚙️ แดชบอร์ดแอดมิน
                                 </button>
                             </template>
 
-                            <button @click="logout()" class="text-[11px] sm:text-xs bg-red-50 text-red-600 hover:bg-red-100 px-2 py-1.5 sm:px-2.5 sm:py-2 rounded-xl font-bold transition border border-red-100">ออก</button>
+                            <button @click="logout()" class="text-xs bg-red-50 text-red-600 hover:bg-red-100 px-2.5 py-2 rounded-xl font-bold transition border border-red-100">ออก</button>
                         </div>
                     </template>
                 </div>
@@ -203,18 +207,18 @@
         </template>
 
         <!-- 📦 Main Content -->
-        <main class="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-6 space-y-4 sm:space-y-6">
+        <main class="max-w-7xl mx-auto px-3 sm:px-6 py-5 sm:py-7 space-y-6">
 
             <!-- 1. หน้าแรก (Home) -->
-            <div x-show="currentTab === 'home'" x-transition class="space-y-5">
+            <div x-show="currentTab === 'home'" x-transition class="space-y-6">
                 
                 <!-- 🌟 Hero Section -->
-                <div class="bg-gradient-to-br from-oceanAbyss via-oceanDark to-oceanNavy rounded-3xl text-white p-5 sm:p-8 shadow-xl relative overflow-hidden border border-aquaCyan/30">
-                    <div class="absolute -top-24 -left-24 w-72 h-72 bg-aquaCyan/20 rounded-full blur-3xl pointer-events-none"></div>
-                    <div class="absolute -bottom-24 -right-24 w-72 h-72 bg-blue-600/25 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="bg-gradient-to-br from-oceanAbyss via-oceanDark to-oceanNavy rounded-3xl text-white p-6 sm:p-10 shadow-xl relative overflow-hidden border border-aquaCyan/30">
+                    <div class="absolute -top-24 -left-24 w-80 h-80 bg-aquaCyan/20 rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="absolute -bottom-24 -right-24 w-80 h-80 bg-blue-600/25 rounded-full blur-3xl pointer-events-none"></div>
 
                     <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
-                        <div class="text-center md:text-left space-y-2.5 max-w-xl">
+                        <div class="text-center md:text-left space-y-3 max-w-xl">
                             <div class="inline-flex items-center space-x-2 bg-aquaCyan/20 text-aquaGlow text-[10px] sm:text-xs font-bold px-3 py-1 rounded-full border border-aquaCyan/40 backdrop-blur-sm shadow-sm">
                                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
                                 <span>🟢 CLOUD REAL-TIME MARKETPLACE</span>
@@ -224,7 +228,7 @@
                                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-aquaGlow via-aquaCyan to-sky-200">ซื้อขายปลอดภัย คุยตรงกับฟาร์ม</span>
                             </h1>
                             <p class="text-xs sm:text-sm text-slate-200/90 font-normal leading-relaxed">
-                                ปลากัดสายประกวด ปลาสวยงาม และอุปกรณ์ครบวงจร พร้อมระบบร้านค้า Verified และตรวจสอบสต็อกสดก่อนโอน
+                                ศูนย์รวมปลากัดสายประกวด ปลาสวยงาม และอุปกรณ์ครบวงจร พร้อมระบบร้านค้า Verified และตรวจสอบสต็อกสดก่อนโอน
                             </p>
                             
                             <!-- ช่องค้นหาบนมือถือ -->
@@ -246,70 +250,78 @@
                         </div>
 
                         <!-- สรุปสถิติความเชื่อมั่น -->
-                        <div class="grid grid-cols-3 gap-2 sm:gap-3 w-full md:w-auto flex-shrink-0">
-                            <div class="bg-white/10 backdrop-blur-md p-3 sm:p-4 rounded-2xl border border-white/15 text-center shadow-sm">
-                                <div class="text-base sm:text-2xl font-black text-aquaGlow" x-text="products.length"></div>
-                                <div class="text-[9px] sm:text-[11px] text-slate-300 font-medium">สินค้าในระบบ</div>
+                        <div class="grid grid-cols-3 gap-2.5 sm:gap-3 w-full md:w-auto flex-shrink-0">
+                            <div class="bg-white/10 backdrop-blur-md p-3.5 sm:p-4 rounded-2xl border border-white/15 text-center shadow-sm">
+                                <div class="text-lg sm:text-2xl font-black text-aquaGlow" x-text="products.length"></div>
+                                <div class="text-[10px] sm:text-[11px] text-slate-300 font-medium">สินค้าในระบบ</div>
                             </div>
-                            <div class="bg-white/10 backdrop-blur-md p-3 sm:p-4 rounded-2xl border border-white/15 text-center shadow-sm">
-                                <div class="text-base sm:text-2xl font-black text-emerald-300" x-text="approvedVendors.length"></div>
-                                <div class="text-[9px] sm:text-[11px] text-slate-300 font-medium">ร้านค้า Verified</div>
+                            <div class="bg-white/10 backdrop-blur-md p-3.5 sm:p-4 rounded-2xl border border-white/15 text-center shadow-sm">
+                                <div class="text-lg sm:text-2xl font-black text-emerald-300" x-text="approvedVendors.length"></div>
+                                <div class="text-[10px] sm:text-[11px] text-slate-300 font-medium">ร้านค้า Verified</div>
                             </div>
-                            <div class="bg-white/10 backdrop-blur-md p-3 sm:p-4 rounded-2xl border border-white/15 text-center shadow-sm">
-                                <div class="text-base sm:text-2xl font-black text-amber-300">100%</div>
-                                <div class="text-[9px] sm:text-[11px] text-slate-300 font-medium">ความปลอดภัย</div>
+                            <div class="bg-white/10 backdrop-blur-md p-3.5 sm:p-4 rounded-2xl border border-white/15 text-center shadow-sm">
+                                <div class="text-lg sm:text-2xl font-black text-amber-300">100%</div>
+                                <div class="text-[10px] sm:text-[11px] text-slate-300 font-medium">ความปลอดภัย</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- 🛡️ แถบจุดเด่นความปลอดภัย -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 text-xs font-bold text-slate-700">
-                    <div class="bg-white p-3 rounded-2xl border border-slate-200/80 shadow-sm flex items-center space-x-2.5">
-                        <span class="text-lg bg-emerald-50 text-emerald-600 p-1.5 rounded-xl border border-emerald-100">🛡️</span>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs font-bold text-slate-700">
+                    <div class="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center space-x-3">
+                        <span class="text-xl bg-emerald-50 text-emerald-600 p-2 rounded-xl border border-emerald-100">🛡️</span>
                         <div>
                             <div class="text-slate-900 text-xs">ร้านค้า Verified</div>
                             <div class="text-[10px] text-slate-400 font-normal">ยืนยันตัวตนและบัญชีจริง</div>
                         </div>
                     </div>
-                    <div class="bg-white p-3 rounded-2xl border border-slate-200/80 shadow-sm flex items-center space-x-2.5">
-                        <span class="text-lg bg-blue-50 text-blue-600 p-1.5 rounded-xl border border-blue-100">⚡</span>
+                    <div class="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center space-x-3">
+                        <span class="text-xl bg-blue-50 text-blue-600 p-2 rounded-xl border border-blue-100">⚡</span>
                         <div>
                             <div class="text-slate-900 text-xs">แชทสดเรียลไทม์</div>
                             <div class="text-[10px] text-slate-400 font-normal">คุยตรงกับผู้ขายทันที</div>
                         </div>
                     </div>
-                    <div class="bg-white p-3 rounded-2xl border border-slate-200/80 shadow-sm flex items-center space-x-2.5">
-                        <span class="text-lg bg-cyan-50 text-cyan-600 p-1.5 rounded-xl border border-cyan-100">🛒</span>
+                    <div class="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center space-x-3">
+                        <span class="text-xl bg-cyan-50 text-cyan-600 p-2 rounded-xl border border-cyan-100">🛒</span>
                         <div>
                             <div class="text-slate-900 text-xs">Live Mini-Cart</div>
                             <div class="text-[10px] text-slate-400 font-normal">สรุปยอดคำนวณเงินสดในแชท</div>
                         </div>
                     </div>
-                    <div class="bg-white p-3 rounded-2xl border border-slate-200/80 shadow-sm flex items-center space-x-2.5">
-                        <span class="text-lg bg-purple-50 text-purple-600 p-1.5 rounded-xl border border-purple-100">📷</span>
+                    <div class="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center space-x-3">
+                        <span class="text-xl bg-purple-50 text-purple-600 p-2 rounded-xl border border-purple-100">📷</span>
                         <div>
                             <div class="text-slate-900 text-xs">ส่งสลิปและหลักฐาน</div>
-                            <div class="text-[10px] text-slate-400 font-normal">แนบรูปภาพในแชทได้ในคลิกเดียว</div>
+                            <div class="text-[10px] text-slate-400 font-normal">แนบรูปภาพในแชทได้ทันที</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 📂 หมวดหมู่สินค้า (ออกแบบใหม่: ไอคอนเวกเตอร์ 3D Gradient สีสันสดใส) -->
-                <div class="glass-card p-4 rounded-3xl shadow-sm border border-slate-200">
-                    <div class="flex justify-between items-center mb-3">
-                        <h2 class="text-xs sm:text-sm font-extrabold text-oceanAbyss tracking-tight flex items-center space-x-1.5">
-                            <span>📂</span><span>หมวดหมู่สินค้า</span>
+                <!-- 📂 หมวดหมู่สินค้า: Neo-Glassmorphism Luxury 3D Badges -->
+                <div class="bg-white p-5 sm:p-6 rounded-3xl shadow-luxury border border-slate-200/70">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-sm sm:text-base font-extrabold text-oceanAbyss tracking-tight flex items-center space-x-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-aquaCyan"></span>
+                            <span>หมวดหมู่สินค้าพรีเมียม</span>
                         </h2>
-                        <span class="text-[11px] text-slate-500 font-bold" x-text="filteredProducts.length + ' รายการ'"></span>
+                        <span class="text-xs text-slate-400 font-semibold" x-text="filteredProducts.length + ' รายการ'"></span>
                     </div>
-                    <div class="grid grid-cols-3 sm:grid-cols-7 gap-2.5 text-center">
+
+                    <div class="grid grid-cols-3 sm:grid-cols-7 gap-3 sm:gap-3.5 text-center">
                         <template x-for="cat in categoryList" :key="cat.name">
-                            <div @click="selectedCategory = cat.id" class="cursor-pointer p-3 rounded-2xl border-2 transition-all duration-200 flex flex-col items-center justify-center space-y-2 group shadow-sm" :class="(selectedCategory === cat.id) ? 'border-aquaCyan bg-gradient-to-b from-oceanDark to-oceanAbyss text-white shadow-md' : 'border-slate-200 bg-white text-slate-700 hover:border-aquaCyan/60 hover:bg-sky-50/50'">
-                                <div class="w-11 h-11 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110 shadow-sm p-1.5" :class="(selectedCategory === cat.id) ? 'bg-white/20' : cat.bgClass">
+                            <div @click="selectedCategory = cat.id" 
+                                 class="cursor-pointer p-3 sm:p-4 rounded-2xl border-2 transition-all duration-300 flex flex-col items-center justify-center space-y-2.5 group relative overflow-hidden" 
+                                 :class="(selectedCategory === cat.id) 
+                                    ? 'border-aquaCyan bg-gradient-to-b from-oceanDark via-oceanNavy to-oceanAbyss text-white shadow-card-hover scale-[1.03]' 
+                                    : 'border-slate-100 bg-white hover:border-aquaCyan/50 hover:bg-sky-50/40 text-slate-700 shadow-sm'">
+                                
+                                <!-- Isometric 3D Graphic Icon Container -->
+                                <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 p-1 relative">
                                     <div class="w-full h-full flex items-center justify-center" x-html="cat.svg"></div>
                                 </div>
-                                <span class="text-[11px] sm:text-xs font-bold leading-tight" x-text="cat.name"></span>
+                                <span class="text-xs sm:text-[13px] font-bold tracking-tight leading-tight" x-text="cat.name"></span>
                             </div>
                         </template>
                     </div>
@@ -317,7 +329,7 @@
 
                 <!-- 🛍️ รายการสินค้า -->
                 <div>
-                    <div class="flex justify-between items-center mb-3 px-1">
+                    <div class="flex justify-between items-center mb-3.5 px-1">
                         <div class="flex items-center space-x-2">
                             <h2 class="text-sm sm:text-base font-extrabold text-oceanAbyss">🔥 สินค้าพร้อมส่งในระบบ</h2>
                             <template x-if="searchKeyword">
@@ -327,7 +339,7 @@
                         <span class="text-xs text-slate-500 font-medium" x-text="'แสดง ' + sortedProducts.length + ' รายการ'"></span>
                     </div>
 
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5 sm:gap-4">
                         <template x-for="item in sortedProducts" :key="item.firebaseId || item.id">
                             <div @click="openProductDetail(item)" class="bg-white rounded-2xl sm:rounded-3xl shadow-sm hover:shadow-card-hover transition-all duration-300 overflow-hidden flex flex-col justify-between border border-slate-200/90 cursor-pointer group relative">
                                 <div>
@@ -365,7 +377,7 @@
                                 </div>
 
                                 <div class="p-3 sm:p-3.5 pt-0">
-                                    <button class="w-full bg-slate-100 group-hover:bg-gradient-to-r group-hover:from-oceanDark group-hover:to-oceanNavy group-hover:text-white text-slate-700 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold transition border border-slate-200 flex items-center justify-center space-x-1">
+                                    <button class="w-full bg-slate-100 group-hover:bg-gradient-to-r group-hover:from-oceanDark group-hover:to-oceanNavy group-hover:text-white text-slate-700 py-2 rounded-xl text-xs font-bold transition border border-slate-200 flex items-center justify-center space-x-1">
                                         <span>💬 ดูข้อมูล & แชท</span>
                                     </button>
                                 </div>
@@ -605,8 +617,8 @@
                         <label class="block font-bold text-slate-700 mb-1">เลือกหมวดหมู่ <span class="text-red-500">*</span></label>
                         <div class="grid grid-cols-3 sm:grid-cols-6 gap-1.5">
                             <template x-for="cat in categoryList.filter(c => c.id !== 'all')" :key="cat.name">
-                                <button type="button" @click="productForm.category = cat.name" class="p-2 rounded-xl border-2 text-center font-bold text-xs transition flex flex-col items-center space-y-1" :class="productForm.category === cat.name ? 'bg-oceanDark text-white border-oceanDark shadow-sm' : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'">
-                                    <div class="w-6 h-6 flex items-center justify-center p-0.5 rounded-lg" :class="productForm.category === cat.name ? 'bg-white/20 text-white' : cat.bgClass" x-html="cat.svg"></div>
+                                <button type="button" @click="productForm.category = cat.name" class="p-2 rounded-xl border-2 text-center font-bold text-xs transition flex flex-col items-center space-y-1.5" :class="productForm.category === cat.name ? 'bg-oceanDark text-white border-oceanDark shadow-sm' : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'">
+                                    <div class="w-6 h-6 flex items-center justify-center" x-html="cat.svg"></div>
                                     <span x-text="cat.name"></span>
                                 </button>
                             </template>
@@ -1182,141 +1194,180 @@
                 banReasonInput: 'ละเมิดข้อตกลงและเงื่อนไขของแพลตฟอร์ม',
                 myBanReason: '',
 
-                // 🎨 รายการหมวดหมู่พร้อมเวกเตอร์ 3D Gradient สีสันสดใส ชัดเจนระดับมืออาชีพ
+                // 🎨 รายการหมวดหมู่: Neo-Glassmorphism 3D Vector Icons ระดับ Luxury
                 categoryList: [
                     { 
                         id: 'all', 
                         name: 'ทั้งหมด', 
-                        bgClass: 'bg-amber-50',
-                        svg: `<svg class="w-full h-full" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        svg: `<svg class="w-full h-full" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <defs>
-                                <linearGradient id="allGrad" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
-                                    <stop stop-color="#FBBF24"/>
-                                    <stop offset="1" stop-color="#F59E0B"/>
-                                </linearGradient>
+                                <radialGradient id="allGlow" cx="28" cy="20" r="28" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#FDE047"/>
+                                    <stop offset="0.5" stop-color="#EAB308"/>
+                                    <stop offset="1" stop-color="#CA8A04"/>
+                                </radialGradient>
+                                <filter id="allShadow" x="0" y="4" width="56" height="52" filterUnits="userSpaceOnUse">
+                                    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#CA8A04" flood-opacity="0.35"/>
+                                </filter>
                             </defs>
-                            <circle cx="24" cy="24" r="21" fill="url(#allGrad)" fill-opacity="0.2"/>
-                            <path d="M24 6L29.3 17.5L42 19L32.6 27.8L35.2 40.2L24 34.1L12.8 40.2L15.4 27.8L6 19L18.7 17.5L24 6Z" fill="url(#allGrad)"/>
-                            <circle cx="24" cy="23" r="4" fill="#FFFFFF" fill-opacity="0.6"/>
+                            <g filter="url(#allShadow)">
+                                <rect x="6" y="6" width="44" height="44" rx="16" fill="url(#allGlow)"/>
+                                <rect x="7" y="7" width="42" height="42" rx="15" stroke="white" stroke-opacity="0.4" stroke-width="1.5"/>
+                                <path d="M28 14L32.1 22.3L41.3 23.6L34.6 30.1L36.2 39.2L28 34.9L19.8 39.2L21.4 30.1L14.7 23.6L23.9 22.3L28 14Z" fill="white"/>
+                                <circle cx="28" cy="28" r="4" fill="#FEF08A" fill-opacity="0.8"/>
+                            </g>
                         </svg>`
                     },
                     { 
                         id: 'สัตว์น้ำ', 
                         name: 'สัตว์น้ำ', 
-                        bgClass: 'bg-cyan-50',
-                        svg: `<svg class="w-full h-full" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        svg: `<svg class="w-full h-full" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <defs>
-                                <linearGradient id="fishGrad" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
-                                    <stop stop-color="#00C2CB"/>
-                                    <stop offset="1" stop-color="#0077B6"/>
-                                </linearGradient>
-                                <linearGradient id="finGrad" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
-                                    <stop stop-color="#90E0EF"/>
-                                    <stop offset="1" stop-color="#00B4D8"/>
-                                </linearGradient>
+                                <radialGradient id="fishGlow" cx="28" cy="20" r="28" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#38BDF8"/>
+                                    <stop offset="0.5" stop-color="#0284C7"/>
+                                    <stop offset="1" stop-color="#0369A1"/>
+                                </radialGradient>
+                                <filter id="fishShadow" x="0" y="4" width="56" height="52" filterUnits="userSpaceOnUse">
+                                    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#0284C7" flood-opacity="0.35"/>
+                                </filter>
                             </defs>
-                            <circle cx="24" cy="24" r="21" fill="url(#fishGrad)" fill-opacity="0.15"/>
-                            <path d="M12 24C6 16 7 32 12 24Z" fill="url(#finGrad)"/>
-                            <path d="M14 24C8 10 10 38 16 24Z" fill="url(#finGrad)" fill-opacity="0.8"/>
-                            <path d="M14 24C18 16 32 15 38 24C32 33 18 32 14 24Z" fill="url(#fishGrad)"/>
-                            <path d="M22 17C26 10 33 13 31 18Z" fill="url(#finGrad)"/>
-                            <path d="M22 31C26 38 33 35 31 30Z" fill="url(#finGrad)"/>
-                            <circle cx="33" cy="22" r="2" fill="#FFFFFF"/>
-                            <circle cx="33.8" cy="22" r="1" fill="#06162D"/>
+                            <g filter="url(#fishShadow)">
+                                <rect x="6" y="6" width="44" height="44" rx="16" fill="url(#fishGlow)"/>
+                                <rect x="7" y="7" width="42" height="42" rx="15" stroke="white" stroke-opacity="0.4" stroke-width="1.5"/>
+                                <!-- ปลากัดหรูหราพริ้วไหว -->
+                                <path d="M15 28C10 21 12 35 15 28Z" fill="#BAE6FD" fill-opacity="0.9"/>
+                                <path d="M18 28C11 15 14 41 20 28Z" fill="#7DD3FC" fill-opacity="0.75"/>
+                                <path d="M18 28C22 20 34 19 40 28C34 37 22 36 18 28Z" fill="white"/>
+                                <path d="M26 21C30 15 36 17 34 22Z" fill="#E0F2FE"/>
+                                <path d="M26 35C30 41 36 39 34 34Z" fill="#E0F2FE"/>
+                                <circle cx="36" cy="26" r="2" fill="#0284C7"/>
+                            </g>
                         </svg>`
                     },
                     { 
                         id: 'สัตว์บก', 
                         name: 'สัตว์บก', 
-                        bgClass: 'bg-orange-50',
-                        svg: `<svg class="w-full h-full" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        svg: `<svg class="w-full h-full" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <defs>
-                                <linearGradient id="landGrad" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+                                <radialGradient id="landGlow" cx="28" cy="20" r="28" gradientUnits="userSpaceOnUse">
                                     <stop stop-color="#FB923C"/>
-                                    <stop offset="1" stop-color="#EA580C"/>
-                                </linearGradient>
+                                    <stop offset="0.5" stop-color="#EA580C"/>
+                                    <stop offset="1" stop-color="#C2410C"/>
+                                </radialGradient>
+                                <filter id="landShadow" x="0" y="4" width="56" height="52" filterUnits="userSpaceOnUse">
+                                    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#EA580C" flood-opacity="0.35"/>
+                                </filter>
                             </defs>
-                            <circle cx="24" cy="24" r="21" fill="url(#landGrad)" fill-opacity="0.15"/>
-                            <ellipse cx="24" cy="28" rx="8" ry="6.5" fill="url(#landGrad)"/>
-                            <circle cx="15" cy="19" r="3.2" fill="url(#landGrad)"/>
-                            <circle cx="21" cy="14.5" r="3.5" fill="url(#landGrad)"/>
-                            <circle cx="27" cy="14.5" r="3.5" fill="url(#landGrad)"/>
-                            <circle cx="33" cy="19" r="3.2" fill="url(#landGrad)"/>
+                            <g filter="url(#landShadow)">
+                                <rect x="6" y="6" width="44" height="44" rx="16" fill="url(#landGlow)"/>
+                                <rect x="7" y="7" width="42" height="42" rx="15" stroke="white" stroke-opacity="0.4" stroke-width="1.5"/>
+                                <!-- อุ้งเท้าสัตว์เลี้ยง 3D -->
+                                <ellipse cx="28" cy="33" rx="9" ry="7.5" fill="white"/>
+                                <circle cx="18" cy="23" r="3.5" fill="white"/>
+                                <circle cx="24.5" cy="18" r="3.8" fill="white"/>
+                                <circle cx="31.5" cy="18" r="3.8" fill="white"/>
+                                <circle cx="38" cy="23" r="3.5" fill="white"/>
+                            </g>
                         </svg>`
                     },
                     { 
                         id: 'สัตว์ปีก', 
                         name: 'สัตว์ปีก', 
-                        bgClass: 'bg-emerald-50',
-                        svg: `<svg class="w-full h-full" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        svg: `<svg class="w-full h-full" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <defs>
-                                <linearGradient id="birdGrad" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
-                                    <stop stop-color="#34D399"/>
-                                    <stop offset="1" stop-color="#059669"/>
-                                </linearGradient>
+                                <radialGradient id="birdGlow" cx="28" cy="20" r="28" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#4ADE80"/>
+                                    <stop offset="0.5" stop-color="#16A34A"/>
+                                    <stop offset="1" stop-color="#15803D"/>
+                                </radialGradient>
+                                <filter id="birdShadow" x="0" y="4" width="56" height="52" filterUnits="userSpaceOnUse">
+                                    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#16A34A" flood-opacity="0.35"/>
+                                </filter>
                             </defs>
-                            <circle cx="24" cy="24" r="21" fill="url(#birdGrad)" fill-opacity="0.15"/>
-                            <path d="M12 30C16 32 28 32 36 21C34 26 27 29 22 29C17 29 13 28 12 30Z" fill="url(#birdGrad)"/>
-                            <path d="M22 13C27 13 32 17 34 22C30 20 25 21 21 24C21 20 21 16 22 13Z" fill="url(#birdGrad)"/>
-                            <path d="M34 18C37 19 41 20 41 20L36 23C36 21 35 19.5 34 18Z" fill="#F59E0B"/>
-                            <circle cx="30" cy="17" r="1.5" fill="#FFFFFF"/>
+                            <g filter="url(#birdShadow)">
+                                <rect x="6" y="6" width="44" height="44" rx="16" fill="url(#birdGlow)"/>
+                                <rect x="7" y="7" width="42" height="42" rx="15" stroke="white" stroke-opacity="0.4" stroke-width="1.5"/>
+                                <!-- นกมรกตทรงหรู -->
+                                <path d="M16 35C20 37 32 37 40 25C38 31 31 34 26 34C21 34 17 33 16 35Z" fill="white" fill-opacity="0.95"/>
+                                <path d="M26 17C31 17 36 21 38 26C34 24 29 25 25 28C25 24 25 20 26 17Z" fill="white"/>
+                                <path d="M38 22C41 23 44 24 44 24L40 27C40 25 39 23.5 38 22Z" fill="#FDE047"/>
+                                <circle cx="34" cy="21" r="1.5" fill="#15803D"/>
+                            </g>
                         </svg>`
                     },
                     { 
                         id: 'อุปกรณ์', 
                         name: 'อุปกรณ์', 
-                        bgClass: 'bg-slate-100',
-                        svg: `<svg class="w-full h-full" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        svg: `<svg class="w-full h-full" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <defs>
-                                <linearGradient id="toolGrad" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
-                                    <stop stop-color="#64748B"/>
-                                    <stop offset="1" stop-color="#1E293B"/>
-                                </linearGradient>
+                                <radialGradient id="toolGlow" cx="28" cy="20" r="28" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#94A3B8"/>
+                                    <stop offset="0.5" stop-color="#475569"/>
+                                    <stop offset="1" stop-color="#334155"/>
+                                </radialGradient>
+                                <filter id="toolShadow" x="0" y="4" width="56" height="52" filterUnits="userSpaceOnUse">
+                                    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#475569" flood-opacity="0.35"/>
+                                </filter>
                             </defs>
-                            <circle cx="24" cy="24" r="21" fill="url(#toolGrad)" fill-opacity="0.15"/>
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M24 16C19.58 16 16 19.58 16 24C16 28.42 19.58 32 24 32C28.42 32 32 28.42 32 24C32 19.58 28.42 16 24 16ZM24 28C21.79 28 20 26.21 20 24C20 21.79 21.79 20 24 20C26.21 20 28 21.79 28 24C28 26.21 26.21 28 24 28Z" fill="url(#toolGrad)"/>
-                            <path d="M25.5 10H22.5L22 14H26L25.5 10ZM25.5 34H22.5L22 38H26L25.5 34ZM38 22.5V25.5L34 26V22L38 22.5ZM10 22.5V25.5L14 26V22L10 22.5Z" fill="url(#toolGrad)"/>
-                            <circle cx="24" cy="24" r="2" fill="#00B4D8"/>
+                            <g filter="url(#toolShadow)">
+                                <rect x="6" y="6" width="44" height="44" rx="16" fill="url(#toolGlow)"/>
+                                <rect x="7" y="7" width="42" height="42" rx="15" stroke="white" stroke-opacity="0.4" stroke-width="1.5"/>
+                                <!-- ฟันเฟืองเมทัลลิก 3D -->
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M28 19C23.03 19 19 23.03 19 28C19 32.97 23.03 37 28 37C32.97 37 37 32.97 37 28C37 23.03 32.97 19 28 19ZM28 32.5C25.51 32.5 23.5 30.49 23.5 28C23.5 25.51 25.51 23.5 28 23.5C30.49 23.5 32.5 25.51 32.5 28C32.5 30.49 30.49 32.5 28 32.5Z" fill="white"/>
+                                <path d="M29.5 12H26.5L26 17H30L29.5 12ZM29.5 39H26.5L26 44H30L29.5 39ZM44 26.5V29.5L39 30V26L44 26.5ZM12 26.5V29.5L17 30V26L12 26.5Z" fill="white"/>
+                                <circle cx="28" cy="28" r="2.5" fill="#38BDF8"/>
+                            </g>
                         </svg>`
                     },
                     { 
                         id: 'ของตกแต่ง', 
                         name: 'ของตกแต่ง', 
-                        bgClass: 'bg-teal-50',
-                        svg: `<svg class="w-full h-full" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        svg: `<svg class="w-full h-full" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <defs>
-                                <linearGradient id="decorGrad" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+                                <radialGradient id="decorGlow" cx="28" cy="20" r="28" gradientUnits="userSpaceOnUse">
                                     <stop stop-color="#2DD4BF"/>
-                                    <stop offset="1" stop-color="#0D9488"/>
-                                </linearGradient>
-                                <linearGradient id="woodGrad" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
-                                    <stop stop-color="#A16207"/>
-                                    <stop offset="1" stop-color="#713F12"/>
-                                </linearGradient>
+                                    <stop offset="0.5" stop-color="#0F766E"/>
+                                    <stop offset="1" stop-color="#115E59"/>
+                                </radialGradient>
+                                <filter id="decorShadow" x="0" y="4" width="56" height="52" filterUnits="userSpaceOnUse">
+                                    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#0F766E" flood-opacity="0.35"/>
+                                </filter>
                             </defs>
-                            <circle cx="24" cy="24" r="21" fill="url(#decorGrad)" fill-opacity="0.15"/>
-                            <path d="M10 34C16 31 24 33 38 34C35 32 30 30 26 31C22 32 15 28 10 34Z" fill="url(#woodGrad)"/>
-                            <path d="M20 32C18 24 21 16 26 12C26 18 22 26 21 32Z" fill="url(#decorGrad)"/>
-                            <path d="M24 31C26 23 31 18 35 15C33 21 28 27 25 31Z" fill="url(#decorGrad)" fill-opacity="0.85"/>
-                            <path d="M16 32C15 26 17 21 20 18C19 23 17 28 16 32Z" fill="url(#decorGrad)" fill-opacity="0.7"/>
+                            <g filter="url(#decorShadow)">
+                                <rect x="6" y="6" width="44" height="44" rx="16" fill="url(#decorGlow)"/>
+                                <rect x="7" y="7" width="42" height="42" rx="15" stroke="white" stroke-opacity="0.4" stroke-width="1.5"/>
+                                <!-- ไม้น้ำ & ขอนไม้ธรรมชาติ -->
+                                <path d="M14 38C20 35 29 37 42 38C39 36 34 34 30 35C26 36 19 32 14 38Z" fill="#FDE047" fill-opacity="0.9"/>
+                                <path d="M24 36C22 28 25 19 30 15C30 21 26 29 25 36Z" fill="white"/>
+                                <path d="M28 35C30 27 35 22 39 19C37 25 32 31 29 35Z" fill="#CCFBF1"/>
+                                <path d="M20 36C19 30 21 25 24 22C23 27 21 32 20 36Z" fill="#A7F3D0"/>
+                            </g>
                         </svg>`
                     },
                     { 
                         id: 'อื่นๆ', 
                         name: 'อื่นๆ', 
-                        bgClass: 'bg-indigo-50',
-                        svg: `<svg class="w-full h-full" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        svg: `<svg class="w-full h-full" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <defs>
-                                <linearGradient id="boxGrad" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
-                                    <stop stop-color="#818CF8"/>
-                                    <stop offset="1" stop-color="#4F46E5"/>
-                                </linearGradient>
+                                <radialGradient id="boxGlow" cx="28" cy="20" r="28" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#A855F7"/>
+                                    <stop offset="0.5" stop-color="#7E22CE"/>
+                                    <stop offset="1" stop-color="#6B21A8"/>
+                                </radialGradient>
+                                <filter id="boxShadow" x="0" y="4" width="56" height="52" filterUnits="userSpaceOnUse">
+                                    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#7E22CE" flood-opacity="0.35"/>
+                                </filter>
                             </defs>
-                            <circle cx="24" cy="24" r="21" fill="url(#boxGrad)" fill-opacity="0.15"/>
-                            <path d="M24 11L36 17V29L24 35L12 29V17L24 11Z" fill="url(#boxGrad)"/>
-                            <path d="M24 11L36 17L24 23L12 17L24 11Z" fill="#A5B4FC"/>
-                            <path d="M24 23V35L36 29V17L24 23Z" fill="url(#boxGrad)" fill-opacity="0.8"/>
-                            <path d="M21 15.5L27 18.5" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+                            <g filter="url(#boxShadow)">
+                                <rect x="6" y="6" width="44" height="44" rx="16" fill="url(#boxGlow)"/>
+                                <rect x="7" y="7" width="42" height="42" rx="15" stroke="white" stroke-opacity="0.4" stroke-width="1.5"/>
+                                <!-- กล่องพัสดุ 3D Isometric พรีเมียม -->
+                                <path d="M28 15L40 21.5V34.5L28 41L16 34.5V21.5L28 15Z" fill="white" fill-opacity="0.3"/>
+                                <path d="M28 15L40 21.5L28 28L16 21.5L28 15Z" fill="white"/>
+                                <path d="M28 28V41L40 34.5V21.5L28 28Z" fill="#F3E8FF"/>
+                                <path d="M28 28L16 21.5V34.5L28 41V28Z" fill="#E9D5FF"/>
+                            </g>
                         </svg>`
                     }
                 ],
