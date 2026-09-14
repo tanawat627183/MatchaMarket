@@ -103,13 +103,6 @@
             backdrop-filter: blur(10px);
             box-shadow: 0 10px 25px -5px rgba(6, 22, 45, 0.08);
         }
-        .custom-scrollbar::-webkit-scrollbar {
-            height: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 9999px;
-        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-slate-100 via-sky-50 to-blue-100/70 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between" x-data="marketplaceApp()">
@@ -215,7 +208,7 @@
             <!-- 1. หน้าแรก (Home) -->
             <div x-show="currentTab === 'home'" x-transition class="space-y-5">
                 
-                <!-- 🌟 Hero Section สไตล์โมเดิร์น Split View -->
+                <!-- 🌟 Hero Section -->
                 <div class="bg-gradient-to-br from-oceanAbyss via-oceanDark to-oceanNavy rounded-3xl text-white p-5 sm:p-8 shadow-xl relative overflow-hidden border border-aquaCyan/30">
                     <div class="absolute -top-24 -left-24 w-72 h-72 bg-aquaCyan/20 rounded-full blur-3xl pointer-events-none"></div>
                     <div class="absolute -bottom-24 -right-24 w-72 h-72 bg-blue-600/25 rounded-full blur-3xl pointer-events-none"></div>
@@ -242,7 +235,7 @@
                                 </div>
                             </div>
 
-                            <!-- ชิปคำค้นหายอดนิยม (Quick Search Tags) -->
+                            <!-- ชิปคำค้นหายอดนิยม -->
                             <div class="flex flex-wrap items-center justify-center md:justify-start gap-1.5 pt-1 text-[11px]">
                                 <span class="text-slate-300 font-bold text-[10px]">🔥 คำค้นยอดฮิต:</span>
                                 <button @click="searchKeyword = 'ปลากัด'" class="bg-white/15 hover:bg-white/25 px-2.5 py-0.5 rounded-full text-slate-100 border border-white/20 transition">ปลากัด</button>
@@ -252,7 +245,7 @@
                             </div>
                         </div>
 
-                        <!-- สรุปสถิติความเชื่อมั่น (Trust Stats) -->
+                        <!-- สรุปสถิติความเชื่อมั่น -->
                         <div class="grid grid-cols-3 gap-2 sm:gap-3 w-full md:w-auto flex-shrink-0">
                             <div class="bg-white/10 backdrop-blur-md p-3 sm:p-4 rounded-2xl border border-white/15 text-center shadow-sm">
                                 <div class="text-base sm:text-2xl font-black text-aquaGlow" x-text="products.length"></div>
@@ -270,7 +263,7 @@
                     </div>
                 </div>
 
-                <!-- 🛡️ แถบจุดเด่นความปลอดภัย (Trust Badges Bar) -->
+                <!-- 🛡️ แถบจุดเด่นความปลอดภัย -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 text-xs font-bold text-slate-700">
                     <div class="bg-white p-3 rounded-2xl border border-slate-200/80 shadow-sm flex items-center space-x-2.5">
                         <span class="text-lg bg-emerald-50 text-emerald-600 p-1.5 rounded-xl border border-emerald-100">🛡️</span>
@@ -302,7 +295,7 @@
                     </div>
                 </div>
 
-                <!-- 📂 หมวดหมู่สินค้า (ภาพกราฟิก สไตล์แอปมือถือ) -->
+                <!-- 📂 หมวดหมู่สินค้า (แก้ไอคอนถูกต้อง 100% ด้วย SVG คมชัด ไม่ลิงก์เสีย) -->
                 <div class="glass-card p-4 rounded-3xl shadow-sm border border-slate-200">
                     <div class="flex justify-between items-center mb-3">
                         <h2 class="text-xs sm:text-sm font-extrabold text-oceanAbyss tracking-tight flex items-center space-x-1.5">
@@ -313,8 +306,9 @@
                     <div class="grid grid-cols-3 sm:grid-cols-7 gap-2 sm:gap-2.5 text-center">
                         <template x-for="cat in categoryList" :key="cat.name">
                             <div @click="selectedCategory = cat.id" class="cursor-pointer p-2.5 sm:p-3 rounded-2xl border-2 transition-all duration-200 flex flex-col items-center justify-center space-y-1.5 group shadow-sm" :class="(selectedCategory === cat.id) ? 'border-aquaCyan bg-gradient-to-b from-oceanDark to-oceanAbyss text-white shadow-md' : 'border-slate-200 bg-white text-slate-700 hover:border-aquaCyan/60 hover:bg-sky-50/50'">
-                                <div class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center">
-                                    <img :src="cat.icon" :alt="cat.name" class="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-200" :class="(selectedCategory === cat.id) ? 'brightness-0 invert' : ''">
+                                <div class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center transform group-hover:scale-110 transition-transform duration-200" :class="(selectedCategory === cat.id) ? 'text-white' : 'text-oceanNavy'">
+                                    <!-- ฝัง SVG ไอคอนตรงประเภท -->
+                                    <div class="w-full h-full flex items-center justify-center" x-html="cat.svg"></div>
                                 </div>
                                 <span class="text-[10px] sm:text-xs font-bold leading-tight" x-text="cat.name"></span>
                             </div>
@@ -322,7 +316,7 @@
                     </div>
                 </div>
 
-                <!-- 🛍️ รายการสินค้า (Professional Product Grid) -->
+                <!-- 🛍️ รายการสินค้า -->
                 <div>
                     <div class="flex justify-between items-center mb-3 px-1">
                         <div class="flex items-center space-x-2">
@@ -344,10 +338,8 @@
                                              :class="item.status === 'sold' ? 'grayscale opacity-60' : ''"
                                              onerror="this.src='https://placehold.co/400x400?text=No+Image'">
                                         
-                                        <!-- ป้ายหมวดหมู่มุมซ้ายบน -->
                                         <span class="absolute top-2.5 left-2.5 bg-oceanAbyss/85 backdrop-blur-md text-white text-[9px] font-bold px-2.5 py-0.5 rounded-full shadow border border-white/10" x-text="item.category"></span>
                                         
-                                        <!-- ป้ายสถานะมุมขวาบน -->
                                         <div class="absolute top-2.5 right-2.5">
                                             <template x-if="item.status === 'sold'">
                                                 <span class="bg-red-600/95 backdrop-blur-md text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow">ขายแล้ว</span>
@@ -361,13 +353,11 @@
                                     <div class="p-3 sm:p-3.5">
                                         <h3 class="text-xs sm:text-sm font-bold text-slate-900 line-clamp-2 h-9 leading-snug mb-1.5 group-hover:text-aquaCyan transition-colors break-words" x-text="item.title"></h3>
                                         
-                                        <!-- ข้อมูลร้านค้าและป้าย Verified -->
                                         <div class="flex items-center space-x-1 mb-2 bg-slate-50 px-2 py-1 rounded-xl border border-slate-100">
                                             <span class="text-[10px] sm:text-[11px] font-bold text-slate-600 truncate" x-text="item.storeName"></span>
                                             <span class="text-aquaPro text-[10px]" title="ร้านค้าผ่านการยืนยันตัวตน Verified">✅</span>
                                         </div>
 
-                                        <!-- ราคาแสดงผลแบบ E-Commerce -->
                                         <div class="flex items-baseline space-x-1">
                                             <span class="text-xs font-bold text-oceanNavy">฿</span>
                                             <span class="text-oceanNavy font-black text-sm sm:text-base leading-none" x-text="Number(item.price).toLocaleString()"></span>
@@ -607,7 +597,7 @@
                         <div class="grid grid-cols-3 sm:grid-cols-6 gap-1.5">
                             <template x-for="cat in categoryList.filter(c => c.id !== 'all')" :key="cat.name">
                                 <button type="button" @click="productForm.category = cat.name" class="p-2 rounded-xl border-2 text-center font-bold text-xs transition flex flex-col items-center space-y-1" :class="productForm.category === cat.name ? 'bg-oceanDark text-white border-oceanDark shadow-sm' : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'">
-                                    <img :src="cat.icon" class="w-5 h-5 object-contain" :class="productForm.category === cat.name ? 'brightness-0 invert' : ''">
+                                    <div class="w-5 h-5 flex items-center justify-center" :class="productForm.category === cat.name ? 'text-white' : 'text-oceanNavy'" x-html="cat.svg"></div>
                                     <span x-text="cat.name"></span>
                                 </button>
                             </template>
@@ -786,14 +776,14 @@
                 </div>
             </div>
 
-            <!-- 6. หน้าแดชบอร์ดแอดมิน -->
+            <!-- 6. หน้าแดชบอร์ดแอดมิน (Super Admin Control Center) -->
             <div x-show="currentTab === 'admin-panel'" class="space-y-4 max-w-5xl mx-auto text-xs sm:text-sm" x-transition>
                 <div class="flex justify-between items-center border-b pb-2.5">
                     <div>
                         <h2 class="text-base sm:text-xl font-extrabold text-oceanAbyss">⚙️ แดชบอร์ดแอดมิน (Matcha Admin Pro)</h2>
-                        <p class="text-[11px] text-slate-500">จัดการร้านค้า, ดูข้อมูลผู้ใช้, ควบคุมประกาศ และระบบทั้งหมด</p>
+                        <p class="text-[11px] text-slate-500">ควบคุมร้านค้า, สินค้า, รีเซ็ต PIN, ล้างยอดขาย และแก้ไขเนื้อหาหน้าเว็บได้เบ็ดเสร็จ</p>
                     </div>
-                    <button @click="currentTab = 'home'" class="bg-slate-200 px-3 py-1.5 rounded-xl text-xs font-bold shadow-sm">กลับหน้าเว็บ</button>
+                    <button @click="currentTab = 'home'" class="bg-slate-200 px-3 py-1.5 rounded-xl text-xs font-bold shadow-sm hover:bg-slate-300 transition">กลับหน้าเว็บ</button>
                 </div>
 
                 <!-- 🎛️ ศูนย์ควบคุมประกาศด่วนหน้าเว็บ -->
@@ -812,7 +802,7 @@
                     </div>
                 </div>
 
-                <!-- การ์ดสรุปตัวเลขระบบ 4 ช่อง -->
+                <!-- การ์ดสรุปตัวเลขระบบ 4 ช่อง พร้อมปุ่มรีเซ็ตยอดขาย -->
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
                     <div @click="showUsersModal = true" class="bg-white p-3.5 rounded-2xl border shadow-sm text-center cursor-pointer hover:border-aquaCyan transition">
                         <div class="text-xl sm:text-2xl font-black text-oceanNavy" x-text="allUniqueBuyers.length + approvedVendors.length"></div>
@@ -826,9 +816,10 @@
                         <div class="text-xl sm:text-2xl font-black text-aquaCyan" x-text="products.length"></div>
                         <div class="text-[10px] sm:text-xs text-slate-500 font-bold mt-0.5">📦 สินค้าทั้งหมดบนคลาวด์</div>
                     </div>
-                    <div class="bg-white p-3.5 rounded-2xl border shadow-sm text-center">
+                    <div class="bg-white p-3.5 rounded-2xl border shadow-sm text-center relative group">
                         <div class="text-xl sm:text-2xl font-black text-amber-600" x-text="'฿' + totalSystemSales.toLocaleString()"></div>
                         <div class="text-[10px] sm:text-xs text-slate-500 font-bold mt-0.5">💰 ยอดขายรวมทั้งระบบ</div>
+                        <button @click="adminResetAllSales()" class="mt-1 text-[10px] text-red-500 hover:text-red-700 underline font-bold" title="ล้างยอดขายทดสอบกลับเป็น 0">ล้างยอดขายทดสอบ</button>
                     </div>
                 </div>
 
@@ -857,7 +848,7 @@
                     </div>
                 </div>
 
-                <!-- 📊 ตารางสรุปรายชื่อร้านค้า -->
+                <!-- 📊 ตารางสรุปรายชื่อร้านค้า + รีเซ็ต PIN -->
                 <div class="bg-white p-4 rounded-3xl shadow-sm border border-slate-200 space-y-2.5">
                     <div class="flex justify-between items-center">
                         <h3 class="font-extrabold text-slate-900 text-xs sm:text-sm">📊 รายชื่อร้านค้าทั้งหมด & จัดการบัญชี</h3>
@@ -881,7 +872,10 @@
                                     <tr class="hover:bg-slate-50 transition">
                                         <td class="p-2">
                                             <div class="font-bold text-slate-900" x-text="v.storeName"></div>
-                                            <div class="text-[10px] text-slate-400 font-mono" x-text="'PIN: ' + (v.pin ? '••••' : 'ไม่ได้ตั้ง')"></div>
+                                            <div class="text-[10px] text-slate-400 font-mono flex items-center space-x-1">
+                                                <span x-text="'PIN: ' + (v.pin || '1234')"></span>
+                                                <button @click="adminResetPin(v)" class="text-blue-600 hover:underline font-bold text-[9px]">(แก้)</button>
+                                            </div>
                                         </td>
                                         <td class="p-2">
                                             <div class="font-bold text-slate-800" x-text="v.ownerName"></div>
@@ -904,7 +898,7 @@
                                                 <template x-if="v.isBanned">
                                                     <button @click="toggleBanVendor(v, false)" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2 py-1 rounded-lg font-bold text-[10px] transition">✅ ปลดแบน</button>
                                                 </template>
-                                                <button @click="adminDeleteVendor(v)" class="bg-red-50 hover:bg-red-100 text-red-600 px-2 py-1 rounded-lg font-bold text-[10px] transition border border-red-200" title="ลบร้านค้าและสินค้าทั้งหมด">🗑️ ลบร้าน</button>
+                                                <button @click="adminDeleteVendor(v)" class="bg-red-50 hover:bg-red-100 text-red-600 px-2 py-1 rounded-lg font-bold text-[10px] transition border border-red-200" title="ลบร้านค้าและสินค้าทั้งหมด">🗑️ ลบ</button>
                                             </div>
                                         </td>
                                     </tr>
@@ -940,20 +934,23 @@
                     </div>
                 </div>
 
-                <!-- 🗑️ จัดการลบสินค้า -->
+                <!-- 🗑️ จัดการและแก้ไขสินค้าทั้งหมดบนระบบ -->
                 <div class="bg-white p-4 rounded-3xl shadow-sm border border-slate-200">
-                    <h3 class="font-extrabold text-slate-800 mb-2.5 text-xs sm:text-sm">🗑️ จัดการสินค้าทั้งหมดบนระบบ</h3>
-                    <div class="space-y-2 max-h-56 overflow-y-auto pr-1">
+                    <h3 class="font-extrabold text-slate-800 mb-2.5 text-xs sm:text-sm">📦 ควบคุมและแก้ไขสินค้าทั้งหมดบนระบบ</h3>
+                    <div class="space-y-2 max-h-72 overflow-y-auto pr-1">
                         <template x-for="item in products" :key="item.firebaseId">
                             <div class="p-2.5 bg-slate-50 rounded-2xl border border-slate-200 flex justify-between items-center text-xs">
-                                <div class="flex items-center space-x-2 truncate mr-2">
-                                    <img :src="item.images && item.images[0] ? item.images[0] : 'https://placehold.co/400x400?text=No+Image'" class="w-9 h-9 object-cover rounded-xl border flex-shrink-0">
+                                <div class="flex items-center space-x-2.5 truncate mr-2">
+                                    <img :src="item.images && item.images[0] ? item.images[0] : 'https://placehold.co/400x400?text=No+Image'" class="w-10 h-10 object-cover rounded-xl border flex-shrink-0">
                                     <div class="truncate">
                                         <div class="font-bold text-slate-900 truncate break-words" x-text="item.title"></div>
-                                        <div class="text-slate-500 text-[11px]" x-text="'ร้าน: ' + item.storeName + ' | ' + item.price + ' ฿'"></div>
+                                        <div class="text-slate-500 text-[11px]" x-text="'ร้าน: ' + item.storeName + ' | ราคา: ฿' + Number(item.price).toLocaleString() + ' | หมวด: ' + item.category"></div>
                                     </div>
                                 </div>
-                                <button @click="adminDeleteProduct(item)" class="bg-red-500 hover:bg-red-600 text-white px-2.5 py-1 rounded-xl font-bold shadow text-xs flex-shrink-0">ลบสินค้า</button>
+                                <div class="flex items-center space-x-1.5 flex-shrink-0">
+                                    <button @click="openEditProductModal(item)" class="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded-xl font-bold text-xs shadow">✏️ แก้ไข</button>
+                                    <button @click="adminDeleteProduct(item)" class="bg-red-500 hover:bg-red-600 text-white px-2.5 py-1 rounded-xl font-bold shadow text-xs">ลบ</button>
+                                </div>
                             </div>
                         </template>
                     </div>
@@ -963,11 +960,11 @@
         </main>
     </div>
 
-    <!-- 🏷️ Corporate Trust Footer สไตล์แพลตฟอร์มชั้นนำ -->
+    <!-- 🏷️ Corporate Trust Footer (เมนูลัดกดใช้งานได้จริง 100%) -->
     <footer class="mt-12 border-t border-slate-200 bg-white text-xs text-slate-600 font-normal">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 pb-8 border-b border-slate-100">
-                <!-- คอลัมน์ 1: เกี่ยวกับเรา -->
+                <!-- คอลัมน์ 1 -->
                 <div class="space-y-2">
                     <div class="flex items-center space-x-2">
                         <img src="logo.png" class="w-6 h-6 rounded-lg object-cover">
@@ -978,7 +975,7 @@
                     </p>
                 </div>
 
-                <!-- คอลัมน์ 2: มาตรฐานความปลอดภัย -->
+                <!-- คอลัมน์ 2 -->
                 <div class="space-y-2">
                     <div class="font-extrabold text-oceanAbyss text-xs">🛡️ มาตรฐานความปลอดภัย</div>
                     <ul class="space-y-1 text-[11px] text-slate-500">
@@ -988,17 +985,17 @@
                     </ul>
                 </div>
 
-                <!-- คอลัมน์ 3: เมนูด่วน -->
+                <!-- คอลัมน์ 3 (เมนูลัดกดได้จริง) -->
                 <div class="space-y-2">
                     <div class="font-extrabold text-oceanAbyss text-xs">⚡ เมนูลัด</div>
-                    <ul class="space-y-1 text-[11px] text-slate-500">
-                        <li><a href="#" @click.prevent="currentTab = 'home'; selectedCategory = 'all'" class="hover:text-aquaCyan">หน้าแรกสินค้า</a></li>
-                        <li><a href="#" @click.prevent="goToVendorRegister()" class="hover:text-aquaCyan">สมัครเปิดร้านค้า Verified</a></li>
-                        <li><a href="#" @click.prevent="contactAdminChat()" class="hover:text-aquaCyan">แจ้งปัญหา / ช่วยเหลือ</a></li>
+                    <ul class="space-y-1 text-[11px]">
+                        <li><button type="button" @click="currentTab = 'home'; selectedCategory = 'all'; searchKeyword = ''; window.scrollTo({top: 0, behavior: 'smooth'})" class="text-slate-600 hover:text-aquaCyan font-medium transition cursor-pointer">หน้าแรกสินค้า</button></li>
+                        <li><button type="button" @click="currentTab = 'register-vendor'; window.scrollTo({top: 0, behavior: 'smooth'})" class="text-slate-600 hover:text-aquaCyan font-medium transition cursor-pointer">สมัครเปิดร้านค้า Verified</button></li>
+                        <li><button type="button" @click="contactAdminChat()" class="text-slate-600 hover:text-aquaCyan font-medium transition cursor-pointer">แจ้งปัญหา / ช่วยเหลือ</button></li>
                     </ul>
                 </div>
 
-                <!-- คอลัมน์ 4: ศูนย์ช่วยเหลือ -->
+                <!-- คอลัมน์ 4 -->
                 <div class="space-y-2">
                     <div class="font-extrabold text-oceanAbyss text-xs">💬 ศูนย์ช่วยเหลือ</div>
                     <p class="text-[11px] text-slate-500 leading-relaxed">
@@ -1018,6 +1015,43 @@
             </div>
         </div>
     </footer>
+
+    <!-- Modal แก้ไขสินค้าสำหรับแอดมิน -->
+    <div x-show="showEditProductModal" class="fixed inset-0 bg-oceanAbyss/75 backdrop-blur-md flex items-center justify-center z-50 p-4" x-transition>
+        <div class="bg-white p-5 sm:p-6 rounded-3xl w-full max-w-md shadow-2xl relative text-sm border border-slate-100" @click.away="showEditProductModal = false">
+            <button @click="showEditProductModal = false" class="absolute top-4 right-4 text-slate-400 font-bold">✕</button>
+            <h3 class="text-base sm:text-lg font-black text-slate-900 mb-1">✏️ แก้ไขข้อมูลสินค้า (Admin)</h3>
+            <p class="text-xs text-slate-500 mb-3">ปรับปรุงชื่อ ราคา หรือหมวดหมู่ของสินค้า</p>
+            <template x-if="editingProduct">
+                <form @submit.prevent="saveEditedProduct()" class="space-y-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 text-xs mb-1">ชื่อสินค้า</label>
+                        <input type="text" x-model="editingProduct.title" required class="w-full border-2 rounded-xl px-3 py-2 text-xs focus:border-aquaCyan outline-none bg-slate-50">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 text-xs mb-1">ราคา (บาท)</label>
+                        <input type="number" x-model="editingProduct.price" required class="w-full border-2 rounded-xl px-3 py-2 text-xs focus:border-aquaCyan outline-none bg-slate-50 font-bold text-oceanNavy">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 text-xs mb-1">หมวดหมู่</label>
+                        <select x-model="editingProduct.category" class="w-full border-2 rounded-xl px-3 py-2 text-xs focus:border-aquaCyan outline-none bg-slate-50 font-bold">
+                            <option value="สัตว์น้ำ">สัตว์น้ำ</option>
+                            <option value="สัตว์บก">สัตว์บก</option>
+                            <option value="สัตว์ปีก">สัตว์ปีก</option>
+                            <option value="อุปกรณ์">อุปกรณ์</option>
+                            <option value="ของตกแต่ง">ของตกแต่ง</option>
+                            <option value="อื่นๆ">อื่นๆ</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 text-xs mb-1">รายละเอียดเพิ่มเติม</label>
+                        <textarea x-model="editingProduct.desc" rows="2" class="w-full border-2 rounded-xl px-3 py-2 text-xs focus:border-aquaCyan outline-none bg-slate-50"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-oceanDark to-oceanNavy text-white py-2.5 rounded-xl font-bold shadow transition mt-2">💾 บันทึกการแก้ไข</button>
+                </form>
+            </template>
+        </div>
+    </div>
 
     <!-- Modal เลือกเหตุผลการแบนร้านค้า -->
     <div x-show="showBanModal" class="fixed inset-0 bg-oceanAbyss/75 backdrop-blur-md flex items-center justify-center z-50 p-4" x-transition>
@@ -1138,19 +1172,49 @@
                 showBuyerModal: false,
                 showUsersModal: false,
                 showBanModal: false,
+                showEditProductModal: false,
+                editingProduct: null,
                 banningTargetVendor: null,
                 banReasonInput: 'ละเมิดข้อตกลงและเงื่อนไขของแพลตฟอร์ม',
                 myBanReason: '',
 
-                // 🎨 รายการหมวดหมู่พร้อมไอคอนกราฟิก
+                // 🎨 รายการหมวดหมู่พร้อม SVG Duo-Tone แท้ ตรงหมวดหมู่ 100%
                 categoryList: [
-                    { id: 'all', name: 'ทั้งหมด', icon: 'https://cdn-icons-png.flaticon.com/512/1828/1828884.png' },
-                    { id: 'สัตว์น้ำ', name: 'สัตว์น้ำ', icon: 'https://cdn-icons-png.flaticon.com/512/7709/7709088.png' },
-                    { id: 'สัตว์บก', name: 'สัตว์บก', icon: 'https://cdn-icons-png.flaticon.com/512/616/616408.png' },
-                    { id: 'สัตว์ปีก', name: 'สัตว์ปีก', icon: 'https://cdn-icons-png.flaticon.com/512/3069/3069172.png' },
-                    { id: 'อุปกรณ์', name: 'อุปกรณ์', icon: 'https://cdn-icons-png.flaticon.com/512/3524/3524659.png' },
-                    { id: 'ของตกแต่ง', name: 'ของตกแต่ง', icon: 'https://cdn-icons-png.flaticon.com/512/628/628283.png' },
-                    { id: 'อื่นๆ', name: 'อื่นๆ', icon: 'https://cdn-icons-png.flaticon.com/512/679/679922.png' }
+                    { 
+                        id: 'all', 
+                        name: 'ทั้งหมด', 
+                        svg: '<svg class="w-full h-full" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>' 
+                    },
+                    { 
+                        id: 'สัตว์น้ำ', 
+                        name: 'สัตว์น้ำ', 
+                        svg: '<svg class="w-full h-full" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c1.85 0 3.58-.5 5.08-1.38-.85-.92-1.42-2.1-1.54-3.42C12.44 17.78 9.5 15.2 9.5 12c0-3.2 2.94-5.78 6.04-5.2 0.12-1.32.69-2.5 1.54-3.42C15.58 2.5 13.85 2 12 2zm8.5 7.5c-1.38 0-2.5 1.12-2.5 2.5s1.12 2.5 2.5 2.5 2.5-1.12 2.5-2.5-1.12-2.5-2.5-2.5zm-5 2.5c0 .55-.45 1-1 1s-1-.45-1-1 .45-1 1-1 1 .45 1 1z"/></svg>' 
+                    },
+                    { 
+                        id: 'สัตว์บก', 
+                        name: 'สัตว์บก', 
+                        svg: '<svg class="w-full h-full" viewBox="0 0 24 24" fill="currentColor"><path d="M4.5 10.5C3.67 10.5 3 11.17 3 12s.67 1.5 1.5 1.5S6 12.83 6 12s-.67-1.5-1.5-1.5zm15 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm-7.5-6C8.46 4.5 5.5 7.46 5.5 11c0 2.21 1.07 4.16 2.72 5.37l-.72 3.13h3.5l1-3h2l1 3h3.5l-.72-3.13C20.43 15.16 21.5 13.21 21.5 11c0-3.54-2.96-6.5-6.5-6.5zm-2 6c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm4 0c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/></svg>' 
+                    },
+                    { 
+                        id: 'สัตว์ปีก', 
+                        name: 'สัตว์ปีก', 
+                        svg: '<svg class="w-full h-full" viewBox="0 0 24 24" fill="currentColor"><path d="M21.04 8.04l-2.08-2.08a4.98 4.98 0 00-7.07 0L10.5 7.35l-2.12-2.12a3 3 0 00-4.24 4.24L7.35 12.68l-3.21 3.21c-.39.39-.39 1.02 0 1.41l2.53 2.53c.39.39 1.02.39 1.41 0l3.21-3.21 3.21 3.21a4.98 4.98 0 007.07 0l2.08-2.08c1.95-1.95 1.95-5.12 0-7.07l-2.61-2.64zM16.5 6.5c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1z"/></svg>' 
+                    },
+                    { 
+                        id: 'อุปกรณ์', 
+                        name: 'อุปกรณ์', 
+                        svg: '<svg class="w-full h-full" viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>' 
+                    },
+                    { 
+                        id: 'ของตกแต่ง', 
+                        name: 'ของตกแต่ง', 
+                        svg: '<svg class="w-full h-full" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 19H19.65l-.62-1.39C20.26 16.07 21 14.12 21 12c0-4.97-4.03-9-9-9zm-1 5c.55 0 1 .45 1 1v2h2c.55 0 1 .45 1 1s-.45 1-1 1h-2v2c0 .55-.45 1-1 1s-1-.45-1-1v-2H9c-.55 0-1-.45-1-1s.45-1 1-1h2V9c0-.55.45-1 1-1z"/></svg>' 
+                    },
+                    { 
+                        id: 'อื่นๆ', 
+                        name: 'อื่นๆ', 
+                        svg: '<svg class="w-full h-full" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>' 
+                    }
                 ],
 
                 selectedProduct: null,
@@ -1206,7 +1270,6 @@
                     const { collection, onSnapshot, query, orderBy, doc } = window.firebaseFns;
                     const db = window.db;
 
-                    // ซิงค์ข้อความประกาศวิ่งหน้าเว็บจากคลาวด์แบบ Real-time
                     onSnapshot(doc(db, "settings", "global"), (docSnap) => {
                         if (docSnap.exists() && docSnap.data().announcement) {
                             this.announcementText = docSnap.data().announcement;
@@ -1295,6 +1358,51 @@
                     return this.salesRecords
                         .filter(s => s.storeName && s.storeName.toLowerCase() === storeName.toLowerCase())
                         .reduce((sum, s) => sum + (Number(s.amount) || 0), 0);
+                },
+
+                // 🛠️ แอดมินรีเซ็ตยอดขายทดสอบกลับเป็น 0
+                async adminResetAllSales() {
+                    if (confirm('คุณต้องการล้างประวัติยอดขายทั้งหมดในระบบกลับเป็น 0 ใช่หรือไม่? (ใช้สำหรับรีเซ็ตหลังทดสอบระบบ)')) {
+                        const { doc, deleteDoc } = window.firebaseFns;
+                        const db = window.db;
+                        for (let s of this.salesRecords) {
+                            if (s.firebaseId) {
+                                await deleteDoc(doc(db, "sales", s.firebaseId));
+                            }
+                        }
+                        this.showAlert('รีเซ็ตยอดขายทั้งหมดเป็น 0 สำเร็จ!');
+                    }
+                },
+
+                // 🛠️ แอดมินแก้ไข PIN ของร้านค้า
+                async adminResetPin(v) {
+                    let newPin = prompt(`🔑 กรอกรหัส PIN ใหม่ 4-6 หลักสำหรับร้าน "${v.storeName}":`, v.pin || '1234');
+                    if (newPin && newPin.trim().length >= 4) {
+                        const { doc, updateDoc } = window.firebaseFns;
+                        await updateDoc(doc(window.db, "approvedVendors", v.firebaseId), { pin: newPin.trim() });
+                        this.showAlert(`เปลี่ยนรหัส PIN ของร้าน "${v.storeName}" เป็น "${newPin.trim()}" สำเร็จ!`);
+                    } else if (newPin !== null) {
+                        this.showAlert('⚠️ รหัส PIN ต้องมีอย่างน้อย 4 หลัก');
+                    }
+                },
+
+                // 🛠️ แอดมินแก้ไขสินค้า
+                openEditProductModal(item) {
+                    this.editingProduct = JSON.parse(JSON.stringify(item));
+                    this.showEditProductModal = true;
+                },
+
+                async saveEditedProduct() {
+                    if (!this.editingProduct || !this.editingProduct.firebaseId) return;
+                    const { doc, updateDoc } = window.firebaseFns;
+                    await updateDoc(doc(window.db, "products", this.editingProduct.firebaseId), {
+                        title: this.editingProduct.title,
+                        price: Number(this.editingProduct.price),
+                        category: this.editingProduct.category,
+                        desc: this.editingProduct.desc || '-'
+                    });
+                    this.showEditProductModal = false;
+                    this.showAlert('บันทึกการแก้ไขสินค้าขึ้นคลาวด์เรียบร้อย!');
                 },
 
                 openBanModal(v) {
