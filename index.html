@@ -221,17 +221,19 @@
                     </div>
                 </div>
 
-                <!-- หมวดหมู่ (รวม 7 หมวดหมู่: ทั้งหมด, สัตว์น้ำ, สัตว์บก, สัตว์ปีก, อุปกรณ์, ของตกแต่ง, อื่นๆ) -->
+                <!-- 📂 หมวดหมู่สินค้า (ภาพกราฟิก คมชัด พรีเมียม) -->
                 <div class="glass-card p-4 rounded-3xl shadow-sm border border-slate-200">
                     <div class="flex justify-between items-center mb-3">
                         <h2 class="text-xs sm:text-sm font-extrabold text-oceanAbyss tracking-tight">📂 หมวดหมู่สินค้า</h2>
                         <span class="text-[11px] text-slate-500 font-bold" x-text="filteredProducts.length + ' รายการ'"></span>
                     </div>
-                    <div class="grid grid-cols-3 sm:grid-cols-7 gap-2 text-center">
-                        <template x-for="cat in ['ทั้งหมด', 'สัตว์น้ำ', 'สัตว์บก', 'สัตว์ปีก', 'อุปกรณ์', 'ของตกแต่ง', 'อื่นๆ']">
-                            <div @click="selectedCategory = cat === 'ทั้งหมด' ? 'all' : cat" class="cursor-pointer p-2 sm:p-3 rounded-2xl border-2 transition-all flex flex-col items-center space-y-1 group shadow-sm" :class="(selectedCategory === cat || (cat === 'ทั้งหมด' && selectedCategory === 'all')) ? 'border-aquaCyan bg-gradient-to-b from-oceanDark to-oceanAbyss text-white shadow-md' : 'border-slate-200 bg-white text-slate-700 hover:border-aquaCyan/60 hover:bg-sky-50/50'">
-                                <span class="text-lg sm:text-xl" x-text="cat === 'ทั้งหมด' ? '🌟' : (cat === 'สัตว์น้ำ' ? '🐟' : (cat === 'สัตว์บก' ? '🐅' : (cat === 'สัตว์ปีก' ? '🐓' : (cat === 'อุปกรณ์' ? '⚙️' : (cat === 'ของตกแต่ง' ? '🪵' : '📦')))))"></span>
-                                <span class="text-[10px] sm:text-xs font-bold" x-text="cat"></span>
+                    <div class="grid grid-cols-3 sm:grid-cols-7 gap-2 sm:gap-2.5 text-center">
+                        <template x-for="cat in categoryList" :key="cat.name">
+                            <div @click="selectedCategory = cat.id" class="cursor-pointer p-2 sm:p-3 rounded-2xl border-2 transition-all duration-200 flex flex-col items-center justify-center space-y-1.5 group shadow-sm" :class="(selectedCategory === cat.id) ? 'border-aquaCyan bg-gradient-to-b from-oceanDark to-oceanAbyss text-white shadow-md' : 'border-slate-200 bg-white text-slate-700 hover:border-aquaCyan/60 hover:bg-sky-50/50'">
+                                <div class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center">
+                                    <img :src="cat.icon" :alt="cat.name" class="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-200" :class="(selectedCategory === cat.id) ? 'brightness-0 invert' : ''">
+                                </div>
+                                <span class="text-[10px] sm:text-xs font-bold leading-tight" x-text="cat.name"></span>
                             </div>
                         </template>
                     </div>
@@ -474,7 +476,7 @@
                 </form>
             </div>
 
-            <!-- 4. หน้าลงโพสต์ขายสินค้า (รองรับหมวดหมู่ "อื่นๆ") -->
+            <!-- 4. หน้าลงโพสต์ขายสินค้า -->
             <div x-show="currentTab === 'post-product'" class="max-w-lg mx-auto glass-card p-5 sm:p-7 rounded-3xl shadow-sm border border-slate-200" x-transition>
                 <div class="mb-3.5 border-b pb-2.5 flex justify-between items-center">
                     <div>
@@ -487,8 +489,11 @@
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">เลือกหมวดหมู่ <span class="text-red-500">*</span></label>
                         <div class="grid grid-cols-3 sm:grid-cols-6 gap-1.5">
-                            <template x-for="cat in ['สัตว์น้ำ', 'สัตว์บก', 'สัตว์ปีก', 'อุปกรณ์', 'ของตกแต่ง', 'อื่นๆ']">
-                                <button type="button" @click="productForm.category = cat" class="p-2 rounded-xl border-2 text-center font-bold text-xs transition" :class="productForm.category === cat ? 'bg-oceanDark text-white border-oceanDark shadow-sm' : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'" x-text="cat"></button>
+                            <template x-for="cat in categoryList.filter(c => c.id !== 'all')" :key="cat.name">
+                                <button type="button" @click="productForm.category = cat.name" class="p-2 rounded-xl border-2 text-center font-bold text-xs transition flex flex-col items-center space-y-1" :class="productForm.category === cat.name ? 'bg-oceanDark text-white border-oceanDark shadow-sm' : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'">
+                                    <img :src="cat.icon" class="w-5 h-5 object-contain" :class="productForm.category === cat.name ? 'brightness-0 invert' : ''">
+                                    <span x-text="cat.name"></span>
+                                </button>
                             </template>
                         </div>
                     </div>
@@ -977,6 +982,17 @@
                 banReasonInput: 'ละเมิดข้อตกลงและเงื่อนไขของแพลตฟอร์ม',
                 myBanReason: '',
 
+                // 🎨 รายการหมวดหมู่พร้อมไอคอนกราฟิก
+                categoryList: [
+                    { id: 'all', name: 'ทั้งหมด', icon: 'https://cdn-icons-png.flaticon.com/512/1828/1828884.png' },
+                    { id: 'สัตว์น้ำ', name: 'สัตว์น้ำ', icon: 'https://cdn-icons-png.flaticon.com/512/7709/7709088.png' },
+                    { id: 'สัตว์บก', name: 'สัตว์บก', icon: 'https://cdn-icons-png.flaticon.com/512/616/616408.png' },
+                    { id: 'สัตว์ปีก', name: 'สัตว์ปีก', icon: 'https://cdn-icons-png.flaticon.com/512/3069/3069172.png' },
+                    { id: 'อุปกรณ์', name: 'อุปกรณ์', icon: 'https://cdn-icons-png.flaticon.com/512/3524/3524659.png' },
+                    { id: 'ของตกแต่ง', name: 'ของตกแต่ง', icon: 'https://cdn-icons-png.flaticon.com/512/628/628283.png' },
+                    { id: 'อื่นๆ', name: 'อื่นๆ', icon: 'https://cdn-icons-png.flaticon.com/512/679/679922.png' }
+                ],
+
                 selectedProduct: null,
                 pendingProductForChat: null,
                 isUploading: false,
@@ -1030,6 +1046,7 @@
                     const { collection, onSnapshot, query, orderBy, doc } = window.firebaseFns;
                     const db = window.db;
 
+                    // ซิงค์ข้อความประกาศวิ่งหน้าเว็บจากคลาวด์แบบ Real-time
                     onSnapshot(doc(db, "settings", "global"), (docSnap) => {
                         if (docSnap.exists() && docSnap.data().announcement) {
                             this.announcementText = docSnap.data().announcement;
@@ -1607,7 +1624,7 @@
 
                 async rejectVendor(v) {
                     const { doc, deleteDoc } = window.firebaseFns;
-                    await deleteDoc(doc(db, "pendingVendors", v.firebaseId));
+                    await deleteDoc(doc(window.db, "pendingVendors", v.firebaseId));
                     this.showAlert('ปฏิเสธคำขอเรียบร้อย');
                 },
 
