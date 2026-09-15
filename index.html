@@ -9,7 +9,7 @@
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="apple-touch-icon" href="logo.png">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0A192F">
+    <meta name="theme-color" content="#06162D">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -21,7 +21,7 @@
     <!-- 🎨 Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- 💎 Lucide Icons CDN (มาตรฐานสากล) -->
+    <!-- 💎 Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <!-- 🌐 Firebase SDK & Real-time Configuration -->
@@ -58,13 +58,14 @@
                         brandAccent: '#00B4D8',
                         brandLight: '#90E0EF',
                         brandDark: '#07162C',
-                        brandGold: '#F59E0B',
-                        brandEmerald: '#10B981',
+                        commandBg: '#050B14',
+                        commandPanel: '#0B1728',
+                        commandBorder: '#162C4A'
                     },
                     boxShadow: {
                         'pro-card': '0 10px 25px -5px rgba(15, 39, 68, 0.06), 0 8px 10px -6px rgba(15, 39, 68, 0.04)',
                         'pro-hover': '0 20px 35px -8px rgba(0, 180, 216, 0.18), 0 0 0 1.5px rgba(0, 180, 216, 0.35)',
-                        'pill-glow': '0 4px 15px -2px rgba(0, 180, 216, 0.3)',
+                        'command-glow': '0 0 25px rgba(0, 180, 216, 0.25)',
                     }
                 }
             }
@@ -107,7 +108,7 @@
 <body class="text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between" x-data="marketplaceApp()">
 
     <div>
-        <!-- 🌐 Header สไตล์แพลตฟอร์ม DealDee Market -->
+        <!-- 🌐 Header มาตรฐาน DealDee Market -->
         <header class="glass-header border-b border-slate-200/90 sticky top-0 z-50 shadow-sm">
             <div class="max-w-7xl mx-auto px-3 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-4">
                 <!-- โลโก้ DealDee Market -->
@@ -129,11 +130,11 @@
                 <!-- ช่องค้นหาใหญ่ (Desktop) -->
                 <div class="flex-1 max-w-xl hidden md:flex items-center bg-white border-2 border-slate-200/90 rounded-2xl overflow-hidden focus-within:border-brandAccent focus-within:ring-2 focus-within:ring-brandAccent/20 transition-all shadow-sm">
                     <span class="pl-4 text-slate-400 text-sm flex items-center justify-center w-5 h-5"><i data-lucide="search"></i></span>
-                    <input type="text" x-model="searchKeyword" placeholder="ค้นหาสิ่งมีชีวิต, สัตว์น้ำ, อุปกรณ์ หรืออาหาร..." class="w-full px-3 py-2.5 text-xs sm:text-sm bg-transparent outline-none font-medium text-slate-800">
+                    <input type="text" x-model="searchKeyword" @keyup.enter="triggerSearch()" placeholder="ค้นหาสิ่งมีชีวิต, สัตว์น้ำ, อุปกรณ์ หรืออาหาร..." class="w-full px-3 py-2.5 text-xs sm:text-sm bg-transparent outline-none font-medium text-slate-800">
                     <template x-if="searchKeyword">
                         <button @click="searchKeyword = ''" class="px-2 text-slate-400 hover:text-slate-600 font-bold text-xs">✕</button>
                     </template>
-                    <button class="bg-gradient-to-r from-brandDark to-brandPrimary text-white px-6 py-2.5 hover:opacity-95 transition font-bold text-xs flex-shrink-0">ค้นหา</button>
+                    <button @click="triggerSearch()" class="bg-gradient-to-r from-brandDark to-brandPrimary text-white px-6 py-2.5 hover:opacity-95 transition font-bold text-xs flex-shrink-0">ค้นหา</button>
                 </div>
 
                 <!-- กลุ่มปุ่มขวาบน -->
@@ -168,8 +169,8 @@
 
                             <template x-if="userRole === 'admin'">
                                 <button @click="currentTab = 'admin-panel'" class="bg-slate-900 hover:bg-black text-white px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold shadow transition flex items-center space-x-1.5">
-                                    <span class="w-3.5 h-3.5 flex items-center text-amber-400"><i data-lucide="shield-check"></i></span>
-                                    <span>แดชบอร์ดแอดมิน</span>
+                                    <span class="w-3.5 h-3.5 flex items-center text-amber-400"><i data-lucide="terminal"></i></span>
+                                    <span>ห้องบัญชาการ</span>
                                 </button>
                             </template>
 
@@ -212,21 +213,25 @@
             <!-- 1. หน้าแรก (Home) -->
             <div x-show="currentTab === 'home'" x-transition class="space-y-6">
                 
-                <!-- 🌟 Hero Section: ดีลดี มาร์เก็ต -->
+                <!-- 🌟 Hero Section: จัดตัวหนังสือให้อยู่ในบรรทัดเดียวกัน -->
                 <div class="bg-gradient-to-br from-brandDark via-brandPrimary to-brandSecondary rounded-3xl text-white p-6 sm:p-10 shadow-xl relative overflow-hidden border border-brandAccent/30">
                     <div class="absolute -top-24 -left-24 w-80 h-80 bg-brandAccent/20 rounded-full blur-3xl pointer-events-none"></div>
                     <div class="absolute -bottom-24 -right-24 w-80 h-80 bg-blue-600/25 rounded-full blur-3xl pointer-events-none"></div>
 
                     <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
-                        <div class="text-center md:text-left space-y-3 max-w-xl">
+                        <div class="text-center md:text-left space-y-3 max-w-2xl">
                             <div class="inline-flex items-center space-x-2 bg-brandAccent/20 text-brandLight text-[10px] sm:text-xs font-bold px-3 py-1 rounded-full border border-brandAccent/40 backdrop-blur-sm shadow-sm">
                                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
                                 <span>🟢 CLOUD REAL-TIME MARKETPLACE</span>
                             </div>
-                            <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight leading-tight">
-                                ดีลดี มาร์เก็ต (DealDee) <br class="hidden sm:inline">
-                                <span class="text-transparent bg-clip-text bg-gradient-to-r from-brandLight via-brandAccent to-sky-200">ตลาดซื้อขายครบวงจร ปลอดภัย ทุกดีล</span>
-                            </h1>
+                            
+                            <div>
+                                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight leading-tight">ดีลดี มาร์เก็ต (DealDee)</h1>
+                                <p class="text-lg sm:text-2xl lg:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-brandLight via-brandAccent to-sky-200 mt-1 whitespace-nowrap overflow-hidden text-ellipsis">
+                                    ตลาดซื้อขายครบวงจร ปลอดภัย ทุกดีล
+                                </p>
+                            </div>
+
                             <p class="text-xs sm:text-sm text-slate-200/90 font-normal leading-relaxed">
                                 แหล่งรวมสิ่งมีชีวิต สัตว์น้ำ สัตว์เลี้ยง อุปกรณ์ และของตกแต่ง คัดสรรร้านค้าผ่านการยืนยันตัวตน มีระบบห้องแชทคำนวณบิลสด ตรวจสอบก่อนโอนเงิน
                             </p>
@@ -235,17 +240,21 @@
                             <div class="w-full md:hidden pt-1">
                                 <div class="flex items-center bg-white/10 backdrop-blur-md rounded-2xl overflow-hidden border border-white/25 shadow-inner">
                                     <span class="pl-3.5 text-slate-300 text-xs w-4 h-4 flex items-center"><i data-lucide="search"></i></span>
-                                    <input type="text" x-model="searchKeyword" placeholder="ค้นหาสินค้า, สิ่งมีชีวิต หรืออุปกรณ์..." class="w-full px-3 py-2.5 text-xs text-white placeholder-slate-300 bg-transparent outline-none font-medium">
+                                    <input type="text" x-model="searchKeyword" @keyup.enter="triggerSearch()" placeholder="ค้นหาสิ่งมีชีวิต, สัตว์น้ำ หรืออุปกรณ์..." class="w-full px-3 py-2.5 text-xs text-white placeholder-slate-300 bg-transparent outline-none font-medium">
                                 </div>
                             </div>
 
-                            <!-- ชิปคำค้นหายอดนิยม -->
+                            <!-- ⚡ ดีลยอดฮิต (ตรวจจับจากระบบค้นหาจริงบนคลาวด์) -->
                             <div class="flex flex-wrap items-center justify-center md:justify-start gap-1.5 pt-1 text-[11px]">
-                                <span class="text-slate-300 font-bold text-[10px]">🔥 ดีลยอดฮิต:</span>
-                                <button @click="searchKeyword = 'ปลากัด'" class="bg-white/15 hover:bg-white/25 px-2.5 py-0.5 rounded-full text-slate-100 border border-white/20 transition">ปลากัด</button>
-                                <button @click="searchKeyword = 'ฮาล์ฟมูน'" class="bg-white/15 hover:bg-white/25 px-2.5 py-0.5 rounded-full text-slate-100 border border-white/20 transition">ฮาล์ฟมูน</button>
-                                <button @click="searchKeyword = 'ไม้น้ำ'" class="bg-white/15 hover:bg-white/25 px-2.5 py-0.5 rounded-full text-slate-100 border border-white/20 transition">ไม้น้ำ</button>
-                                <button @click="searchKeyword = 'อาหาร'" class="bg-white/15 hover:bg-white/25 px-2.5 py-0.5 rounded-full text-slate-100 border border-white/20 transition">อาหารสัตว์</button>
+                                <span class="text-slate-300 font-bold text-[10px] flex items-center space-x-1">
+                                    <span class="w-3 h-3 text-amber-400"><i data-lucide="flame"></i></span>
+                                    <span>ดีลยอดฮิต:</span>
+                                </span>
+                                <template x-for="tag in topSearchTags" :key="tag">
+                                    <button @click="searchKeyword = tag; triggerSearch()" class="bg-white/15 hover:bg-white/25 px-2.5 py-0.5 rounded-full text-slate-100 border border-white/20 transition flex items-center space-x-1">
+                                        <span x-text="tag"></span>
+                                    </button>
+                                </template>
                             </div>
                         </div>
 
@@ -299,7 +308,7 @@
                     </div>
                 </div>
 
-                <!-- 📂 หมวดหมู่สินค้า: ใช้ Lucide Icons มาตรฐานสากล คมกริบ สวยงามระดับโปร -->
+                <!-- 📂 หมวดหมู่สินค้า: Lucide Icons มาตรฐานสากล -->
                 <div class="bg-white p-5 sm:p-6 rounded-3xl shadow-pro-card border border-slate-200/80">
                     <div class="flex justify-between items-center mb-4">
                         <h2 class="text-sm sm:text-base font-extrabold text-brandDark tracking-tight flex items-center space-x-2">
@@ -317,7 +326,6 @@
                                     ? 'border-brandAccent bg-gradient-to-b from-brandDark to-brandPrimary text-white shadow-pro-hover scale-[1.03]' 
                                     : 'border-slate-100 bg-white hover:border-brandAccent/40 hover:bg-sky-50/40 text-slate-700 shadow-sm'">
                                 
-                                <!-- Lucide Icon Badge -->
                                 <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl flex items-center justify-center transition-transform duration-200 group-hover:scale-110 p-2.5" 
                                      :class="(selectedCategory === cat.id) ? 'bg-white/20 text-white' : cat.bgClass + ' ' + cat.colorClass">
                                     <i :data-lucide="cat.iconName"></i>
@@ -394,13 +402,10 @@
                             </div>
                             <div class="font-extrabold text-slate-800 text-base">ยังไม่มีสินค้าในหมวดหมู่นี้</div>
                             <p class="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
-                                คุณสามารถเริ่มลงทะเบียนเปิดร้านค้าเพื่อลงขาย หรือกดปุ่มด้านล่างเพื่อสร้างสินค้าตัวอย่างสำหรับทดสอบระบบ
+                                คุณสามารถเข้าสู่ระบบร้านค้าเพื่อลงขายสินค้าตัวแรกในหมวดหมู่นี้ได้ทันที
                             </p>
-                            <div class="flex flex-wrap justify-center gap-2 pt-2">
+                            <div class="pt-2">
                                 <button @click="searchKeyword = ''; selectCategory('all')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-xl text-xs font-bold transition">ดูสินค้าทั้งหมด</button>
-                                <template x-if="userRole === 'admin' || userRole === 'vendor'">
-                                    <button @click="createSampleProduct()" class="bg-gradient-to-r from-brandDark to-brandPrimary text-white px-4 py-2 rounded-xl text-xs font-bold shadow hover:opacity-95 transition">✨ สร้างสินค้าตัวอย่างทดสอบ</button>
-                                </template>
                             </div>
                         </div>
                     </template>
@@ -468,7 +473,6 @@
                     <button @click="currentTab = 'home'" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-xl text-xs font-bold transition">← หน้าแรก</button>
                 </div>
 
-                <!-- สลับแท็บ -->
                 <div class="flex space-x-2 border-b border-slate-200 pb-2">
                     <button @click="myShopTab = 'inventory'" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition" :class="myShopTab === 'inventory' ? 'bg-gradient-to-r from-brandDark to-brandPrimary text-white shadow-sm' : 'bg-white text-slate-600 border'">
                         📦 จัดการสต็อก (<span x-text="myProducts.length"></span>)
@@ -481,7 +485,6 @@
                     </button>
                 </div>
 
-                <!-- จัดการสต็อก -->
                 <div x-show="myShopTab === 'inventory'" class="space-y-3">
                     <div class="grid grid-cols-3 gap-2 sm:gap-3">
                         <div class="bg-white p-3 rounded-2xl border text-center shadow-sm">
@@ -522,7 +525,6 @@
                     </div>
                 </div>
 
-                <!-- ข้อความลูกค้า -->
                 <div x-show="myShopTab === 'chats'" class="space-y-2">
                     <template x-for="chatRoom in myChatRooms" :key="chatRoom.id">
                         <div @click="openExistingChat(chatRoom)" class="p-3 bg-white hover:bg-slate-50 rounded-2xl border cursor-pointer flex justify-between items-center transition shadow-sm" :class="chatRoom.unreadForVendor ? 'border-brandAccent bg-blue-50/40' : 'border-slate-200'">
@@ -684,7 +686,7 @@
                     </div>
                 </div>
 
-                <!-- 🛒 Live Mini-Cart & ปุ่มขอข้อมูลชำระเงิน -->
+                <!-- Live Mini-Cart -->
                 <template x-if="activeChatItems && activeChatItems.length > 0">
                     <div class="bg-slate-50 border-b border-slate-200 p-2.5 px-3 flex flex-col space-y-1.5 shadow-inner">
                         <div class="flex justify-between items-center text-[11px]">
@@ -797,57 +799,78 @@
                 </div>
             </div>
 
-            <!-- 6. หน้าแดชบอร์ดแอดมิน (Super Admin Control Center) -->
-            <div x-show="currentTab === 'admin-panel'" class="space-y-4 max-w-5xl mx-auto text-xs sm:text-sm" x-transition>
-                <div class="flex justify-between items-center border-b pb-2.5">
+            <!-- 6. 🚀 หน้าห้องบัญชาการแอดมินสุดล้ำ (DealDee Command Center) -->
+            <div x-show="currentTab === 'admin-panel'" class="space-y-5 max-w-6xl mx-auto text-xs sm:text-sm" x-transition>
+                
+                <!-- ส่วนหัว Command Center -->
+                <div class="bg-commandPanel border border-commandBorder p-4 sm:p-6 rounded-3xl text-white shadow-command-glow flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                     <div>
-                        <h2 class="text-base sm:text-xl font-extrabold text-brandDark">⚙️ แดชบอร์ดแอดมิน (DealDee Master Admin)</h2>
-                        <p class="text-[11px] text-slate-500">ควบคุมร้านค้า, สินค้า, รีเซ็ต PIN, ล้างยอดขาย และแก้ไขเนื้อหาหน้าเว็บได้เบ็ดเสร็จ</p>
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full bg-emerald-400 animate-ping"></span>
+                            <h2 class="text-base sm:text-xl font-black tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-brandLight via-brandAccent to-emerald-400">
+                                ⚡ DEALDEE COMMAND CENTER (ศูนย์บัญชาการระบบ)
+                            </h2>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1 font-mono">
+                            SYSTEM HEALTH: OPTIMAL • ENCRYPTION: ACTIVE • DATABASE: SYNCHRONIZED
+                        </p>
                     </div>
-                    <button @click="currentTab = 'home'" class="bg-slate-200 px-3 py-1.5 rounded-xl text-xs font-bold shadow-sm hover:bg-slate-300 transition">กลับหน้าเว็บ</button>
+                    <div class="flex items-center space-x-2">
+                        <button @click="cleanSearchLogs()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-600 transition flex items-center space-x-1">
+                            <span class="w-3 h-3"><i data-lucide="refresh-cw"></i></span>
+                            <span>รีเซ็ตบันทึกค้นหา</span>
+                        </button>
+                        <button @click="currentTab = 'home'" class="bg-gradient-to-r from-brandAccent to-blue-600 text-white px-4 py-1.5 rounded-xl text-xs font-bold shadow hover:opacity-90 transition">
+                            ออกจากโหมดบัญชาการ
+                        </button>
+                    </div>
                 </div>
 
-                <!-- ศูนย์ควบคุมประกาศด่วนหน้าเว็บ -->
-                <div class="bg-white p-4 rounded-3xl border border-slate-200 space-y-3 shadow-pro-card">
-                    <h3 class="font-extrabold text-slate-900 text-xs sm:text-sm flex items-center space-x-1.5">
-                        <span>🎛️</span><span>ศูนย์ควบคุมประกาศด่วนหน้าเว็บ</span>
+                <!-- 🎛️ ศูนย์ควบคุมและประกาศด่วน -->
+                <div class="bg-commandPanel border border-commandBorder p-5 rounded-3xl text-white space-y-3 shadow-lg">
+                    <h3 class="font-extrabold text-xs sm:text-sm text-brandLight flex items-center space-x-2">
+                        <span class="w-4 h-4 text-amber-400"><i data-lucide="radio"></i></span>
+                        <span>ระบบกระจายเสียงและประกาศฉุกเฉิน (Global Broadcast)</span>
                     </h3>
                     <div class="flex flex-wrap gap-2">
-                        <button @click="applyAnnouncementPreset('ระบบยืนยันตัวตนปลอดภัยสูงสุด: โปรดตรวจสอบชื่อบัญชีธนาคารให้ตรงกับร้านค้าที่มีเครื่องหมาย Verified ก่อนโอนเงินทุกครั้ง')" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg text-[11px] font-bold text-slate-700 transition">📢 ประกาศความปลอดภัย</button>
-                        <button @click="applyAnnouncementPreset('⚡ ยินดีต้อนรับสู่ DealDee Market (ดีลดี มาร์เก็ต) ตลาดซื้อขายสิ่งมีชีวิตและสินค้าออนไลน์ เปิดให้บริการ 24 ชม.')" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg text-[11px] font-bold text-slate-700 transition">🎉 ประกาศต้อนรับ</button>
-                        <button @click="applyAnnouncementPreset('⚙️ ระบบกำลังปรับปรุงฐานข้อมูลชั่วคราว การซื้อขายยังคงดำเนินได้ตามปกติ')" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg text-[11px] font-bold text-slate-700 transition">🛠️ ประกาศปรับปรุงระบบ</button>
+                        <button @click="applyAnnouncementPreset('ระบบยืนยันตัวตนปลอดภัยสูงสุด: โปรดตรวจสอบชื่อบัญชีธนาคารให้ตรงกับร้านค้าที่มีเครื่องหมาย Verified ก่อนโอนเงินทุกครั้ง')" class="px-2.5 py-1 bg-slate-800/90 hover:bg-slate-700 rounded-lg text-[11px] font-bold text-slate-300 border border-slate-700 transition">📢 ประกาศความปลอดภัย</button>
+                        <button @click="applyAnnouncementPreset('⚡ ยินดีต้อนรับสู่ DealDee Market ตลาดซื้อขายออนไลน์ ยืนยันตัวตนทุกร้าน ปิดดีลฉับไว เปิดให้บริการ 24 ชม.')" class="px-2.5 py-1 bg-slate-800/90 hover:bg-slate-700 rounded-lg text-[11px] font-bold text-slate-300 border border-slate-700 transition">🎉 ประกาศต้อนรับ</button>
+                        <button @click="applyAnnouncementPreset('⚙️ ระบบกำลังปรับปรุงฐานข้อมูลชั่วคราว การซื้อขายยังคงดำเนินได้ตามปกติ')" class="px-2.5 py-1 bg-slate-800/90 hover:bg-slate-700 rounded-lg text-[11px] font-bold text-slate-300 border border-slate-700 transition">🛠️ ประกาศปรับปรุงระบบ</button>
                     </div>
                     <div class="flex flex-col sm:flex-row gap-2">
-                        <input type="text" x-model="tempAnnouncement" class="flex-1 border-2 rounded-xl px-3 py-2 outline-none focus:border-brandAccent text-xs bg-slate-50" placeholder="พิมพ์ข้อความประกาศแบบกำหนดเอง...">
-                        <button @click="updateAnnouncement()" class="bg-gradient-to-r from-brandDark to-brandPrimary text-white px-4 py-2 rounded-xl font-bold text-xs shadow flex-shrink-0">อัปเดตประกาศวิ่ง</button>
+                        <input type="text" x-model="tempAnnouncement" class="flex-1 bg-slate-900 border border-commandBorder rounded-xl px-3 py-2 outline-none focus:border-brandAccent text-xs text-white placeholder-slate-500 font-medium" placeholder="พิมพ์ข้อความประกาศขึ้นหน้าเว็บสด...">
+                        <button @click="updateAnnouncement()" class="bg-gradient-to-r from-brandAccent to-blue-600 text-white px-5 py-2 rounded-xl font-bold text-xs shadow flex-shrink-0 hover:opacity-90 transition">ส่งสัญญาณประกาศทันที</button>
                     </div>
                 </div>
 
-                <!-- การ์ดสรุปตัวเลขระบบ 4 ช่อง -->
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
-                    <div @click="showUsersModal = true" class="bg-white p-3.5 rounded-2xl border shadow-sm text-center cursor-pointer hover:border-brandAccent transition">
-                        <div class="text-xl sm:text-2xl font-black text-brandPrimary" x-text="allUniqueBuyers.length + approvedVendors.length"></div>
-                        <div class="text-[10px] sm:text-xs text-slate-500 font-bold mt-0.5">👥 ผู้ใช้ทั้งหมด (คลิกดู)</div>
+                <!-- การ์ดมอนิเตอร์ตัวเลขระบบ 4 ช่อง -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div @click="showUsersModal = true" class="bg-commandPanel border border-commandBorder p-4 rounded-2xl text-center cursor-pointer hover:border-brandAccent transition shadow-sm">
+                        <div class="text-xl sm:text-3xl font-black text-brandLight" x-text="allUniqueBuyers.length + approvedVendors.length"></div>
+                        <div class="text-[10px] sm:text-xs text-slate-400 font-bold mt-1">👥 ผู้ใช้งานทั้งหมด (คลิกดู)</div>
                     </div>
-                    <div class="bg-white p-3.5 rounded-2xl border shadow-sm text-center">
-                        <div class="text-xl sm:text-2xl font-black text-emerald-600" x-text="approvedVendors.length"></div>
-                        <div class="text-[10px] sm:text-xs text-slate-500 font-bold mt-0.5">🏪 ร้านค้าที่อนุมัติแล้ว</div>
+                    <div class="bg-commandPanel border border-commandBorder p-4 rounded-2xl text-center shadow-sm">
+                        <div class="text-xl sm:text-3xl font-black text-emerald-400" x-text="approvedVendors.length"></div>
+                        <div class="text-[10px] sm:text-xs text-slate-400 font-bold mt-1">🏪 ร้านค้าที่อนุมัติแล้ว</div>
                     </div>
-                    <div class="bg-white p-3.5 rounded-2xl border shadow-sm text-center">
-                        <div class="text-xl sm:text-2xl font-black text-brandAccent" x-text="products.length"></div>
-                        <div class="text-[10px] sm:text-xs text-slate-500 font-bold mt-0.5">📦 สินค้าทั้งหมดบนคลาวด์</div>
+                    <div class="bg-commandPanel border border-commandBorder p-4 rounded-2xl text-center shadow-sm">
+                        <div class="text-xl sm:text-3xl font-black text-cyan-400" x-text="products.length"></div>
+                        <div class="text-[10px] sm:text-xs text-slate-400 font-bold mt-1">📦 สินค้าทั้งหมดบนคลาวด์</div>
                     </div>
-                    <div class="bg-white p-3.5 rounded-2xl border shadow-sm text-center relative group">
-                        <div class="text-xl sm:text-2xl font-black text-amber-600" x-text="'฿' + totalSystemSales.toLocaleString()"></div>
-                        <div class="text-[10px] sm:text-xs text-slate-500 font-bold mt-0.5">💰 ยอดขายรวมทั้งระบบ</div>
-                        <button @click="adminResetAllSales()" class="mt-1 text-[10px] text-red-500 hover:text-red-700 underline font-bold" title="ล้างยอดขายทดสอบกลับเป็น 0">ล้างยอดขายทดสอบ</button>
+                    <div class="bg-commandPanel border border-commandBorder p-4 rounded-2xl text-center shadow-sm relative group">
+                        <div class="text-xl sm:text-3xl font-black text-amber-400" x-text="'฿' + totalSystemSales.toLocaleString()"></div>
+                        <div class="text-[10px] sm:text-xs text-slate-400 font-bold mt-1">💰 ยอดขายสะสมทั้งระบบ</div>
+                        <button @click="adminResetAllSales()" class="mt-1 text-[10px] text-red-400 hover:text-red-300 underline font-bold" title="ล้างยอดขายทดสอบกลับเป็น 0">ล้างยอดขายทดสอบ</button>
                     </div>
                 </div>
 
                 <!-- 💬 กล่องข้อความผู้ใช้ติดต่อแอดมิน -->
-                <div class="bg-white p-4 rounded-3xl shadow-pro-card border border-slate-200 space-y-2.5">
+                <div class="bg-white p-5 rounded-3xl shadow-pro-card border border-slate-200 space-y-2.5">
                     <div class="flex justify-between items-center">
-                        <h3 class="font-extrabold text-slate-900 text-xs sm:text-sm">💬 กล่องข้อความผู้ใช้ติดต่อแอดมิน (Support Inbox)</h3>
+                        <h3 class="font-extrabold text-slate-900 text-xs sm:text-sm flex items-center space-x-2">
+                            <span class="w-4 h-4 text-brandAccent"><i data-lucide="inbox"></i></span>
+                            <span>กล่องข้อความผู้ใช้ติดต่อแอดมิน (Support Inbox)</span>
+                        </h3>
                         <span class="text-xs text-slate-400" x-text="adminSupportChats.length + ' ข้อความ'"></span>
                     </div>
                     <div class="space-y-2 max-h-44 overflow-y-auto">
@@ -870,22 +893,25 @@
                 </div>
 
                 <!-- 📊 ตารางสรุปรายชื่อร้านค้า + รีเซ็ต PIN -->
-                <div class="bg-white p-4 rounded-3xl shadow-pro-card border border-slate-200 space-y-2.5">
+                <div class="bg-white p-5 rounded-3xl shadow-pro-card border border-slate-200 space-y-3">
                     <div class="flex justify-between items-center">
-                        <h3 class="font-extrabold text-slate-900 text-xs sm:text-sm">📊 รายชื่อร้านค้าทั้งหมด & จัดการบัญชี</h3>
+                        <h3 class="font-extrabold text-slate-900 text-xs sm:text-sm flex items-center space-x-2">
+                            <span class="w-4 h-4 text-blue-600"><i data-lucide="shield-alert"></i></span>
+                            <span>รายชื่อร้านค้าทั้งหมด & จัดการบัญชีความปลอดภัย</span>
+                        </h3>
                         <span class="text-xs text-slate-400" x-text="approvedVendors.length + ' ร้านค้า'"></span>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs">
                             <thead class="bg-slate-50 text-slate-500 border-b">
                                 <tr>
-                                    <th class="p-2">ชื่อร้าน / ล็อกอิน</th>
-                                    <th class="p-2">ข้อมูลผู้เปิด & ธนาคาร</th>
-                                    <th class="p-2">เบอร์โทรติดต่อ</th>
-                                    <th class="p-2 text-center">ลงขาย/ขายแล้ว</th>
+                                    <th class="p-2">ชื่อร้าน / รหัสผ่าน</th>
+                                    <th class="p-2">ข้อมูลเจ้าของ & บัญชีรับเงิน</th>
+                                    <th class="p-2">เบอร์โทรศัพท์</th>
+                                    <th class="p-2 text-center">ลงขาย / ขายแล้ว</th>
                                     <th class="p-2 text-right">ยอดขายรวม</th>
                                     <th class="p-2 text-center">สถานะ</th>
-                                    <th class="p-2 text-center">จัดการร้านค้า</th>
+                                    <th class="p-2 text-center">คำสั่งควบคุม</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y">
@@ -895,7 +921,7 @@
                                             <div class="font-bold text-slate-900" x-text="v.storeName"></div>
                                             <div class="text-[10px] text-slate-400 font-mono flex items-center space-x-1">
                                                 <span x-text="'PIN: ' + (v.pin || '1234')"></span>
-                                                <button @click="adminResetPin(v)" class="text-blue-600 hover:underline font-bold text-[9px]">(แก้)</button>
+                                                <button @click="adminResetPin(v)" class="text-blue-600 hover:underline font-bold text-[9px]">(แก้ไข)</button>
                                             </div>
                                         </td>
                                         <td class="p-2">
@@ -930,8 +956,11 @@
                 </div>
 
                 <!-- 🔔 คำขอเปิดร้านค้าใหม่ -->
-                <div class="bg-white p-4 rounded-3xl shadow-pro-card border border-slate-200">
-                    <h3 class="font-extrabold text-slate-800 mb-2.5 text-xs sm:text-sm">🔔 คำขอเปิดร้านค้าใหม่ (รอตรวจสอบ)</h3>
+                <div class="bg-white p-5 rounded-3xl shadow-pro-card border border-slate-200">
+                    <h3 class="font-extrabold text-slate-800 mb-2.5 text-xs sm:text-sm flex items-center space-x-2">
+                        <span class="w-4 h-4 text-amber-500"><i data-lucide="user-check"></i></span>
+                        <span>คำขอเปิดร้านค้าใหม่ (รอการอนุมัติ)</span>
+                    </h3>
                     <div class="space-y-2">
                         <template x-for="(v, index) in pendingVendors" :key="v.firebaseId || index">
                             <div class="p-3 border-2 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 bg-amber-50/70 text-xs">
@@ -956,8 +985,11 @@
                 </div>
 
                 <!-- 🗑️ จัดการและแก้ไขสินค้าทั้งหมดบนระบบ -->
-                <div class="bg-white p-4 rounded-3xl shadow-pro-card border border-slate-200">
-                    <h3 class="font-extrabold text-slate-800 mb-2.5 text-xs sm:text-sm">📦 ควบคุมและแก้ไขสินค้าทั้งหมดบนระบบ</h3>
+                <div class="bg-white p-5 rounded-3xl shadow-pro-card border border-slate-200">
+                    <h3 class="font-extrabold text-slate-800 mb-2.5 text-xs sm:text-sm flex items-center space-x-2">
+                        <span class="w-4 h-4 text-cyan-600"><i data-lucide="layers"></i></span>
+                        <span>ควบคุมและแก้ไขสินค้าทั้งหมดบนระบบ</span>
+                    </h3>
                     <div class="space-y-2 max-h-72 overflow-y-auto pr-1">
                         <template x-for="item in products" :key="item.firebaseId">
                             <div class="p-2.5 bg-slate-50 rounded-2xl border border-slate-200 flex justify-between items-center text-xs">
@@ -1174,7 +1206,7 @@
         </div>
     </div>
 
-    <!-- Script ควบคุมระบบ -->
+    <!-- Script ควบคุมระบบทั้งหมด -->
     <script>
         function marketplaceApp() {
             return {
@@ -1194,7 +1226,10 @@
                 banReasonInput: 'ละเมิดข้อตกลงและเงื่อนไขของแพลตฟอร์ม',
                 myBanReason: '',
 
-                // 🎨 รายการหมวดหมู่: Lucide Icons มาตรฐานสากล
+                // ⚡ รายการคำค้นหายอดนิยมจริงบนระบบคลาวด์
+                topSearchTags: ['ปลากัด', 'ฮาล์ฟมูน', 'ไม้น้ำ', 'อาหารปลา', 'ตู้ปลา'],
+
+                // 🎨 หมวดหมู่สินค้า: Lucide Icons มาตรฐานสากล
                 categoryList: [
                     { id: 'all', name: 'ทั้งหมด', iconName: 'layout-grid', bgClass: 'bg-amber-50', colorClass: 'text-amber-500' },
                     { id: 'สัตว์น้ำ', name: 'สัตว์น้ำ', iconName: 'fish', bgClass: 'bg-cyan-50', colorClass: 'text-cyan-500' },
@@ -1265,13 +1300,44 @@
                     });
                 },
 
+                // 🔍 บันทึกและดักจับคำค้นหาขึ้นคลาวด์เพื่อคำนวณดีลยอดฮิตแบบเรียลไทม์
+                async triggerSearch() {
+                    let term = this.searchKeyword.trim();
+                    if (!term) return;
+
+                    const { collection, addDoc } = window.firebaseFns;
+                    const db = window.db;
+                    try {
+                        await addDoc(collection(db, "searchLogs"), {
+                            keyword: term.toLowerCase(),
+                            timestamp: Date.now()
+                        });
+                    } catch (e) {
+                        console.error("Search log error:", e);
+                    }
+                },
+
                 initRealtimeSync() {
                     const { collection, onSnapshot, query, orderBy, doc } = window.firebaseFns;
                     const db = window.db;
 
+                    // ซิงค์ข้อความประกาศวิ่งสด
                     onSnapshot(doc(db, "settings", "global"), (docSnap) => {
                         if (docSnap.exists() && docSnap.data().announcement) {
                             this.announcementText = docSnap.data().announcement;
+                        }
+                    });
+
+                    // คำนวณคำค้นหายอดนิยม 5 อันดับแรกแบบเรียลไทม์
+                    onSnapshot(collection(db, "searchLogs"), (snapshot) => {
+                        let counts = {};
+                        snapshot.docs.forEach(d => {
+                            let kw = d.data().keyword;
+                            if (kw) counts[kw] = (counts[kw] || 0) + 1;
+                        });
+                        let sorted = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+                        if (sorted.length > 0) {
+                            this.topSearchTags = sorted.slice(0, 5);
                         }
                     });
 
@@ -1322,22 +1388,18 @@
                     });
                 },
 
-                async createSampleProduct() {
-                    const { collection, addDoc } = window.firebaseFns;
-                    const sample = {
-                        id: Date.now(),
-                        category: 'สัตว์น้ำ',
-                        storeName: this.currentUser || 'DealDee Official',
-                        bankAccName: 'ร้านค้าตัวอย่าง ดีลดี มาร์เก็ต',
-                        bankType: 'พร้อมเพย์ (PromptPay)',
-                        title: 'ปลากัดหม้อฮาล์ฟมูน บลูสตาร์ เกรดพรีเมียม สายประกวด',
-                        desc: 'ฟอร์มสวย ครีบกว้าง แข็งแรงมาก พร้อมส่งด่วนทั่วประเทศ รับประกันปลาถึงมือปลอดภัย 100%',
-                        price: 450,
-                        status: 'available',
-                        images: ['logo.png']
-                    };
-                    await addDoc(collection(window.db, "products"), sample);
-                    this.showAlert('เพิ่มสินค้าตัวอย่างเรียบร้อย!');
+                // ล้างประวัติคำค้นหาขยะ
+                async cleanSearchLogs() {
+                    if (confirm('คุณต้องการรีเซ็ตประวัติคำค้นหาทั้งหมดในระบบใช่หรือไม่?')) {
+                        const { collection, getDocs, doc, deleteDoc } = window.firebaseFns;
+                        const db = window.db;
+                        let snap = await getDocs(collection(db, "searchLogs"));
+                        for (let d of snap.docs) {
+                            await deleteDoc(doc(db, "searchLogs", d.id));
+                        }
+                        this.topSearchTags = ['ปลากัด', 'ฮาล์ฟมูน', 'ไม้น้ำ', 'อาหารปลา', 'ตู้ปลา'];
+                        this.showAlert('รีเซ็ตประวัติคำค้นหาเรียบร้อย');
+                    }
                 },
 
                 loadVendorChatRooms() {
@@ -1824,7 +1886,7 @@
                 },
 
                 loginAsAdmin() {
-                    let password = prompt('🔑 กรอกรหัสผ่านแอดมิน:');
+                    let password = prompt('🔑 กรอกรหัสผ่านห้องบัญชาการแอดมิน:');
                     if(password === 'admin030945') {
                         this.currentUser = 'Admin_Master';
                         this.userRole = 'admin';
