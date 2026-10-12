@@ -3,20 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DealDee Market | ตลาดซื้อขายออนไลน์ระดับพรีเมียม</title>
+    <title>DealDee Market — ตลาดซื้อขายออนไลน์คุณภาพสูง</title>
     
-    <!-- PWA & Metadata -->
+    <!-- PWA & Favicon -->
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="apple-touch-icon" href="logo.png">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0F172A">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-    <!-- Google Font: Prompt -->
+    <!-- Fonts: Prompt & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -50,21 +48,13 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Prompt', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+                        sans: ['Prompt', 'Inter', 'sans-serif'],
                     },
                     colors: {
-                        slateDark: '#0B132B',
-                        primaryNavy: '#0F172A',
-                        accentCyan: '#06B6D4',
-                        accentBlue: '#2563EB',
-                        surfaceMuted: '#F8FAFC',
-                        surfaceBorder: '#E2E8F0',
-                    },
-                    boxShadow: {
-                        'app': '0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05)',
-                        'card-flat': '0 4px 6px -1px rgba(15, 23, 42, 0.05), 0 2px 4px -2px rgba(15, 23, 42, 0.03)',
-                        'card-float': '0 20px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04)',
-                        'omnibar': '0 10px 30px -10px rgba(15, 23, 42, 0.12)',
+                        dark: '#090D16',
+                        brand: '#0284C7',
+                        surface: '#FFFFFF',
+                        borderSubtle: '#E2E8F0',
                     }
                 }
             }
@@ -73,109 +63,100 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <style>
-        html, body {
-            max-width: 100%;
-            overflow-x: hidden;
+        * { -webkit-tap-highlight-color: transparent; }
+        body {
+            background-color: #FAFAFA;
+            color: #090D16;
             font-family: 'Prompt', sans-serif;
-            background-color: #F8FAFC;
-            color: #0F172A;
-            -webkit-tap-highlight-color: transparent;
         }
-        .hide-scrollbar::-webkit-scrollbar {
-            display: none;
+
+        /* 🚀 ข้อความประกาศวิ่งลื่นไหล 60FPS ไม่ค้าง */
+        .marquee-track {
+            display: flex;
+            width: max-content;
+            animation: marqueeScroll 22s linear infinite;
         }
-        .hide-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
+        .marquee-track:hover {
+            animation-play-state: paused;
         }
-        .lucide {
-            width: 100%;
-            height: 100%;
-            stroke-width: 1.85;
+        @keyframes marqueeScroll {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
         }
-        @keyframes tickerPulse {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
-        }
-        .animate-ticker {
-            display: inline-block;
-            white-space: nowrap;
-            animation: tickerPulse 28s linear infinite;
-        }
+
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .lucide { width: 100%; height: 100%; stroke-width: 1.75; }
     </style>
 </head>
-<body class="antialiased min-h-screen flex flex-col justify-between pb-20 md:pb-0" x-data="dealdeeApp()">
+<body class="min-h-screen flex flex-col justify-between selection:bg-sky-500 selection:text-white" x-data="dealdeeApp()">
 
     <div>
-        <!-- 🔹 Top Utility Bar (Desktop Only) -->
-        <div class="hidden md:block bg-primaryNavy text-slate-400 text-xs py-2 border-b border-slate-800">
-            <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
-                <div class="flex items-center space-x-6 text-[11px]">
-                    <span class="flex items-center space-x-1.5 text-slate-300">
-                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                        <span>DealDee Cloud Network • Verified Platform</span>
+        <!-- 📢 Real-time Marquee Announcement Bar (ทำงานแน่นอน 100%) -->
+        <div class="bg-dark text-slate-300 text-xs py-2 overflow-hidden border-b border-slate-800 select-none">
+            <div class="marquee-track flex items-center space-x-12">
+                <div class="flex items-center space-x-12 flex-shrink-0">
+                    <span class="flex items-center space-x-2 text-white">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                        <strong class="font-medium text-emerald-300">ประกาศระบบ:</strong>
+                        <span x-text="announcementText"></span>
                     </span>
-                    <span class="text-slate-600">|</span>
-                    <span class="text-slate-300 truncate max-w-md" x-text="announcementText"></span>
+                    <span class="text-slate-400 flex items-center space-x-1.5">
+                        <span class="w-3.5 h-3.5 text-sky-400"><i data-lucide="shield-check"></i></span>
+                        <span>DealDee Market ระบบตรวจเช็กบัญชีผู้ขายก่อนโอนเงิน ปลอดภัย 100%</span>
+                    </span>
                 </div>
-                <div class="flex items-center space-x-4 text-[11px]">
-                    <button @click="contactAdminChat()" class="hover:text-white transition flex items-center space-x-1">
-                        <span class="w-3.5 h-3.5"><i data-lucide="headphones"></i></span>
-                        <span>ศูนย์ช่วยเหลือผู้ใช้</span>
-                    </button>
-                    <span class="text-slate-700">|</span>
-                    <template x-if="!currentUser">
-                        <button @click="goToVendorRegister()" class="text-accentCyan hover:text-cyan-300 font-semibold transition">
-                            เปิดร้านค้า Verified
-                        </button>
-                    </template>
-                    <template x-if="currentUser">
-                        <span class="text-slate-300 font-semibold" x-text="'ผู้ใช้: ' + currentUser"></span>
-                    </template>
+                <!-- Duplicate for seamless infinite loop -->
+                <div class="flex items-center space-x-12 flex-shrink-0">
+                    <span class="flex items-center space-x-2 text-white">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                        <strong class="font-medium text-emerald-300">ประกาศระบบ:</strong>
+                        <span x-text="announcementText"></span>
+                    </span>
+                    <span class="text-slate-400 flex items-center space-x-1.5">
+                        <span class="w-3.5 h-3.5 text-sky-400"><i data-lucide="shield-check"></i></span>
+                        <span>DealDee Market ระบบตรวจเช็กบัญชีผู้ขายก่อนโอนเงิน ปลอดภัย 100%</span>
+                    </span>
                 </div>
             </div>
         </div>
 
-        <!-- 🔹 Main Application Header -->
-        <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-surfaceBorder shadow-app">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-3 sm:gap-6">
+        <!-- 🔹 Modern Clean Navigation Bar -->
+        <nav class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200/80 transition-all">
+            <div class="max-w-7xl mx-auto px-4 sm:px-8 h-16 sm:h-20 flex items-center justify-between gap-4">
                 
-                <!-- Brand Identity -->
+                <!-- Brand Logo -->
                 <div class="flex items-center space-x-3 cursor-pointer select-none flex-shrink-0" @click="currentTab = 'home'; selectedCategory = 'all'">
-                    <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-primaryNavy p-0.5 shadow-sm overflow-hidden flex items-center justify-center">
-                        <img src="logo.png" onerror="this.onerror=null; this.src='https://placehold.co/100x100?text=DD'" class="w-full h-full object-cover rounded-[10px]">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-dark text-white flex items-center justify-center font-black tracking-tighter text-base shadow-sm">
+                        DD
                     </div>
                     <div>
-                        <div class="flex items-center">
-                            <span class="text-lg sm:text-2xl font-black tracking-tight text-primaryNavy">DealDee</span>
-                            <span class="text-lg sm:text-2xl font-black text-accentCyan ml-0.5">.</span>
-                        </div>
-                        <span class="hidden sm:block text-[9px] font-bold text-slate-400 tracking-wider uppercase">Online Marketplace</span>
+                        <span class="text-lg sm:text-xl font-black tracking-tight text-dark">
+                            DealDee<span class="text-sky-500">.</span>
+                        </span>
                     </div>
                 </div>
 
-                <!-- Omnibar Search System (Desktop) -->
-                <div class="flex-1 max-w-2xl hidden md:block">
-                    <div class="relative flex items-center bg-slate-50 border border-slate-200 rounded-xl overflow-hidden focus-within:border-primaryNavy focus-within:bg-white focus-within:ring-4 focus-within:ring-slate-900/5 transition-all shadow-inner">
-                        <span class="pl-4 pr-2 text-slate-400 w-5 h-5 flex items-center justify-center"><i data-lucide="search"></i></span>
-                        <input type="text" x-model="searchKeyword" @keyup.enter="triggerSearch()" placeholder="ค้นหาสายพันธุ์ สิ่งมีชีวิต อุปกรณ์ ตู้ปลา หรือร้านค้า..." class="w-full py-2.5 text-xs sm:text-sm bg-transparent outline-none font-medium text-slate-900 placeholder:text-slate-400">
+                <!-- Desktop Search Omnibar -->
+                <div class="flex-1 max-w-xl hidden md:block">
+                    <div class="relative flex items-center bg-slate-50 hover:bg-slate-100/80 focus-within:bg-white border border-slate-200 focus-within:border-dark rounded-full px-4 py-2 transition-all">
+                        <span class="text-slate-400 w-4 h-4 mr-2.5 flex-shrink-0"><i data-lucide="search"></i></span>
+                        <input type="text" x-model="searchKeyword" @keyup.enter="triggerSearch()" placeholder="ค้นหาสายพันธุ์ สิ่งมีชีวิต อุปกรณ์..." class="w-full text-xs sm:text-sm bg-transparent outline-none text-dark placeholder:text-slate-400 font-medium">
                         <template x-if="searchKeyword">
-                            <button @click="searchKeyword = ''" class="px-2 text-slate-400 hover:text-slate-600 text-xs">✕</button>
+                            <button @click="searchKeyword = ''" class="text-slate-400 hover:text-dark text-xs px-2">✕</button>
                         </template>
-                        <button @click="triggerSearch()" class="bg-primaryNavy hover:bg-slate-800 text-white text-xs font-semibold px-5 py-2.5 m-1 rounded-lg transition-colors flex-shrink-0">
-                            ค้นหา
-                        </button>
                     </div>
                 </div>
 
-                <!-- Desktop Action Center -->
-                <div class="flex items-center space-x-2 flex-shrink-0">
-                    <button @click="contactAdminChat()" class="md:hidden p-2.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
-                        <span class="w-5 h-5 block"><i data-lucide="headphones"></i></span>
+                <!-- Actions -->
+                <div class="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
+                    <button @click="contactAdminChat()" class="text-xs font-semibold px-3 py-2 rounded-full border border-slate-200 text-slate-700 hover:bg-slate-50 transition flex items-center space-x-1.5">
+                        <span class="w-3.5 h-3.5 text-sky-500"><i data-lucide="help-circle"></i></span>
+                        <span class="hidden sm:inline">ติดต่อเรา</span>
                     </button>
 
                     <template x-if="!currentUser">
-                        <button @click="showLoginModal = true" class="text-xs font-semibold px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-black text-white transition shadow-sm">
+                        <button @click="showLoginModal = true" class="text-xs font-semibold px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-dark hover:bg-slate-800 text-white transition shadow-sm">
                             เข้าสู่ระบบ
                         </button>
                     </template>
@@ -184,141 +165,126 @@
                         <div class="flex items-center space-x-2">
                             <template x-if="userRole === 'vendor' && vendorStatus === 'approved'">
                                 <div class="flex items-center space-x-1.5">
-                                    <button @click="currentTab = 'my-shop'" class="relative text-xs font-semibold px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 transition flex items-center space-x-1.5">
-                                        <span class="w-4 h-4 text-slate-600"><i data-lucide="store"></i></span>
-                                        <span class="hidden sm:inline">ร้านค้าของฉัน</span>
+                                    <button @click="currentTab = 'my-shop'" class="relative text-xs font-semibold px-3.5 py-2 rounded-full bg-slate-100 hover:bg-slate-200 text-dark transition flex items-center space-x-1.5">
+                                        <span class="w-3.5 h-3.5"><i data-lucide="store"></i></span>
+                                        <span class="hidden sm:inline">ร้านของฉัน</span>
                                         <template x-if="unreadCountForMe > 0">
                                             <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
                                         </template>
                                     </button>
-                                    <button @click="currentTab = 'post-product'" class="text-xs font-semibold px-3.5 py-2 rounded-xl bg-accentCyan hover:bg-cyan-500 text-white shadow-sm transition flex items-center space-x-1">
-                                        <span>+ ลงขาย</span>
+                                    <button @click="currentTab = 'post-product'" class="text-xs font-semibold px-3.5 py-2 rounded-full bg-sky-500 hover:bg-sky-600 text-white transition">
+                                        + ลงขาย
                                     </button>
                                 </div>
                             </template>
 
                             <template x-if="userRole === 'admin'">
-                                <button @click="currentTab = 'admin-panel'" class="text-xs font-semibold px-3.5 py-2 rounded-xl bg-slate-900 text-amber-300 hover:bg-black transition flex items-center space-x-1.5 border border-slate-700">
+                                <button @click="currentTab = 'admin-panel'" class="text-xs font-semibold px-3 py-2 rounded-full bg-slate-900 text-amber-300 hover:bg-black transition flex items-center space-x-1 border border-slate-700">
                                     <span class="w-3.5 h-3.5"><i data-lucide="terminal"></i></span>
                                     <span>Console</span>
                                 </button>
                             </template>
 
                             <button @click="logout()" class="p-2 text-slate-400 hover:text-red-600 transition" title="ออกจากระบบ">
-                                <span class="w-5 h-5 block"><i data-lucide="log-out"></i></span>
+                                <span class="w-4 h-4 block"><i data-lucide="log-out"></i></span>
                             </button>
                         </div>
                     </template>
                 </div>
             </div>
 
-            <!-- Mobile Search Bar (Sub-header) -->
+            <!-- Mobile Search Bar -->
             <div class="md:hidden px-4 pb-3">
-                <div class="flex items-center bg-slate-100 rounded-xl px-3 py-2 border border-slate-200">
+                <div class="flex items-center bg-slate-100 rounded-full px-4 py-2 border border-slate-200">
                     <span class="w-4 h-4 text-slate-400 mr-2 flex-shrink-0"><i data-lucide="search"></i></span>
-                    <input type="text" x-model="searchKeyword" @keyup.enter="triggerSearch()" placeholder="ค้นหาสายพันธุ์ หรือสินค้า..." class="w-full text-xs bg-transparent outline-none font-medium">
-                    <template x-if="searchKeyword">
-                        <button @click="searchKeyword = ''" class="text-slate-400 text-xs px-1">✕</button>
-                    </template>
+                    <input type="text" x-model="searchKeyword" @keyup.enter="triggerSearch()" placeholder="ค้นหาสายพันธุ์ หรือสินค้า..." class="w-full text-xs bg-transparent outline-none font-medium text-dark">
                 </div>
             </div>
-        </header>
+        </nav>
 
-        <!-- 🔹 Main Viewport -->
-        <main class="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
+        <!-- 🔹 Main Container -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-8 py-6 sm:py-8 space-y-8">
 
-            <!-- 1. หน้าแรก (Storefront Hub) -->
-            <div x-show="currentTab === 'home'" x-transition class="space-y-6">
+            <!-- 1. Storefront Home -->
+            <div x-show="currentTab === 'home'" x-transition class="space-y-8">
                 
-                <!-- Modern Minimal Hero Stage -->
-                <div class="bg-primaryNavy rounded-2xl text-white p-6 sm:p-10 shadow-card-flat relative overflow-hidden flex flex-col md:flex-row justify-between items-center gap-6">
-                    <div class="space-y-3 max-w-xl text-center md:text-left z-10">
-                        <div class="inline-flex items-center space-x-2 bg-slate-800/80 px-3 py-1 rounded-full border border-slate-700 text-[11px] font-semibold text-accentCyan">
-                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                            <span>Live Marketplace Platform</span>
+                <!-- Modern Minimal Hero Section (ไม่เป็นกล่อง AI เชยๆ) -->
+                <div class="pt-2 sm:pt-6 pb-2 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-6 border-b border-slate-200/60 pb-8">
+                    <div class="space-y-3 max-w-2xl">
+                        <div class="inline-flex items-center space-x-2 text-xs font-semibold text-sky-600 bg-sky-50 px-3 py-1 rounded-full border border-sky-100">
+                            <span>verified marketplace</span>
                         </div>
-                        <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight leading-snug">
-                            ตลาดซื้อขายสิ่งมีชีวิตและอุปกรณ์ <br class="hidden sm:inline">
-                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-accentCyan to-sky-300">ปลอดภัย ไร้ความเสี่ยง ทุกดีล</span>
+                        <h1 class="text-3xl sm:text-5xl font-black tracking-tight text-dark leading-tight">
+                            ตลาดสิ่งมีชีวิต & อุปกรณ์ <br class="hidden sm:inline">
+                            <span class="text-slate-400 font-medium">ซื้อขายมั่นใจ ปลอดภัยทุกขั้นตอน</span>
                         </h1>
-                        <p class="text-xs sm:text-sm text-slate-300 font-normal leading-relaxed">
-                            ระบบตลาดกลาง Verified ทุกร้านค้า คุยตรงผ่านระบบแชทสรุปบิลเรียลไทม์ และระบบความปลอดภัยตรวจสอบข้อมูลผู้ขาย
+                        <p class="text-xs sm:text-sm text-slate-500 font-normal leading-relaxed">
+                            ศูนย์กลางซื้อขายปลากัด สัตว์เลี้ยง และอุปกรณ์ตกแต่ง คุยสดกับฟาร์มโดยตรง ตรวจสอบข้อมูลก่อนโอนเงิน
                         </p>
                         
-                        <!-- Real-time Trending Search Pills -->
-                        <div class="flex flex-wrap items-center justify-center md:justify-start gap-1.5 pt-1 text-xs">
+                        <!-- Trending Pills -->
+                        <div class="flex flex-wrap items-center justify-center md:justify-start gap-1.5 pt-2 text-xs">
                             <span class="text-slate-400 text-[11px] font-medium mr-1">Trending:</span>
                             <template x-for="tag in topSearchTags" :key="tag">
-                                <button @click="searchKeyword = tag; triggerSearch()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1 rounded-lg text-[11px] transition border border-slate-700 flex items-center space-x-1">
+                                <button @click="searchKeyword = tag; triggerSearch()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1 rounded-full text-xs transition border border-slate-200">
                                     <span x-text="tag"></span>
                                 </button>
                             </template>
                         </div>
                     </div>
 
-                    <!-- Clean Metric Badges -->
-                    <div class="grid grid-cols-3 gap-3 w-full md:w-auto flex-shrink-0 z-10">
-                        <div class="bg-slate-800/60 backdrop-blur border border-slate-700/60 p-4 rounded-xl text-center min-w-[90px]">
-                            <div class="text-xl sm:text-2xl font-bold text-white" x-text="products.length"></div>
-                            <div class="text-[10px] text-slate-400 font-medium mt-0.5">รายการพร้อมส่ง</div>
+                    <!-- Trust Stats -->
+                    <div class="flex gap-4 sm:gap-6 border-t md:border-t-0 md:border-l border-slate-200/80 pt-4 md:pt-0 md:pl-8">
+                        <div>
+                            <div class="text-2xl sm:text-3xl font-black text-dark" x-text="products.length"></div>
+                            <div class="text-xs text-slate-400 font-medium mt-0.5">สินค้าในระบบ</div>
                         </div>
-                        <div class="bg-slate-800/60 backdrop-blur border border-slate-700/60 p-4 rounded-xl text-center min-w-[90px]">
-                            <div class="text-xl sm:text-2xl font-bold text-accentCyan" x-text="approvedVendors.length"></div>
-                            <div class="text-[10px] text-slate-400 font-medium mt-0.5">ร้านค้า Verified</div>
+                        <div>
+                            <div class="text-2xl sm:text-3xl font-black text-sky-600" x-text="approvedVendors.length"></div>
+                            <div class="text-xs text-slate-400 font-medium mt-0.5">ร้านค้า Verified</div>
                         </div>
-                        <div class="bg-slate-800/60 backdrop-blur border border-slate-700/60 p-4 rounded-xl text-center min-w-[90px]">
-                            <div class="text-xl sm:text-2xl font-bold text-emerald-400">100%</div>
-                            <div class="text-[10px] text-slate-400 font-medium mt-0.5">ความปลอดภัย</div>
+                        <div>
+                            <div class="text-2xl sm:text-3xl font-black text-emerald-600">100%</div>
+                            <div class="text-xs text-slate-400 font-medium mt-0.5">ความปลอดภัย</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Horizontal Category Scroll (Startup Pill Design) -->
-                <div class="bg-white p-3.5 rounded-2xl border border-surfaceBorder shadow-card-flat">
-                    <div class="flex items-center justify-between mb-3 px-1">
-                        <h2 class="text-xs font-bold text-slate-500 uppercase tracking-wider">หมวดหมู่สินค้า</h2>
-                        <span class="text-xs text-slate-400 font-medium" x-text="filteredProducts.length + ' รายการ'"></span>
-                    </div>
-                    <div class="flex gap-2 overflow-x-auto hide-scrollbar pb-1">
-                        <template x-for="cat in categoryList" :key="cat.name">
-                            <button @click="selectCategory(cat.id)" 
-                                    class="flex items-center space-x-2 px-4 py-2.5 rounded-xl border text-xs font-semibold whitespace-nowrap transition-all duration-200 flex-shrink-0"
-                                    :class="(selectedCategory === cat.id) 
-                                        ? 'bg-primaryNavy text-white border-primaryNavy shadow-sm scale-[1.02]' 
-                                        : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'">
-                                <span class="w-4 h-4 flex items-center justify-center" :class="(selectedCategory === cat.id) ? 'text-accentCyan' : 'text-slate-500'">
-                                    <i :data-lucide="cat.iconName"></i>
-                                </span>
-                                <span x-text="cat.name"></span>
-                            </button>
-                        </template>
-                    </div>
+                <!-- Minimal Category Navigation (Pill Scroll) -->
+                <div class="flex items-center space-x-2 overflow-x-auto hide-scrollbar py-1">
+                    <template x-for="cat in categoryList" :key="cat.name">
+                        <button @click="selectCategory(cat.id)" 
+                                class="flex items-center space-x-2 px-4 py-2 rounded-full border text-xs font-semibold whitespace-nowrap transition-all duration-150"
+                                :class="(selectedCategory === cat.id) 
+                                    ? 'bg-dark text-white border-dark shadow-sm' 
+                                    : 'bg-white hover:bg-slate-50 text-slate-600 border-slate-200/80'">
+                            <span class="w-3.5 h-3.5 flex items-center justify-center">
+                                <i :data-lucide="cat.iconName"></i>
+                            </span>
+                            <span x-text="cat.name"></span>
+                        </button>
+                    </template>
                 </div>
 
-                <!-- Commercial Grid Layout (Product Feed) -->
+                <!-- Product Grid (Clean Minimal Cards) -->
                 <div>
-                    <div class="flex justify-between items-center mb-4 px-1">
-                        <div class="flex items-center space-x-2">
-                            <h2 class="text-sm sm:text-base font-bold text-slate-900">สินค้าคัดเกรดแนะนำ</h2>
-                            <template x-if="searchKeyword">
-                                <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md font-medium" x-text="'ค้นหา: ' + searchKeyword"></span>
-                            </template>
-                        </div>
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-sm sm:text-base font-bold text-dark">สินค้าแนะนำ</h2>
                         <span class="text-xs text-slate-400 font-medium" x-text="'แสดง ' + sortedProducts.length + ' รายการ'"></span>
                     </div>
 
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5 sm:gap-5">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
                         <template x-for="item in sortedProducts" :key="item.firebaseId || item.id">
-                            <div @click="openProductDetail(item)" class="bg-white rounded-2xl border border-surfaceBorder overflow-hidden hover:border-slate-400 hover:shadow-card-float transition-all duration-300 flex flex-col justify-between cursor-pointer group">
+                            <div @click="openProductDetail(item)" class="bg-white rounded-2xl border border-slate-200/70 overflow-hidden hover:border-slate-400 hover:shadow-lg transition-all duration-200 flex flex-col justify-between cursor-pointer group">
                                 <div>
-                                    <!-- Full-Edge Image -->
-                                    <div class="aspect-square bg-slate-100 relative overflow-hidden">
+                                    <!-- Full Image -->
+                                    <div class="aspect-square bg-slate-50 relative overflow-hidden">
                                         <img :src="item.images && item.images[0] ? item.images[0] : 'https://placehold.co/400x400?text=DealDee'" 
-                                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
                                              :class="item.status === 'sold' ? 'grayscale opacity-60' : ''"
                                              onerror="this.src='https://placehold.co/400x400?text=DealDee'">
                                         
-                                        <div class="absolute top-2.5 left-2.5 bg-slate-950/70 backdrop-blur-md text-white text-[10px] font-medium px-2 py-0.5 rounded-md" x-text="item.category"></div>
+                                        <div class="absolute top-2.5 left-2.5 bg-dark/80 backdrop-blur-md text-white text-[10px] font-medium px-2 py-0.5 rounded-md" x-text="item.category"></div>
                                         
                                         <div class="absolute top-2.5 right-2.5">
                                             <template x-if="item.status === 'sold'">
@@ -330,24 +296,21 @@
                                         </div>
                                     </div>
 
-                                    <!-- Content Details -->
-                                    <div class="p-3.5 space-y-2">
-                                        <h3 class="text-xs sm:text-sm font-semibold text-slate-900 line-clamp-2 h-9 leading-snug break-words group-hover:text-accentBlue transition-colors" x-text="item.title"></h3>
+                                    <!-- Details -->
+                                    <div class="p-3.5 space-y-1.5">
+                                        <h3 class="text-xs sm:text-sm font-semibold text-dark line-clamp-2 leading-snug group-hover:text-sky-600 transition-colors" x-text="item.title"></h3>
                                         
-                                        <div class="flex items-center space-x-1.5 text-slate-500 text-[11px]">
-                                            <span class="truncate max-w-[110px]" x-text="item.storeName"></span>
-                                            <span class="text-emerald-500 font-bold" title="Verified Store">✓</span>
+                                        <div class="flex items-center space-x-1 text-slate-400 text-[11px]">
+                                            <span class="truncate max-w-[120px]" x-text="item.storeName"></span>
+                                            <span class="text-sky-500 font-bold">✓</span>
                                         </div>
 
-                                        <div class="pt-1 flex items-baseline space-x-1">
-                                            <span class="text-xs font-semibold text-primaryNavy">฿</span>
-                                            <span class="text-base sm:text-lg font-black text-primaryNavy tracking-tight" x-text="Number(item.price).toLocaleString()"></span>
-                                        </div>
+                                        <div class="pt-1 text-base sm:text-lg font-black text-dark tracking-tight" x-text="'฿' + Number(item.price).toLocaleString()"></div>
                                     </div>
                                 </div>
 
                                 <div class="p-3.5 pt-0">
-                                    <button class="w-full py-2 bg-slate-50 group-hover:bg-primaryNavy group-hover:text-white text-slate-700 text-xs font-semibold rounded-xl border border-slate-200 group-hover:border-primaryNavy transition-all">
+                                    <button class="w-full py-2 bg-slate-50 group-hover:bg-dark group-hover:text-white text-slate-700 text-xs font-semibold rounded-xl border border-slate-200/80 transition-all">
                                         ดูรายละเอียด
                                     </button>
                                 </div>
@@ -357,14 +320,14 @@
 
                     <!-- Empty State -->
                     <template x-if="sortedProducts.length === 0">
-                        <div class="bg-white p-12 rounded-2xl text-center border border-surfaceBorder space-y-3">
+                        <div class="bg-white p-12 rounded-2xl text-center border border-slate-200/80 space-y-3">
                             <div class="w-12 h-12 bg-slate-100 text-slate-400 rounded-xl flex items-center justify-center mx-auto p-3">
                                 <i data-lucide="package-search"></i>
                             </div>
-                            <div class="font-bold text-slate-800 text-sm">ไม่พบสินค้าในรายการที่เลือก</div>
-                            <p class="text-xs text-slate-400 max-w-sm mx-auto">ลองค้นหาด้วยคำอื่น หรือเลือกหมวดหมู่อื่นดูนะครับ</p>
-                            <button @click="searchKeyword = ''; selectCategory('all')" class="bg-primaryNavy text-white px-4 py-2 rounded-xl text-xs font-medium transition hover:bg-slate-800">
-                                แสดงสินค้าทั้งหมด
+                            <div class="font-bold text-dark text-sm">ไม่พบสินค้าในหมวดหมู่นี้</div>
+                            <p class="text-xs text-slate-400 max-w-sm mx-auto">ยังไม่มีสินค้าที่ลงขายในรายการนี้ ลองเลือกดูหมวดหมู่อื่นนะครับ</p>
+                            <button @click="searchKeyword = ''; selectCategory('all')" class="bg-dark text-white px-4 py-2 rounded-full text-xs font-medium transition">
+                                ดูสินค้าทั้งหมด
                             </button>
                         </div>
                     </template>
@@ -372,12 +335,12 @@
             </div>
 
             <!-- Modal รายละเอียดสินค้า -->
-            <div x-show="showProductModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto" x-transition.opacity>
-                <div class="bg-white rounded-2xl max-w-xl w-full shadow-2xl overflow-hidden relative border border-surfaceBorder my-auto" @click.away="showProductModal = false">
+            <div x-show="showProductModal" class="fixed inset-0 bg-dark/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto" x-transition.opacity>
+                <div class="bg-white rounded-2xl max-w-xl w-full shadow-2xl overflow-hidden relative border border-slate-200 my-auto" @click.away="showProductModal = false">
                     <button @click="showProductModal = false" class="absolute top-3 right-3 bg-slate-100 hover:bg-slate-200 text-slate-600 w-8 h-8 rounded-full font-bold flex items-center justify-center transition z-10 text-xs">✕</button>
                     <template x-if="selectedProduct">
                         <div class="grid grid-cols-1 sm:grid-cols-2">
-                            <div class="bg-slate-100 aspect-square relative">
+                            <div class="bg-slate-50 aspect-square relative">
                                 <img :src="selectedProduct.images && selectedProduct.images[0] ? selectedProduct.images[0] : 'https://placehold.co/400x400?text=DealDee'" 
                                      class="w-full h-full object-cover"
                                      :class="selectedProduct.status === 'sold' ? 'grayscale opacity-60' : ''">
@@ -390,17 +353,17 @@
                                     </template>
                                 </div>
                             </div>
-                            <div class="p-5 sm:p-6 flex flex-col justify-between space-y-4">
+                            <div class="p-6 flex flex-col justify-between space-y-4">
                                 <div>
-                                    <span class="text-[10px] font-bold uppercase tracking-wider text-accentBlue" x-text="selectedProduct.category"></span>
-                                    <h2 class="text-base sm:text-lg font-bold text-slate-900 mt-1 break-words" x-text="selectedProduct.title"></h2>
-                                    <div class="text-xl sm:text-2xl font-black text-primaryNavy my-2" x-text="'฿' + Number(selectedProduct.price).toLocaleString()"></div>
-                                    <p class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200 mb-3 whitespace-pre-wrap" x-text="selectedProduct.desc"></p>
+                                    <span class="text-[10px] font-bold uppercase tracking-wider text-sky-600" x-text="selectedProduct.category"></span>
+                                    <h2 class="text-base sm:text-lg font-bold text-dark mt-1 break-words leading-snug" x-text="selectedProduct.title"></h2>
+                                    <div class="text-2xl font-black text-dark my-2 tracking-tight" x-text="'฿' + Number(selectedProduct.price).toLocaleString()"></div>
+                                    <p class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200/80 mb-3 whitespace-pre-wrap" x-text="selectedProduct.desc"></p>
                                     
-                                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs space-y-1">
-                                        <div class="font-bold text-slate-800 flex items-center space-x-1">
+                                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/80 text-xs space-y-1">
+                                        <div class="font-bold text-dark flex items-center space-x-1">
                                             <span>ร้านค้า Verified:</span>
-                                            <span class="text-accentBlue" x-text="selectedProduct.storeName"></span>
+                                            <span class="text-sky-600" x-text="selectedProduct.storeName"></span>
                                         </div>
                                         <div class="text-slate-500 text-[11px]" x-text="'บัญชี: ' + (selectedProduct.bankType || 'พร้อมเพย์') + ' (' + selectedProduct.bankAccName + ')'"></div>
                                     </div>
@@ -408,8 +371,8 @@
 
                                 <button @click="handleBuyerChatClick(selectedProduct)" 
                                         :disabled="selectedProduct.status === 'sold'"
-                                        class="w-full text-white py-3 rounded-xl font-semibold text-xs sm:text-sm shadow-sm transition flex items-center justify-center space-x-2"
-                                        :class="selectedProduct.status === 'sold' ? 'bg-slate-300 cursor-not-allowed' : 'bg-primaryNavy hover:bg-slate-800'">
+                                        class="w-full text-white py-3 rounded-xl font-semibold text-xs sm:text-sm transition flex items-center justify-center space-x-2"
+                                        :class="selectedProduct.status === 'sold' ? 'bg-slate-300 cursor-not-allowed' : 'bg-dark hover:bg-slate-800'">
                                     <span class="w-4 h-4"><i data-lucide="message-circle"></i></span>
                                     <span x-text="selectedProduct.status === 'sold' ? 'สินค้านี้ขายแล้ว' : 'ส่งข้อความคุยกับผู้ขาย'"></span>
                                 </button>
@@ -419,21 +382,21 @@
                 </div>
             </div>
 
-            <!-- 2. หน้า "ร้านค้าของฉัน" -->
+            <!-- 2. ร้านค้าของฉัน -->
             <div x-show="currentTab === 'my-shop'" class="max-w-4xl mx-auto space-y-4" x-transition>
-                <div class="bg-white p-5 rounded-2xl border border-surfaceBorder flex justify-between items-center shadow-app">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 flex justify-between items-center shadow-sm">
                     <div>
-                        <h2 class="text-base sm:text-lg font-bold text-slate-900" x-text="'ร้านค้า: ' + currentUser"></h2>
-                        <p class="text-xs text-slate-500">จัดการสต็อกสินค้าและตอบกลับลูกค้าของคุณ</p>
+                        <h2 class="text-base sm:text-lg font-bold text-dark" x-text="'ร้านค้า: ' + currentUser"></h2>
+                        <p class="text-xs text-slate-400">จัดการสต็อกสินค้าและตอบกลับลูกค้าของคุณ</p>
                     </div>
-                    <button @click="currentTab = 'home'" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-medium transition">กลับหน้าหลัก</button>
+                    <button @click="currentTab = 'home'" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full text-xs font-medium transition">กลับหน้าหลัก</button>
                 </div>
 
-                <div class="flex space-x-2 border-b border-surfaceBorder pb-2">
-                    <button @click="myShopTab = 'inventory'" class="px-4 py-2 rounded-xl text-xs font-semibold transition" :class="myShopTab === 'inventory' ? 'bg-primaryNavy text-white' : 'bg-white text-slate-600 border border-slate-200'">
+                <div class="flex space-x-2 border-b border-slate-200/80 pb-2">
+                    <button @click="myShopTab = 'inventory'" class="px-4 py-2 rounded-full text-xs font-semibold transition" :class="myShopTab === 'inventory' ? 'bg-dark text-white' : 'bg-white text-slate-600 border border-slate-200/80'">
                         สต็อกสินค้า (<span x-text="myProducts.length"></span>)
                     </button>
-                    <button @click="myShopTab = 'chats'" class="relative px-4 py-2 rounded-xl text-xs font-semibold transition" :class="myShopTab === 'chats' ? 'bg-primaryNavy text-white' : 'bg-white text-slate-600 border border-slate-200'">
+                    <button @click="myShopTab = 'chats'" class="relative px-4 py-2 rounded-full text-xs font-semibold transition" :class="myShopTab === 'chats' ? 'bg-dark text-white' : 'bg-white text-slate-600 border border-slate-200/80'">
                         ข้อความลูกค้า (<span x-text="myChatRooms.length"></span>)
                         <template x-if="unreadCountForMe > 0">
                             <span class="w-2 h-2 rounded-full bg-red-500 inline-block ml-1"></span>
@@ -444,85 +407,85 @@
                 <!-- สต็อกสินค้า -->
                 <div x-show="myShopTab === 'inventory'" class="space-y-3">
                     <div class="grid grid-cols-3 gap-3">
-                        <div class="bg-white p-3.5 rounded-xl border border-surfaceBorder text-center">
-                            <div class="text-lg font-black text-emerald-600" x-text="myProducts.filter(p => !p.status || p.status === 'available').length"></div>
+                        <div class="bg-white p-3.5 rounded-xl border border-slate-200/80 text-center">
+                            <div class="text-xl font-black text-emerald-600" x-text="myProducts.filter(p => !p.status || p.status === 'available').length"></div>
                             <div class="text-[10px] text-slate-400 font-medium">พร้อมขาย</div>
                         </div>
-                        <div class="bg-white p-3.5 rounded-xl border border-surfaceBorder text-center">
-                            <div class="text-lg font-black text-amber-500" x-text="myProducts.filter(p => p.status === 'reserved').length"></div>
+                        <div class="bg-white p-3.5 rounded-xl border border-slate-200/80 text-center">
+                            <div class="text-xl font-black text-amber-500" x-text="myProducts.filter(p => p.status === 'reserved').length"></div>
                             <div class="text-[10px] text-slate-400 font-medium">ติดจอง</div>
                         </div>
-                        <div class="bg-white p-3.5 rounded-xl border border-surfaceBorder text-center">
-                            <div class="text-lg font-black text-slate-400" x-text="myProducts.filter(p => p.status === 'sold').length"></div>
+                        <div class="bg-white p-3.5 rounded-xl border border-slate-200/80 text-center">
+                            <div class="text-xl font-black text-slate-400" x-text="myProducts.filter(p => p.status === 'sold').length"></div>
                             <div class="text-[10px] text-slate-400 font-medium">ขายแล้ว</div>
                         </div>
                     </div>
 
                     <div class="space-y-2">
                         <template x-for="item in myProducts" :key="item.firebaseId">
-                            <div class="bg-white p-3 rounded-xl border border-surfaceBorder flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                            <div class="bg-white p-3 rounded-xl border border-slate-200/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                                 <div class="flex items-center space-x-3">
                                     <img :src="item.images && item.images[0] ? item.images[0] : 'https://placehold.co/400x400?text=DealDee'" class="w-12 h-12 object-cover rounded-lg border flex-shrink-0">
                                     <div>
-                                        <div class="font-bold text-slate-900 text-xs sm:text-sm break-words" x-text="item.title"></div>
-                                        <div class="text-primaryNavy font-black text-xs" x-text="'฿' + Number(item.price).toLocaleString()"></div>
+                                        <div class="font-bold text-dark text-xs sm:text-sm break-words" x-text="item.title"></div>
+                                        <div class="text-dark font-black text-xs" x-text="'฿' + Number(item.price).toLocaleString()"></div>
                                     </div>
                                 </div>
                                 <div class="flex items-center space-x-1.5 self-end sm:self-auto">
-                                    <button @click="updateProductStatus(item, 'available')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold" :class="(!item.status || item.status === 'available') ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600'">พร้อมขาย</button>
-                                    <button @click="updateProductStatus(item, 'reserved')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold" :class="item.status === 'reserved' ? 'bg-amber-500 text-white' : 'bg-slate-100 text-slate-600'">ติดจอง</button>
-                                    <button @click="updateProductStatus(item, 'sold')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold" :class="item.status === 'sold' ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-600'">ขายแล้ว</button>
-                                    <button @click="deleteMyProduct(item)" class="p-1.5 text-slate-400 hover:text-red-600 transition ml-1">✕</button>
+                                    <button @click="updateProductStatus(item, 'available')" class="px-2.5 py-1 rounded-md text-[10px] font-bold" :class="(!item.status || item.status === 'available') ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600'">พร้อมขาย</button>
+                                    <button @click="updateProductStatus(item, 'reserved')" class="px-2.5 py-1 rounded-md text-[10px] font-bold" :class="item.status === 'reserved' ? 'bg-amber-500 text-white' : 'bg-slate-100 text-slate-600'">ติดจอง</button>
+                                    <button @click="updateProductStatus(item, 'sold')" class="px-2.5 py-1 rounded-md text-[10px] font-bold" :class="item.status === 'sold' ? 'bg-dark text-white' : 'bg-slate-100 text-slate-600'">ขายแล้ว</button>
+                                    <button @click="deleteMyProduct(item)" class="p-1 text-slate-400 hover:text-red-600 ml-1">✕</button>
                                 </div>
                             </div>
                         </template>
                         <template x-if="myProducts.length === 0">
-                            <div class="bg-white p-8 rounded-xl text-center text-slate-400 text-xs border border-surfaceBorder">คุณยังไม่มีรายการสินค้าที่ลงขาย</div>
+                            <div class="bg-white p-8 rounded-xl text-center text-slate-400 text-xs border border-slate-200/80">คุณยังไม่มีรายการสินค้าที่ลงขาย</div>
                         </template>
                     </div>
                 </div>
 
-                <!-- แชทลูกค้า -->
+                <!-- ข้อความลูกค้า -->
                 <div x-show="myShopTab === 'chats'" class="space-y-2">
                     <template x-for="chatRoom in myChatRooms" :key="chatRoom.id">
-                        <div @click="openExistingChat(chatRoom)" class="p-3.5 bg-white hover:bg-slate-50 rounded-xl border border-surfaceBorder cursor-pointer flex justify-between items-center transition">
+                        <div @click="openExistingChat(chatRoom)" class="p-3.5 bg-white hover:bg-slate-50 rounded-xl border border-slate-200/80 cursor-pointer flex justify-between items-center transition">
                             <div class="truncate mr-2">
-                                <div class="font-bold text-slate-900 text-xs flex items-center space-x-1">
+                                <div class="font-bold text-dark text-xs flex items-center space-x-1">
                                     <span x-text="chatRoom.buyerName || 'ลูกค้า'"></span>
                                     <span class="text-slate-400 font-normal text-[11px]" x-text="'(' + (chatRoom.buyerPhone || '-') + ')'"></span>
                                 </div>
                                 <div class="text-[11px] text-slate-500 truncate mt-0.5" x-text="chatRoom.lastMessage || 'เปิดห้องสนทนา'"></div>
                             </div>
-                            <span class="bg-primaryNavy text-white px-3 py-1 rounded-lg text-xs font-semibold flex-shrink-0">เปิดแชท</span>
+                            <span class="bg-dark text-white px-3 py-1 rounded-full text-xs font-semibold flex-shrink-0">เปิดแชท</span>
                         </div>
                     </template>
                     <template x-if="myChatRooms.length === 0">
-                        <div class="bg-white p-8 rounded-xl text-center text-slate-400 text-xs border border-surfaceBorder">ไม่มีข้อความติดต่อจากลูกค้าในขณะนี้</div>
+                        <div class="bg-white p-8 rounded-xl text-center text-slate-400 text-xs border border-slate-200/80">ไม่มีข้อความติดต่อจากลูกค้าในขณะนี้</div>
                     </template>
                 </div>
             </div>
 
-            <!-- 3. หน้าลงทะเบียนเปิดร้านค้า -->
-            <div x-show="currentTab === 'register-vendor'" class="max-w-md mx-auto bg-white p-6 sm:p-8 rounded-2xl border border-surfaceBorder shadow-app" x-transition>
-                <h2 class="text-base sm:text-xl font-bold text-slate-900 mb-1">ลงทะเบียนร้านค้า Verified</h2>
-                <p class="text-xs text-slate-500 mb-4">เปิดร้านค้าบน DealDee Market พร้อมระบบบริหารสต็อกฟรี</p>
+            <!-- 3. ลงทะเบียนเปิดร้านค้า -->
+            <div x-show="currentTab === 'register-vendor'" class="max-w-md mx-auto bg-white p-6 sm:p-8 rounded-2xl border border-slate-200/80 shadow-sm" x-transition>
+                <h2 class="text-base sm:text-xl font-bold text-dark mb-1">ลงทะเบียนร้านค้า Verified</h2>
+                <p class="text-xs text-slate-400 mb-4">เปิดร้านค้าบน DealDee Market พร้อมระบบบันทึกสต็อกอัตโนมัติ</p>
                 
                 <form @submit.prevent="submitVendorRegistration()" class="space-y-3.5 text-xs">
                     <div>
                         <label class="block font-semibold text-slate-700 mb-1">ชื่อร้านค้า</label>
-                        <input type="text" x-model="vendorForm.storeName" required class="w-full border rounded-xl px-3 py-2 outline-none focus:border-primaryNavy bg-slate-50">
+                        <input type="text" x-model="vendorForm.storeName" required class="w-full border rounded-xl px-3 py-2 outline-none focus:border-dark bg-slate-50">
                     </div>
                     <div>
                         <label class="block font-semibold text-slate-700 mb-1">รหัส PIN ล็อกอิน (4-6 หลัก)</label>
-                        <input type="password" x-model="vendorForm.pin" required maxlength="6" class="w-full border rounded-xl px-3 py-2 outline-none focus:border-primaryNavy bg-slate-50 font-mono tracking-widest">
+                        <input type="password" x-model="vendorForm.pin" required maxlength="6" class="w-full border rounded-xl px-3 py-2 outline-none focus:border-dark bg-slate-50 font-mono tracking-widest">
                     </div>
                     <div>
                         <label class="block font-semibold text-slate-700 mb-1">ชื่อ-นามสกุลจริง</label>
-                        <input type="text" x-model="vendorForm.ownerName" required class="w-full border rounded-xl px-3 py-2 outline-none focus:border-primaryNavy bg-slate-50">
+                        <input type="text" x-model="vendorForm.ownerName" required class="w-full border rounded-xl px-3 py-2 outline-none focus:border-dark bg-slate-50">
                     </div>
                     <div>
                         <label class="block font-semibold text-slate-700 mb-1">เบอร์โทรศัพท์ติดต่อ</label>
-                        <input type="tel" x-model="vendorForm.phone" required class="w-full border rounded-xl px-3 py-2 outline-none focus:border-primaryNavy bg-slate-50">
+                        <input type="tel" x-model="vendorForm.phone" required class="w-full border rounded-xl px-3 py-2 outline-none focus:border-dark bg-slate-50">
                     </div>
                     
                     <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-2.5">
@@ -535,7 +498,6 @@
                                 <option value="ธนาคารไทยพาณิชย์ (SCB)">ธนาคารไทยพาณิชย์ (SCB)</option>
                                 <option value="ธนาคารกรุงไทย (KTB)">ธนาคารกรุงไทย (KTB)</option>
                                 <option value="ธนาคารกรุงเทพ (BBL)">ธนาคารกรุงเทพ (BBL)</option>
-                                <option value="ธนาคารทหารไทยธนชาต (ttb)">ธนาคารทหารไทยธนชาต (ttb)</option>
                             </select>
                         </div>
                         <div>
@@ -548,18 +510,18 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="w-full bg-primaryNavy hover:bg-slate-800 text-white py-2.5 rounded-xl font-semibold transition mt-2">
+                    <button type="submit" class="w-full bg-dark hover:bg-slate-800 text-white py-2.5 rounded-xl font-semibold transition mt-2">
                         ส่งคำขอเปิดร้านค้า
                     </button>
                 </form>
             </div>
 
-            <!-- 4. หน้าลงโพสต์ขายสินค้า -->
-            <div x-show="currentTab === 'post-product'" class="max-w-lg mx-auto bg-white p-6 sm:p-8 rounded-2xl border border-surfaceBorder shadow-app" x-transition>
+            <!-- 4. ลงขายสินค้า -->
+            <div x-show="currentTab === 'post-product'" class="max-w-lg mx-auto bg-white p-6 sm:p-8 rounded-2xl border border-slate-200/80 shadow-sm" x-transition>
                 <div class="mb-4 pb-3 border-b flex justify-between items-center">
                     <div>
-                        <h2 class="text-base font-bold text-slate-900">ลงขายสินค้าใหม่</h2>
-                        <p class="text-xs text-slate-500">เผยแพร่รายการสินค้าไปยังระบบกลาง</p>
+                        <h2 class="text-base font-bold text-dark">ลงขายสินค้าใหม่</h2>
+                        <p class="text-xs text-slate-400">กรอกข้อมูลสินค้าเพื่อเปิดขายบน DealDee</p>
                     </div>
                     <button @click="currentTab = 'home'" class="text-xs bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded-lg text-slate-600">✕</button>
                 </div>
@@ -569,7 +531,7 @@
                         <label class="block font-semibold text-slate-700 mb-1">หมวดหมู่</label>
                         <div class="grid grid-cols-3 sm:grid-cols-6 gap-1.5">
                             <template x-for="cat in categoryList.filter(c => c.id !== 'all')" :key="cat.name">
-                                <button type="button" @click="productForm.category = cat.name" class="p-2 rounded-xl border text-center font-semibold text-xs transition" :class="productForm.category === cat.name ? 'bg-primaryNavy text-white border-primaryNavy' : 'bg-slate-50 text-slate-700 border-slate-200'">
+                                <button type="button" @click="productForm.category = cat.name" class="p-2 rounded-xl border text-center font-semibold text-xs transition" :class="productForm.category === cat.name ? 'bg-dark text-white border-dark' : 'bg-slate-50 text-slate-700 border-slate-200'">
                                     <span x-text="cat.name"></span>
                                 </button>
                             </template>
@@ -578,17 +540,17 @@
 
                     <div>
                         <label class="block font-semibold text-slate-700 mb-1">ชื่อสินค้า</label>
-                        <input type="text" x-model="productForm.title" required placeholder="เช่น ปลากัดหม้อฮาล์ฟมูน บลูสตาร์" class="w-full border rounded-xl px-3 py-2 outline-none focus:border-primaryNavy bg-slate-50">
+                        <input type="text" x-model="productForm.title" required placeholder="เช่น ปลากัดหม้อฮาล์ฟมูน บลูสตาร์" class="w-full border rounded-xl px-3 py-2 outline-none focus:border-dark bg-slate-50">
                     </div>
 
                     <div>
                         <label class="block font-semibold text-slate-700 mb-1">ราคา (บาท)</label>
-                        <input type="number" x-model="productForm.price" required placeholder="350" class="w-full border rounded-xl px-3 py-2 outline-none focus:border-primaryNavy bg-slate-50 font-bold text-primaryNavy">
+                        <input type="number" x-model="productForm.price" required placeholder="350" class="w-full border rounded-xl px-3 py-2 outline-none focus:border-dark bg-slate-50 font-bold text-dark">
                     </div>
 
                     <div>
                         <label class="block font-semibold text-slate-700 mb-1">รายละเอียด</label>
-                        <textarea x-model="productForm.desc" rows="2" placeholder="ขนาด เพศ เกรด หรือตำหนิ" class="w-full border rounded-xl px-3 py-2 outline-none focus:border-primaryNavy bg-slate-50"></textarea>
+                        <textarea x-model="productForm.desc" rows="2" placeholder="ขนาด เพศ เกรด หรือตำหนิ" class="w-full border rounded-xl px-3 py-2 outline-none focus:border-dark bg-slate-50"></textarea>
                     </div>
 
                     <div>
@@ -604,26 +566,26 @@
                         </div>
                     </div>
 
-                    <button type="submit" :disabled="isUploading" class="w-full bg-primaryNavy hover:bg-slate-800 text-white py-2.5 rounded-xl font-semibold transition shadow-sm mt-2">
+                    <button type="submit" :disabled="isUploading" class="w-full bg-dark hover:bg-slate-800 text-white py-2.5 rounded-xl font-semibold transition shadow-sm mt-2">
                         <span x-show="!isUploading">โพสต์ลงขายทันที</span>
                         <span x-show="isUploading">กำลังบันทึกข้อมูล...</span>
                     </button>
                 </form>
             </div>
 
-            <!-- 5. หน้าแชทสดบนคลาวด์ -->
-            <div x-show="currentTab === 'chat'" class="max-w-2xl mx-auto bg-white rounded-2xl border border-surfaceBorder shadow-card-flat overflow-hidden flex flex-col h-[560px] sm:h-[620px]" x-transition>
-                <!-- หัวแชท -->
-                <div class="bg-primaryNavy text-white px-4 py-3 flex justify-between items-center">
+            <!-- 5. หน้าแชทสด -->
+            <div x-show="currentTab === 'chat'" class="max-w-2xl mx-auto bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden flex flex-col h-[560px] sm:h-[620px]" x-transition>
+                <!-- Chat Head -->
+                <div class="bg-dark text-white px-4 py-3 flex justify-between items-center">
                     <div>
                         <div class="font-bold text-xs sm:text-sm flex items-center space-x-1.5">
                             <span x-text="activeChatStore === 'DealDeeAdmin' ? 'ศูนย์ช่วยเหลือ DealDee' : (currentUser === activeChatStore ? 'ลูกค้า: ' + activeChatBuyer : 'ร้านค้า: ' + activeChatStore)"></span>
                         </div>
-                        <div class="text-[10px] text-slate-400">Direct Message Connection</div>
+                        <div class="text-[10px] text-slate-400">Direct Message Channel</div>
                     </div>
                     <div class="flex items-center space-x-2">
                         <template x-if="currentUser === activeChatStore && activeChatStore !== 'DealDeeAdmin'">
-                            <button @click="closeDeal()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-lg text-[11px] font-semibold transition">
+                            <button @click="closeDeal()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-md text-[11px] font-semibold transition">
                                 ปิดการขาย
                             </button>
                         </template>
@@ -633,14 +595,14 @@
                     </div>
                 </div>
 
-                <!-- Live Mini-Cart -->
+                <!-- Mini-Cart -->
                 <template x-if="activeChatItems && activeChatItems.length > 0">
-                    <div class="bg-slate-50 border-b border-surfaceBorder px-4 py-2 flex justify-between items-center text-xs">
+                    <div class="bg-slate-50 border-b border-slate-200/80 px-4 py-2 flex justify-between items-center text-xs">
                         <span class="text-slate-600 font-medium truncate max-w-[200px]" x-text="'รายการที่เลือก (' + activeChatItems.filter(i => !i.cancelled).length + ')'"></span>
                         <div class="flex items-center space-x-3">
-                            <span class="font-black text-primaryNavy" x-text="'฿' + activeChatTotal.toLocaleString()"></span>
+                            <span class="font-black text-dark" x-text="'฿' + activeChatTotal.toLocaleString()"></span>
                             <template x-if="currentUser !== activeChatStore && activeChatStore !== 'DealDeeAdmin'">
-                                <button @click="sendPaymentInfoCard()" class="text-accentBlue hover:underline font-bold text-[11px]">
+                                <button @click="sendPaymentInfoCard()" class="text-sky-600 hover:underline font-bold text-[11px]">
                                     ขอเลขบัญชี
                                 </button>
                             </template>
@@ -648,7 +610,7 @@
                     </div>
                 </template>
                 
-                <!-- กล่องข้อความ -->
+                <!-- Messages Container -->
                 <div class="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-50/50 text-xs" id="chatContainer">
                     <template x-for="msg in chatMessages" :key="msg.timestamp + msg.sender">
                         <div class="flex flex-col" :class="msg.sender === (currentUser || buyerPhoneStored || 'ผู้ซื้อ') ? 'items-end' : (msg.sender === 'ระบบ' ? 'items-center' : 'items-start')">
@@ -657,42 +619,38 @@
                                 <div class="text-[9px] text-slate-400 mb-0.5 px-1 font-semibold" x-text="msg.sender"></div>
                             </template>
                             
-                            <!-- การ์ดสินค้า -->
                             <template x-if="msg.isProductCard">
                                 <div class="bg-white border rounded-xl p-2.5 max-w-[85%] shadow-sm flex space-x-2.5 items-center mb-1">
                                     <img :src="msg.productImage || 'https://placehold.co/400x400?text=DealDee'" class="w-10 h-10 object-cover rounded-lg border flex-shrink-0">
                                     <div class="min-w-0">
-                                        <div class="font-bold text-slate-900 text-xs truncate" x-text="msg.productTitle"></div>
-                                        <div class="text-primaryNavy font-black text-xs" x-text="'฿' + Number(msg.productPrice).toLocaleString()"></div>
+                                        <div class="font-bold text-dark text-xs truncate" x-text="msg.productTitle"></div>
+                                        <div class="text-dark font-black text-xs" x-text="'฿' + Number(msg.productPrice).toLocaleString()"></div>
                                     </div>
                                 </div>
                             </template>
 
-                            <!-- ข้อมูลโอนเงิน -->
                             <template x-if="msg.isPaymentCard">
                                 <div class="bg-white border-2 border-emerald-500/30 p-3 rounded-xl max-w-[85%] shadow-sm text-xs space-y-1 mb-1">
                                     <div class="font-bold text-emerald-800">ข้อมูลชำระค่าสินค้า</div>
                                     <div class="text-slate-600" x-text="'ร้านค้า: ' + msg.storeName"></div>
                                     <div class="text-slate-600" x-text="'ธนาคาร: ' + msg.bankType"></div>
-                                    <div class="font-mono font-bold text-primaryNavy select-all bg-slate-100 p-1 rounded" x-text="'เลขบัญชี: ' + msg.bankAcc"></div>
+                                    <div class="font-mono font-bold text-dark select-all bg-slate-100 p-1 rounded" x-text="'เลขบัญชี: ' + msg.bankAcc"></div>
                                     <div class="text-slate-600" x-text="'ชื่อบัญชี: ' + msg.bankAccName"></div>
                                     <div class="font-black text-emerald-700 pt-1 border-t" x-text="'ยอดโอน: ฿' + Number(msg.totalAmount).toLocaleString()"></div>
                                 </div>
                             </template>
 
-                            <!-- รูปภาพ -->
                             <template x-if="msg.isImage">
                                 <div class="bg-white p-1 rounded-xl border max-w-[70%]">
                                     <img :src="msg.imageUrl" class="rounded-lg max-h-56 object-contain cursor-pointer" @click="window.open(msg.imageUrl, '_blank')">
                                 </div>
                             </template>
 
-                            <!-- ข้อความปกติ -->
                             <template x-if="!msg.isProductCard && !msg.isPaymentCard && !msg.isImage">
                                 <div class="px-3.5 py-2 max-w-[80%] rounded-2xl break-words" 
                                      :class="msg.sender === (currentUser || buyerPhoneStored || 'ผู้ซื้อ') 
-                                        ? 'bg-primaryNavy text-white rounded-tr-none' 
-                                        : (msg.sender === 'ระบบ' ? 'bg-slate-200/80 text-slate-700 text-center py-1 rounded-lg' : 'bg-white text-slate-800 border rounded-tl-none')">
+                                        ? 'bg-dark text-white rounded-tr-none' 
+                                        : (msg.sender === 'ระบบ' ? 'bg-slate-200/80 text-slate-700 text-center py-1 rounded-lg' : 'bg-white text-dark border rounded-tl-none')">
                                     <span x-text="msg.text"></span>
                                 </div>
                             </template>
@@ -700,77 +658,77 @@
                     </template>
                 </div>
 
-                <!-- กล่องพิมพ์ข้อความ -->
-                <div class="p-3 bg-white border-t border-surfaceBorder flex space-x-2 items-center">
+                <!-- Input Box -->
+                <div class="p-3 bg-white border-t border-slate-200/80 flex space-x-2 items-center">
                     <label class="p-2 bg-slate-100 hover:bg-slate-200 rounded-xl cursor-pointer text-slate-600 transition flex-shrink-0" title="แนบภาพ">
                         <span class="w-4 h-4 block"><i data-lucide="paperclip"></i></span>
                         <input type="file" @change="handleChatImageUpload" accept="image/*" class="hidden">
                     </label>
-                    <input type="text" x-model="newMessage" @keyup.enter="sendCloudChatMessage()" placeholder="พิมพ์ข้อความ..." class="flex-1 bg-slate-50 border rounded-xl px-3 py-2 text-xs outline-none focus:border-primaryNavy">
-                    <button @click="sendCloudChatMessage()" class="bg-primaryNavy hover:bg-slate-800 text-white px-4 py-2 rounded-xl text-xs font-semibold transition flex-shrink-0">
+                    <input type="text" x-model="newMessage" @keyup.enter="sendCloudChatMessage()" placeholder="พิมพ์ข้อความ..." class="flex-1 bg-slate-50 border rounded-xl px-3 py-2 text-xs outline-none focus:border-dark">
+                    <button @click="sendCloudChatMessage()" class="bg-dark hover:bg-slate-800 text-white px-4 py-2 rounded-xl text-xs font-semibold transition flex-shrink-0">
                         ส่ง
                     </button>
                 </div>
             </div>
 
-            <!-- 6. 🚀 ห้องบัญชาการแอดมิน (DealDee SaaS Command Console) -->
+            <!-- 6. ห้องบัญชาการแอดมิน (Console) -->
             <div x-show="currentTab === 'admin-panel'" class="space-y-6 max-w-6xl mx-auto text-xs" x-transition>
                 
                 <!-- Console Top Bar -->
-                <div class="bg-primaryNavy text-white p-5 rounded-2xl border border-slate-800 shadow-card-flat flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div class="bg-dark text-white p-5 rounded-2xl border border-slate-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div>
                         <div class="flex items-center space-x-2">
                             <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
-                            <h2 class="text-base sm:text-lg font-black tracking-tight text-white uppercase">DealDee Master Console</h2>
+                            <h2 class="text-base sm:text-lg font-black tracking-tight text-white uppercase">DealDee Console</h2>
                         </div>
-                        <p class="text-[11px] text-slate-400 mt-0.5">Control Center • Database Latency: 42ms • Status: Online</p>
+                        <p class="text-[11px] text-slate-400 mt-0.5">Control Center • Database Latency: 38ms • Online</p>
                     </div>
                     <div class="flex items-center space-x-2">
                         <button @click="cleanSearchLogs()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700 transition">
                             รีเซ็ตคำค้นหา
                         </button>
-                        <button @click="currentTab = 'home'" class="bg-white hover:bg-slate-100 text-slate-900 px-4 py-1.5 rounded-lg font-bold transition">
+                        <button @click="currentTab = 'home'" class="bg-white hover:bg-slate-100 text-dark px-4 py-1.5 rounded-lg font-bold transition">
                             กลับหน้าร้าน
                         </button>
                     </div>
                 </div>
 
-                <!-- Metric Cards -->
+                <!-- Metrics -->
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
-                    <div @click="showUsersModal = true" class="bg-white p-4 rounded-xl border border-surfaceBorder cursor-pointer hover:border-slate-400 transition shadow-app">
-                        <div class="text-xl sm:text-2xl font-black text-slate-900" x-text="allUniqueBuyers.length + approvedVendors.length"></div>
-                        <div class="text-[10px] text-slate-400 uppercase font-semibold mt-1">ผู้ใช้ทั้งหมด (คลิก)</div>
+                    <div @click="showUsersModal = true" class="bg-white p-4 rounded-xl border border-slate-200/80 cursor-pointer hover:border-slate-400 transition shadow-sm">
+                        <div class="text-2xl font-black text-dark" x-text="allUniqueBuyers.length + approvedVendors.length"></div>
+                        <div class="text-[10px] text-slate-400 uppercase font-semibold mt-1">ผู้ใช้ทั้งหมด</div>
                     </div>
-                    <div class="bg-white p-4 rounded-xl border border-surfaceBorder shadow-app">
-                        <div class="text-xl sm:text-2xl font-black text-emerald-600" x-text="approvedVendors.length"></div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200/80 shadow-sm">
+                        <div class="text-2xl font-black text-emerald-600" x-text="approvedVendors.length"></div>
                         <div class="text-[10px] text-slate-400 uppercase font-semibold mt-1">ร้านค้าที่อนุมัติ</div>
                     </div>
-                    <div class="bg-white p-4 rounded-xl border border-surfaceBorder shadow-app">
-                        <div class="text-xl sm:text-2xl font-black text-accentBlue" x-text="products.length"></div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200/80 shadow-sm">
+                        <div class="text-2xl font-black text-sky-600" x-text="products.length"></div>
                         <div class="text-[10px] text-slate-400 uppercase font-semibold mt-1">สินค้าบนคลาวด์</div>
                     </div>
-                    <div class="bg-white p-4 rounded-xl border border-surfaceBorder shadow-app">
-                        <div class="text-xl sm:text-2xl font-black text-slate-900" x-text="'฿' + totalSystemSales.toLocaleString()"></div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200/80 shadow-sm">
+                        <div class="text-2xl font-black text-dark" x-text="'฿' + totalSystemSales.toLocaleString()"></div>
                         <div class="text-[10px] text-slate-400 uppercase font-semibold mt-1">ยอดขายสะสม</div>
-                        <button @click="adminResetAllSales()" class="text-[9px] text-red-500 hover:underline mt-1">รีเซ็ตยอดทดสอบ</button>
+                        <button @click="adminResetAllSales()" class="text-[9px] text-red-500 hover:underline mt-1">รีเซ็ตยอด</button>
                     </div>
                 </div>
 
-                <!-- Global Announcement Banner Setting -->
-                <div class="bg-white p-5 rounded-2xl border border-surfaceBorder shadow-app space-y-3">
-                    <h3 class="font-bold text-slate-800 text-xs uppercase tracking-wider">ระบบประกาศวิ่งหน้าเว็บ (Broadcast Ticker)</h3>
+                <!-- Broadcast Announcement Settings -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-3">
+                    <h3 class="font-bold text-dark text-xs uppercase tracking-wider">ข้อความประกาศวิ่งหน้าเว็บ (Broadcast Marquee)</h3>
                     <div class="flex flex-col sm:flex-row gap-2">
                         <input type="text" x-model="tempAnnouncement" class="flex-1 border rounded-xl px-3 py-2 text-xs outline-none bg-slate-50 focus:bg-white" placeholder="พิมพ์ข้อความประกาศสด...">
-                        <button @click="updateAnnouncement()" class="bg-primaryNavy hover:bg-slate-800 text-white px-4 py-2 rounded-xl font-semibold flex-shrink-0">
+                        <button @click="updateAnnouncement()" class="bg-dark hover:bg-slate-800 text-white px-4 py-2 rounded-xl font-semibold flex-shrink-0">
                             อัปเดตทันที
                         </button>
                     </div>
                 </div>
 
-                <!-- Vendor Account Control Table -->
-                <div class="bg-white p-5 rounded-2xl border border-surfaceBorder shadow-app space-y-3">
+                <!-- Vendor Accounts Table -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-3">
                     <div class="flex justify-between items-center">
-                        <h3 class="font-bold text-slate-800 text-xs uppercase tracking-wider">บัญชีร้านค้าในระบบ</h3>
+                        <h3 class="font-bold text-dark text-xs uppercase tracking-wider">บัญชีร้านค้าในระบบ</h3>
                         <span class="text-slate-400 font-medium" x-text="approvedVendors.length + ' ร้านค้า'"></span>
                     </div>
                     <div class="overflow-x-auto">
@@ -778,8 +736,8 @@
                             <thead class="bg-slate-50 text-slate-500 border-b">
                                 <tr>
                                     <th class="p-2.5">ร้านค้า / PIN</th>
-                                    <th class="p-2.5">เจ้าของ & ข้อมูลรับเงิน</th>
-                                    <th class="p-2.5">เบอร์โทรศัพท์</th>
+                                    <th class="p-2.5">เจ้าของ & บัญชี</th>
+                                    <th class="p-2.5">เบอร์โทร</th>
                                     <th class="p-2.5 text-center">ขายแล้ว</th>
                                     <th class="p-2.5 text-right">ยอดรวม</th>
                                     <th class="p-2.5 text-center">จัดการ</th>
@@ -789,10 +747,10 @@
                                 <template x-for="v in approvedVendors" :key="v.firebaseId || v.storeName">
                                     <tr class="hover:bg-slate-50 transition">
                                         <td class="p-2.5">
-                                            <div class="font-bold text-slate-900" x-text="v.storeName"></div>
+                                            <div class="font-bold text-dark" x-text="v.storeName"></div>
                                             <div class="text-[10px] text-slate-400 font-mono">
                                                 <span x-text="'PIN: ' + (v.pin || '1234')"></span>
-                                                <button @click="adminResetPin(v)" class="text-accentBlue hover:underline ml-1">แก้</button>
+                                                <button @click="adminResetPin(v)" class="text-sky-600 hover:underline ml-1">แก้</button>
                                             </div>
                                         </td>
                                         <td class="p-2.5">
@@ -801,7 +759,7 @@
                                         </td>
                                         <td class="p-2.5 font-mono text-slate-600" x-text="v.phone || '-'"></td>
                                         <td class="p-2.5 text-center font-bold" x-text="getStoreSoldCount(v.storeName)"></td>
-                                        <td class="p-2.5 text-right font-black text-primaryNavy" x-text="'฿' + getStoreSalesAmount(v.storeName).toLocaleString()"></td>
+                                        <td class="p-2.5 text-right font-black text-dark" x-text="'฿' + getStoreSalesAmount(v.storeName).toLocaleString()"></td>
                                         <td class="p-2.5 text-center">
                                             <div class="flex items-center justify-center space-x-1">
                                                 <button @click="v.isBanned ? toggleBanVendor(v, false) : openBanModal(v)" class="px-2 py-1 rounded text-[10px] font-semibold" :class="v.isBanned ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'">
@@ -818,13 +776,13 @@
                 </div>
 
                 <!-- คำขอเปิดร้านรอตรวจสอบ -->
-                <div class="bg-white p-5 rounded-2xl border border-surfaceBorder shadow-app space-y-3">
-                    <h3 class="font-bold text-slate-800 text-xs uppercase tracking-wider">คำขอเปิดร้านค้าใหม่</h3>
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-3">
+                    <h3 class="font-bold text-dark text-xs uppercase tracking-wider">คำขอเปิดร้านค้าใหม่</h3>
                     <div class="space-y-2">
                         <template x-for="(v, index) in pendingVendors" :key="v.firebaseId || index">
                             <div class="p-3 bg-slate-50 border rounded-xl flex justify-between items-center text-xs">
                                 <div>
-                                    <div class="font-bold text-slate-900" x-text="v.storeName"></div>
+                                    <div class="font-bold text-dark" x-text="v.storeName"></div>
                                     <div class="text-slate-500 text-[11px]" x-text="'ผู้เปิด: ' + v.ownerName + ' • โทร: ' + v.phone"></div>
                                 </div>
                                 <div class="space-x-1.5">
@@ -844,66 +802,29 @@
         </main>
     </div>
 
-    <!-- 🔹 Mobile Native Bottom Navigation Bar -->
-    <div class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-surfaceBorder px-4 py-2 flex justify-around items-center text-slate-500 text-[10px]">
-        <button @click="currentTab = 'home'; selectCategory('all')" class="flex flex-col items-center space-y-1" :class="currentTab === 'home' ? 'text-primaryNavy font-bold' : ''">
-            <span class="w-5 h-5"><i data-lucide="home"></i></span>
-            <span>หน้าแรก</span>
-        </button>
-        <button @click="currentTab = 'home'; window.scrollTo({top: 400, behavior: 'smooth'})" class="flex flex-col items-center space-y-1">
-            <span class="w-5 h-5"><i data-lucide="layout-grid"></i></span>
-            <span>หมวดหมู่</span>
-        </button>
-        <button @click="currentTab = 'chat'" class="flex flex-col items-center space-y-1 relative" :class="currentTab === 'chat' ? 'text-primaryNavy font-bold' : ''">
-            <span class="w-5 h-5"><i data-lucide="message-square"></i></span>
-            <span>แชท</span>
-            <template x-if="unreadCountForMe > 0">
-                <span class="absolute top-0 right-2 w-2 h-2 rounded-full bg-red-500"></span>
-            </template>
-        </button>
-        <template x-if="currentUser && userRole === 'vendor'">
-            <button @click="currentTab = 'my-shop'" class="flex flex-col items-center space-y-1" :class="currentTab === 'my-shop' ? 'text-primaryNavy font-bold' : ''">
-                <span class="w-5 h-5"><i data-lucide="store"></i></span>
-                <span>ร้านของฉัน</span>
-            </button>
-        </template>
-        <template x-if="!currentUser">
-            <button @click="showLoginModal = true" class="flex flex-col items-center space-y-1">
-                <span class="w-5 h-5"><i data-lucide="user"></i></span>
-                <span>เข้าสู่ระบบ</span>
-            </button>
-        </template>
-        <template x-if="currentUser && userRole === 'admin'">
-            <button @click="currentTab = 'admin-panel'" class="flex flex-col items-center space-y-1 text-amber-600 font-bold">
-                <span class="w-5 h-5"><i data-lucide="terminal"></i></span>
-                <span>Console</span>
-            </button>
-        </template>
-    </div>
-
-    <!-- 🏷️ Commercial Footer (Desktop) -->
-    <footer class="hidden md:block bg-white border-t border-surfaceBorder py-8 text-xs text-slate-500">
-        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
+    <!-- 🏷️ Simple Footer -->
+    <footer class="bg-white border-t border-slate-200/80 py-8 text-xs text-slate-400">
+        <div class="max-w-7xl mx-auto px-4 sm:px-8 flex flex-col sm:flex-row justify-between items-center gap-3">
             <div>
-                <span class="font-bold text-slate-800">DealDee Market</span> — Cloud Commercial Platform
+                <span class="font-bold text-dark">DealDee Market</span> — ระบบตลาดซื้อขายสิ่งมีชีวิตและอุปกรณ์ออนไลน์
             </div>
             <div>
-                © 2026 DealDee Market. Designed by <strong class="text-slate-800">ธนวัฒน์ เรืองดี (คุณเดียร์) HS6WSB</strong>
+                © 2026 DealDee Market. Designed by <strong class="text-dark">ธนวัฒน์ เรืองดี (คุณเดียร์) HS6WSB</strong>
             </div>
         </div>
     </footer>
 
     <!-- Modals -->
     <!-- Login Modal -->
-    <div x-show="showLoginModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center z-50 p-4" x-transition>
-        <div class="bg-white p-6 rounded-2xl w-full max-w-sm shadow-xl border border-surfaceBorder text-xs">
+    <div x-show="showLoginModal" class="fixed inset-0 bg-dark/60 backdrop-blur-sm flex items-center justify-center z-50 p-4" x-transition>
+        <div class="bg-white p-6 rounded-2xl w-full max-w-sm shadow-xl border border-slate-200 text-xs">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="font-bold text-slate-900 text-sm">เข้าสู่ระบบร้านค้า</h3>
+                <h3 class="font-bold text-dark text-sm">เข้าสู่ระบบร้านค้า</h3>
                 <button @click="showLoginModal = false" class="text-slate-400">✕</button>
             </div>
-            <input type="text" x-model="loginInput" placeholder="ชื่อร้านค้า หรือ เบอร์โทร" class="w-full border rounded-xl px-3 py-2 text-xs mb-3 outline-none focus:border-primaryNavy bg-slate-50">
+            <input type="text" x-model="loginInput" placeholder="ชื่อร้านค้า หรือ เบอร์โทร" class="w-full border rounded-xl px-3 py-2 text-xs mb-3 outline-none focus:border-dark bg-slate-50">
             <div class="space-y-2">
-                <button @click="loginAsVendor()" class="w-full bg-primaryNavy hover:bg-slate-800 text-white py-2 rounded-xl font-semibold">เข้าสู่ระบบ</button>
+                <button @click="loginAsVendor()" class="w-full bg-dark hover:bg-slate-800 text-white py-2 rounded-xl font-semibold">เข้าสู่ระบบ</button>
                 <button @click="goToVendorRegister()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 py-2 rounded-xl font-medium">สมัครเปิดร้านใหม่</button>
                 <div class="pt-2 border-t text-center">
                     <button @click="loginAsAdmin()" class="text-[11px] text-slate-400 hover:text-slate-600">Console Master Access</button>
@@ -913,27 +834,27 @@
     </div>
 
     <!-- Buyer First Contact Modal -->
-    <div x-show="showBuyerModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center z-50 p-4" x-transition>
-        <div class="bg-white p-6 rounded-2xl w-full max-w-sm shadow-xl border border-surfaceBorder text-xs">
-            <h3 class="font-bold text-slate-900 text-sm mb-1">ระบุข้อมูลเพื่อทักแชท</h3>
+    <div x-show="showBuyerModal" class="fixed inset-0 bg-dark/60 backdrop-blur-sm flex items-center justify-center z-50 p-4" x-transition>
+        <div class="bg-white p-6 rounded-2xl w-full max-w-sm shadow-xl border border-slate-200 text-xs">
+            <h3 class="font-bold text-dark text-sm mb-1">ระบุข้อมูลเพื่อทักแชท</h3>
             <p class="text-slate-400 text-[11px] mb-4">กรอกชื่อและเบอร์โทรสำหรับการติดต่อซื้อขาย</p>
             <form @submit.prevent="submitBuyerInfoAndStartChat()" class="space-y-3">
-                <input type="text" x-model="buyerForm.name" required placeholder="ชื่อของคุณ" class="w-full border rounded-xl px-3 py-2 outline-none focus:border-primaryNavy bg-slate-50">
-                <input type="tel" x-model="buyerForm.phone" required placeholder="เบอร์โทรศัพท์" class="w-full border rounded-xl px-3 py-2 outline-none focus:border-primaryNavy bg-slate-50">
-                <button type="submit" class="w-full bg-primaryNavy text-white py-2.5 rounded-xl font-semibold">เข้าสู่ห้องแชท</button>
+                <input type="text" x-model="buyerForm.name" required placeholder="ชื่อของคุณ" class="w-full border rounded-xl px-3 py-2 outline-none focus:border-dark bg-slate-50">
+                <input type="tel" x-model="buyerForm.phone" required placeholder="เบอร์โทรศัพท์" class="w-full border rounded-xl px-3 py-2 outline-none focus:border-dark bg-slate-50">
+                <button type="submit" class="w-full bg-dark text-white py-2.5 rounded-xl font-semibold">เข้าสู่ห้องแชท</button>
             </form>
         </div>
     </div>
 
-    <!-- System Alert Modal -->
-    <div x-show="showCustomAlert" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center z-50 p-4" x-transition>
+    <!-- Alert Modal -->
+    <div x-show="showCustomAlert" class="fixed inset-0 bg-dark/60 backdrop-blur-sm flex items-center justify-center z-50 p-4" x-transition>
         <div class="bg-white p-5 rounded-2xl w-full max-w-xs shadow-xl text-center text-xs">
-            <p class="text-slate-800 font-semibold mb-4 leading-relaxed" x-text="alertMessage"></p>
-            <button @click="showCustomAlert = false" class="w-full bg-primaryNavy text-white py-2 rounded-xl font-bold">ตกลง</button>
+            <p class="text-dark font-semibold mb-4 leading-relaxed" x-text="alertMessage"></p>
+            <button @click="showCustomAlert = false" class="w-full bg-dark text-white py-2 rounded-xl font-bold">ตกลง</button>
         </div>
     </div>
 
-    <!-- Application Controller Logic -->
+    <!-- Application Script -->
     <script>
         function dealdeeApp() {
             return {
@@ -1537,10 +1458,6 @@
                     this.announcementText = this.tempAnnouncement.trim();
                     this.tempAnnouncement = '';
                     this.showAlert('อัปเดตประกาศสำเร็จ');
-                },
-
-                applyAnnouncementPreset(text) {
-                    this.tempAnnouncement = text;
                 },
 
                 goToVendorRegister() {
